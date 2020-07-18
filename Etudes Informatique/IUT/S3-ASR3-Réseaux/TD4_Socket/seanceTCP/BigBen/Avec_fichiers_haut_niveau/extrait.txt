@@ -1,0 +1,110 @@
+SERVEUR.C  (avec fichiers de haut niveau)
+
+...
+/* Taille maximale d'une ligne envoyee par serveur */
+#define TAILLEMAXLIGNE 8
+
+int main(int argc, char * argv[]) 
+{
+  int fdTravail, port;
+  FILE *out;
+...
+  /* gestion des connexions de clients */
+  while(1) {
+    /* acceptation d'une connexion */
+    fdTravail=accept(fd,NULL,NULL);
+    if (fdTravail<=0)
+      FATAL("accept");
+    
+    if (fork()==0) { /* fils : gestion du dialogue avec client */
+      close(fd);
+      /* Ouverture de fichiers de haut niveau (cf. polycop systeme) */
+      out = fdopen(fdTravail,"w");
+      /* travail */
+      travail_fils(out);
+      close(fdTravail);
+      exit(0);
+    } 
+    else { /* pere : repart a l'ecoute d'une autre connexion */
+      close(fdTravail);
+    }
+  }
+}
+void ecrireligne(FILE *out, char ligne[])
+{
+  fprintf(out,"%s\n",ligne);
+  fflush(out);
+}
+
+void travail_fils(FILE *out)
+{
+  long horloge;
+  struct tm *temps;
+  char tampon[TAILLEMAXLIGNE];
+  int h,m,s;
+
+  /* preparation de la reponse */
+  time(&horloge);
+  temps=localtime(&horloge);
+  h = temps->tm_hour;
+  m = temps->tm_min;
+  s = temps->tm_sec;
+
+  /* envoi de la reponse */
+  sprintf(tampon, "%02d", h);
+  ecrireligne(out,tampon);
+  sprintf(tampon, "%02d", m);
+  ecrireligne(out,tampon);
+  sprintf(tampon, "%02d", s);
+  ecrireligne(out,tampon);
+}
+CLIENT.C  (avec fichiers de haut niveau)
+
+...
+
+/* Taille maximale d'une ligne recue du serveur */
+#define TAILLEMAXLIGNE 8
+
+int main(int argc, char * argv[]) 
+{
+  int port;
+  char *hostname;
+  FILE *in;
+
+...
+
+  /* ouverture de la connexion */
+  hostname=argv[1];
+  port=atoi(argv[2]);
+  fd=connexion(hostname,port);
+
+  /* Ouverture de fichiers de haut niveau (cf. polycop systeme) */
+  in  = fdopen(fd,"r");
+
+  /* travail */
+  travail(in);
+
+  close(fd);
+  exit(0);
+}
+char *lireligne(FILE *in, char ligne[])
+{
+  char *p;
+  p = fgets(ligne,TAILLEMAXLIGNE,in);
+  return p;
+}
+
+void travail(FILE *in) 
+{ 
+  char h[TAILLEMAXLIGNE],m[TAILLEMAXLIGNE],s[TAILLEMAXLIGNE];
+
+  /* recuperation reponse du serveur */
+  lireligne(in,h);
+  lireligne(in,m);
+  lireligne(in,s);
+
+  printf("Il est %s:%s:%s sur le serveur\n",h,m,s);
+}
+
+
+

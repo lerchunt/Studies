@@ -1,0 +1,23 @@
+* Cours 1 :  Vue générale d'un système d'exploitation et Processus.
+* Cours 2 :  Mémoire 
+* Cours 3 :  Stockage et Disque
+* Cours 4 :  Systèmes de Fichiers
+
+# TD1 : Ordonnancement (3 séances)
+# TD2 : Mémoire 
+# TD3 : Disques, fichiers et répertoires  (3 séances)
+# TD4 : Installation système Unix (2 séances)
+--> 10 séances + 2 séances de rattrapage/révision
+
+Semaine 1 (04/04): cours+TD
+ ** vacances de Pâques **
+Semaine 2 (25/04): 1 TDs (ordonnancement) 
+Semaine 3 (02/05): cours+TD  (interro ordonnancement+mémoire, début TD mémoire)
+Semaine 4 (09/05): 2 TDs (TD mémoire + TD installation)  
+Semaine 5 (16/05): cours+TD  (mémoire)
+ -- DS1 samedi 21 mai 10h15. 
+Semaine 6 (23/05): 2 TDs (disque)
+Semaine 7 (30/05): cours+TD (interro + ??) 
+Semaine 8 (06/06): 2 TDs (Rattrapage/annales)
+ -- DS2 mercredi 15 juin 14h. 
+

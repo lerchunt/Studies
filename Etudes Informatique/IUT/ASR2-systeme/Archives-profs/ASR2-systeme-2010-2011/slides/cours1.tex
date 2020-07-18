@@ -1,0 +1,720 @@
+\def\col{blue}
+\input{header.tex}
+\usepackage{multicol}
+
+%%%%%%%%%%%%%
+\def\enseignement{ASR2 Système}
+\title[]{\enseignement\\
+}
+\author{Stéphanie Moreaud}
+\institute{Département d'informatique\\
+  IUT Bordeaux 1}
+\date{}
+
+%%%%%%%%%%%% 
+
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}<beamer>
+  \frametitle{Plan}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Annonce de plan a chaque transition.
+\AtBeginSection[]{
+  \begin{frame}<beamer>
+    \frametitle{Plan}
+    \tableofcontents[currentsection, hideothersubsections]
+  \end{frame}
+}
+
+\section{Présentation}
+
+\begin{frame}
+  \frametitle{Objectifs}
+  Comprendre les principes de fonctionnement des systèmes d'exploitation
+  multitâches et multi-utilisateurs, au niveau~:
+  \begin{itemize}
+  \item de l’utilisation
+  \item de la structure interne 
+  \item de la mise en œuvre
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Organisation du module}
+4 cours de 1h50\\
+13 séances de TDs de 1h50\\
+\vspace{0.5cm}
+Évaluation~:
+\begin{itemize}
+\item contrôle continu~: une note de TD 
+\item 2 notes de DS
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Plan du cours}
+  \begin{itemize}
+  \item Introduction aux systèmes d'exploitation, notion de processus et ordonnancement
+  \item Gestion de la mémoire
+  \item Stockage des données et système de fichiers.
+  \item Virtualisation, tendances...
+  \end{itemize}
+  \end{frame}
+
+\begin{frame}
+\frametitle{Bibliographie}
+\bibliographystyle{fr-plain}
+\small
+\nocite{*}    
+\bibliography{bib}  
+\vspace{0.5cm}    
+Remerciements à Michel Billaud et Ludovic Courtès
+\end{frame}
+
+%%%%%%%%%%%%%%%%%% OS rôle et définitions  %%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction aux systèmes d'exploitation}
+
+\subsection{Définitions}
+\begin{frame}
+\frametitle{Qu'est ce qu'un système d'exploitation~?}
+{Définition}~:\alert{un Système d'Exploitation} (\emph{Operating System}) est une
+\alert{couche d'abstraction} (ensemble de programmes) construite au dessus du matériel pour
+\begin{itemize}
+\item masquer la complexité du matériel
+\item arbitrer l'accès aux ressources
+\end{itemize}
+\begin{figure}[h]
+  \begin{minipage}[t]{\linewidth}
+    \center
+    \includegraphics[width=0.5\textwidth]{fig/OS}
+  \end{minipage}
+\end{figure}
+\end{frame}
+
+
+%%%%%
+\subsection{Rôle d’un système d’exploitation}
+\begin{frame}
+\frametitle{\insertsubsection}
+
+Le système d'exploitation doit permettre~:
+\begin{itemize}
+\item d'\alert{exploiter les ressources matérielles} efficacement
+\item de fournir aux programmeurs d'applications un \alert{environnement}
+  (\alert{machine étendue} ou \alert{virtuelle}) plus simple à programmer que la
+  \emph{machine réelle}.
+\end{itemize}
+\vspace{0.5cm}
+
+Il est notamment~: 
+\begin{itemize}
+\item support d'abstraction du matériel
+\item piller de la gestion des ressources
+\item garant de la sûreté de fonctionnement (sécurité, tolérance aux
+  fautes, gestion des erreurs, etc.)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\insertsubsection} 
+  Le système d'exploitation \alert{cache les détails matériels} 
+  sous une \alert{couche d'abstraction.}
+  \begin{itemize}
+  \item communication réseau par différents moyens,
+  \item utilisation de fichiers sur différents supports, ...
+  \end{itemize}
+  \vspace{0.5cm}
+  Il gère l'utilisation des ressources  
+  \begin{itemize}
+  \item processeurs, mémoire, périphériques, ...
+  \end{itemize}
+  \vspace{0.5cm}
+  Il veille à ce qu'un certains nombre d'\emph{opérations dangereuses} ne puissent
+  être effectuées qu'avec des droits privilégiés.  
+  \end{frame}
+
+%%%%%%%%%%%%%%%%%%   Un peu d'histoire     %%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Évolution des systèmes}
+
+%%%%%%%%%%%%%%%%%  
+\subsection{Évolution des systèmes}
+\begin{frame}
+  \frametitle{\insertsubsection}
+  \alert{Première génération} (1945-1955)~: machines à tubes.
+  \begin{itemize}
+  \item manipulation d'interrupteurs à bascule 
+  \item début des années 50, introduction des cartes perforées 
+  \item une seule tâche à la fois, intervention de l'opérateur avant/après chaque
+    travail      
+    \begin{itemize}
+    \item[\ding{212}] système \alert{monotâche}
+    \end{itemize}
+  \end{itemize}
+  \vspace{0.5cm}
+  \alert{Seconde génération} (1955-1965)~: machines à transistors
+  \begin{itemize}
+  \item création des systèmes de \emph{batch} (traitement par lots)
+  \item enchaînement automatique d'un \emph{train de travaux}
+    assuré par un programme spécial (ancêtre des SE)
+    \begin{itemize}
+    \item[\ding{212}] système à \alert{traitement par lots}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\insertsubsection}
+  \alert{Troisième génération} (1965-1971)~: circuits intégrés
+  \begin{itemize}
+  \item exécution de plusieurs programmes chargés en mémoire
+  \item réponse au blocage sur les périphériques  
+  \item[\ding{212}] \alert{premiers systèmes d'exploitation} (OS/360, 1966), \alert{multiprogrammation}
+  \end{itemize}
+  \vspace{0.5cm}  
+  \begin{itemize}
+  \item réponse à la demande d'interactivité des utilisateurs 
+  \item[\ding{212}] généralisation des systèmes à \alert{temps partagé}
+    \begin{itemize}
+    \item introduit en 1962 par le CTSS (\emph{Compatible Time Sharing System}) du MIT 
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{\insertsubsection}
+\begin{itemize}
+  \item utilisation du principe de multiprogrammation avec un passage d'un programme à l'autre après
+    quelques millisecondes
+  \item[\ding{212}] système \alert{multitâche}
+    \begin{itemize}
+    \item illusion que les programmes s'exécutent simultanément
+    \item Multics (MIT, 1965), premier système multitâche multi-utilisateurs 
+    \item UNIX créé en 1970 sur les bases de Multics, facile à porter 
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+  
+\begin{frame}
+  \frametitle{\insertsubsection}
+  \alert{Quatrième génération} (1972-aujourd'hui)~: micro-ordinateurs
+  \vspace{0.2cm}
+  \begin{itemize}
+    \item création de systèmes d'exploitation adaptés aux premiers micro-ordinateurs
+      \begin{itemize}
+      \item CP/M, QDOS, MS-DOS
+      \end{itemize}
+      \vspace{0.2cm}
+    \item intégration bonus des premières interfaces graphiques  
+      \begin{itemize}
+      \item Macintosh \emph{System} (1984),
+      \item environnement Windows sur MS-DOS
+      \item etc. 
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\subsection{Bilan~: types de systèmes}
+\begin{frame}
+  \frametitle{\insertsubsection}
+  L'évolution du matériel et des besoins a donné lieu à différents types de systèmes~:
+  \begin{itemize}
+  \item \alert{monotâche} (ou \emph{monoprogrammation})~: un programme à la fois,
+    intervention d'un opérateur entre chaque traitement 
+  \item \alert{monotâche à traitement par lots}~: enchaînement automatique d'un \emph{train de travaux}
+    assuré par un programme.
+  \item \alert{multiprogrammation} : plusieurs programmes en mémoire,
+    profitent des temps morts pour s'exécuter.
+  \item \alert{multitâche, temps-partagé} : plusieurs programmes en mémoire exécutés
+    quantum par quantum, donne l'illusion de l'exécution simultanée
+  \end{itemize}
+\end{frame}
+
+
+
+%%%%%%%%%%%%%% Qu'en est-il aujourd'hui~? 
+\subsection{Situation actuelle}
+
+\begin{frame}
+  \frametitle{Qu'en est-il aujourd'hui~?}
+  Interconnexion d'ordinateurs (réseaux)\\
+  Poursuite de la miniaturisation
+  \begin{itemize}
+  \item généralisation du \alert{\mc} 
+  \item[\ding{212}] intégration de plusieurs processeurs sur une même puce
+  \end{itemize}
+  Multiplications des ressources
+  \begin{itemize}
+  \item \coeurs, périphériques, etc. 
+  \end{itemize}
+  \alert{Systèmes embarqués} (téléphones, agendas, ...) 
+  \begin{itemize}
+  \item fortes contraintes matérielles
+  \end{itemize}
+\vspace{0.3cm}
+\begin{itemize}
+\item[\ding{212}] Complexification des aspects gérés par les systèmes d'exploitation
+\item[\ding{212}] Différents types de systèmes d'exploitation pour répondre à des besoins précis
+\begin{itemize}
+\item serveurs, multiprocesseurs, personnels, distribués, temps réel, embarqués, etc.  
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\section{Composition du système d'exploitation}
+\begin{frame}
+\frametitle{\insertsection}
+Les systèmes d'exploitations actuels comprennent généralement~:
+\begin{itemize}
+\item un \alert{noyau}
+\begin{itemize}
+\item[\ding{212}] proche du matériel
+\item[\ding{212}] modulaire sur beaucoup de systèmes
+\end{itemize}
+\item des \alert{bibliothèques}
+  \begin{itemize}
+  \item[\ding{212}] code factorisé entre les applications
+  \end{itemize}
+\item des \alert{outils}
+\begin{itemize}
+  \item[\ding{212}] ensemble de programmes et de scripts
+\end{itemize}
+\end{itemize}
+\vspace{0.5cm}
+Il s'attache à la gestion de plusieurs éléments~:
+\begin{itemize}
+\item processus, mémoire, périphériques, fichiers, droits, informations, ...  
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Éléments gérés par le système d'exploitation}
+
+\begin{frame}
+\frametitle{Processus}
+Le système assure le bon fonctionnement des \alert{processus} qui utilisent
+du temps et de la mémoire
+\begin{itemize}
+\item \alert{partage de l'espace mémoire} disponible
+\item \alert{répartition du temps} de fonctionnement
+\item éventuelle attribution des processeurs
+\item partage/\alert{protection} de la mémoire entre processus
+\item terminaison de processus défaillant.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Droits}
+ Lors de leur enregistrement, les utilisateurs se voient accorder des
+\alert{droits d'accès} limités, de même que les applications utilisateurs.\\
+\vspace{0.5cm}
+
+Le système d'exploitation fait respecter les limitations imposées.
+\begin{itemize}
+\item garantit que les ressources ne sont utilisées que par les programmes et
+utilisateurs possédant les droits adéquats.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Périphériques et entrées-sorties}
+  Le système d'exploitation prend en charge (unifie et contrôle) l'accès aux différentes ressources
+  matérielles (périphériques) par le biais des \alert{pilotes} (\emph{drivers})
+  \vspace{0.5cm}
+  
+  \underline{Définition}~: un pilote est un programme qui effectue les opérations de base
+  pour \alert{un type de matériel donné}.
+  \vspace{0.5cm}
+  
+  \underline{Exemples}~:
+  \begin{itemize}
+  \item lecture ou écriture d'un secteur sur un disque
+  \item carte son, graphique, réseau
+  \item ...
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Fichiers}
+\alert{Système de fichiers}~: 
+\begin{itemize}
+\item organisation arborescente (répertoires, sous-répertoires, ...)
+\item stockage sur un \alert{support physique} (partition d'un disque, clé
+    USB, CD, ...), ou accessibles par le réseau
+  \item droits d'accès assurant la protection des données
+  \item mécanisme de résistance aux pannes (journalisation, systèmes RAID, etc.)
+\end{itemize}
+\vspace{0.5cm}
+Le système d'exploitation gère la lecture et l'écriture dans le système de fichiers
+en tenant compte des droits d'accès aux fichiers des utilisateurs et applications.
+\end{frame}
+
+
+%%%%% Processus %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Généralités sur les processus}
+\begin{frame}
+\frametitle{\insertsection}
+\vspace{0.5cm}
+\underline{Définition}:
+un processus est une entité abstraite qui représente
+un \alert{programme en cours d'exécution}.\\
+\vspace{0.6cm}
+
+Un processus est défini par~:
+\begin{itemize}
+\item un \alert{ensemble d'instructions} (code du programme) 
+\item un \alert{espace mémoire} pour les données de travail (pile, tas)
+\item divers ressources
+  \begin{itemize}
+  \item descripteurs de fichiers ouverts, ports réseau, etc.
+  \end{itemize}
+\item des \alert{droits d'accès}
+\end{itemize}
+\vspace{0.5cm}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Espace mémoire d'un processus UNIX}
+  \begin{minipage}[t]{\linewidth}
+    \center
+    \includegraphics[width=0.6\textwidth]{fig/espace_adressage_processus}
+  \end{minipage}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Modes de fonctionnement}
+Il existe deux modes de fonctionnement~:
+\begin{itemize}
+\item le \alert{mode noyau} (privilégié)
+  \begin{itemize}
+  \item toutes les opérations sont autorisées 
+  \end{itemize}
+\item le \alert{mode utilisateur} (protégé)
+  \begin{itemize}
+  \item l'accès à la mémoire physique et aux périphériques est protégé
+  \end{itemize}
+\end{itemize}
+\vspace{0.5cm}
+
+Basculement du mode utilisateur vers le mode noyau~:
+\begin{itemize}
+\item sollicitation du système pour une opération particulière, \alert{appel système}
+  \begin{itemize}
+  \item[\small{ex:}] écriture dans un fichier, allocation mémoire, etc.
+  \end{itemize}
+\item interruption du système
+  \begin{itemize}
+  \item[\small{ex:}] suite à une erreur mémoire, un signal d'horloge, etc.
+  \end{itemize}
+\end{itemize}
+\end{frame} 
+
+
+
+
+\begin{frame}
+\frametitle{États d'un processus}
+3 états possibles: 
+\begin{itemize}
+\item \alert{actif}~: en cours d'exécution
+\item \alert{bloqué}~: en attente d'un évènement 
+\item \alert{prêt}~: ni actif, ni bloqué
+\end{itemize}
+\begin{minipage}[t]{\linewidth}
+  \center
+  \includegraphics[width=\textwidth]{fig/etats_processus_0}
+\end{minipage}
+\end{frame}
+
+
+\subsection{Changements d'état}
+\begin{frame}
+  \frametitle{Changements d'états}
+Un processus passe de l'état~:
+\begin{itemize}
+\item[\small(1)] \alert{actif} à \alert{bloqué} lorsqu'il demande une opération d'E/S.
+\item[\small(2)] \alert{bloqué} à \alert{prêt} quand l'opération d'E/S est terminée
+\item[\small(3)] \alert{prêt} à \alert{actif} lorsqu'il est choisi par le système 
+\end{itemize}
+
+\begin{minipage}[t]{\linewidth}
+  \center
+  \includegraphics[width=\textwidth]{fig/etats_processus_1}
+\end{minipage}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Changements d'états}
+Dans un système multitâche, plusieurs processus peuvent être prêts
+\begin{itemize}
+\item l'\alert{ordonnanceur} (\emph{scheduler}) est en charge de désigner le processus à exécuter.
+\item différentes \alert{politiques d'ordonnancement} sont possibles.
+\end{itemize}
+\vspace{0.5cm}
+\underline{Définition}~: l'\alert{ordonnanceur} est le composant du système qui
+défini le prochain processus à activer.
+
+\end{frame}
+
+\subsection{Système multitâche préemptif / coopératif}
+\begin{frame}
+  \frametitle{\insertsubsection} 
+  Pour obtenir un partage de temps processeur plus équitable, un processus actif doit
+  pouvoir \emph{céder sa place}.
+  \begin{itemize}
+  \item exp~: monopolisation du processeur par un processus qui ne fait jamais d'E/S. 
+  \end{itemize}
+   \vspace{0.5cm}
+
+  Pour cela, le \alert{processus actif} peut 
+  \begin{itemize}
+  \item \alert{rendre volontairement la main} 
+  \item[\ding{212}] système \alert{coopératif}, sans réquisition
+  \item \alert{être interrompu} au bout d'un \alert{quantum de temps} 
+  \item[\ding{212}] système \alert{préemptif}, avec réquisition  
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\insertsubsection} 
+  Pour obtenir un partage de temps processeur plus équitable, un processus actif doit
+  pouvoir \emph{céder sa place}.
+  \vspace{0.5cm}
+  
+  \begin{minipage}[t]{\linewidth}
+    \center
+    \includegraphics[width=\textwidth]{fig/etats_processus_2}
+  \end{minipage}
+\end{frame}
+
+
+\subsection{Commutation du contexte}
+\begin{frame}
+  \frametitle{\insertsubsection}
+  Le \alert{contexte} d'un processus contient toutes les informations relatives à
+  l'exécution du processus (valeur du \alert{compteur ordinal}, des \alert{registres
+    d'états}, du \alert{pointeur de pile}, allocations mémoire, etc.)\\
+  \vspace{0.5cm}
+  Lors des changements d'état, le contexte du processus~:
+  \begin{itemize}
+  \item qui était actif est \alert{sauvegardé} 
+  \item qui devient actif est \alert{restauré}
+  \item[\ding{212}] reprise de l'exécution où elle a été interrompue. 
+  \end{itemize}
+  \vspace{0.5cm}
+
+\begin{itemize}
+  \item[\tiny\ding{110}] sauvegarde du contexte~: structure de données appelée PCB (\alert{Process Control
+    Block}), lors du basculement d'état.\\
+  \item[\tiny\ding{110}] stockage des PCB des processus présents sur le système dans la \alert{table des processus}.
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Les interruptions}
+
+\subsection{Notions d'interruption et système réactif}
+\begin{frame}
+\frametitle{\insertsubsection}
+Le fonctionnement des systèmes d'exploitation contemporains s'appuie sur la notion
+d'\alert{interruption}.\\
+\vspace{0.5cm}
+
+\alert{Interruption} : signal matériel qui modifie la séquence normale d'exécution
+des instructions. \\
+\vspace{0.2cm}
+ 
+\begin{itemize}
+\item[\ding{212}] \alert{système réactif}, répond aux évènements causés par l'environnement
+\end{itemize}
+
+
+Une interruption déclenche
+\begin{itemize}
+\item le passage en mode noyau
+\item la \alert{sauvegarde de l'état} du programme (quelques registres)
+\item l'exécution de la \alert{routine de traitement} de l'interruption.
+\end{itemize}
+\end{frame}
+
+\subsection{Interruptions et système multitâche}
+\begin{frame}
+\frametitle{Dans un système multitâche}
+  Les interruptions sont causées par~:
+  \begin{itemize}
+  \item les \alert{périphériques} (exp~: fin d'exécution de requête)
+  \item des \alert{signaux d'horloge}
+    \begin{itemize}
+    \item réguliers, utilisés pour l'ordonnancement
+    \end{itemize}
+  \item des \alert{évènements extérieurs}
+  \item des déroutements en cas d'\alert{erreur} (accès illégal à la mémoire, division par zéro, etc)
+  \item des \alert{interruptions logicielles} provoquées par instruction spéciale
+    \begin{itemize}
+    \item sollicitation du noyau pour un service particulier
+    \item[\ding{212}] \alert{appel système}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{\insertsubsection}
+\begin{minipage}[t]{\linewidth}
+  \center
+  \includegraphics[width=\linewidth]{fig/interruption}
+\end{minipage}
+\end{frame}
+
+\begin{frame}
+\frametitle{Exemples}
+Déroulement d'une interruption disque
+\begin{enumerate}
+  \item passer le processus actif à l'\alert{état prêt}
+  \item déterminer la cause de l'interruption (ex~: fin de lecture)
+  \item trouver le processus demandeur (bloqué)
+  \item lui transférer les données reçues
+  \item \alert{le mettre à l'état prêt}
+  \item \alert{activer un des processus prêts}
+\end{enumerate}
+\vspace{0.5cm}
+Interruption d'horloge
+\begin{itemize}
+\item quantum de temps épuisé \ding{212} ordonnancement avec réquisition
+(\emph{preemptive scheduling})
+\end{itemize}
+\begin{enumerate}
+  \item remettre le processus actif à l'\alert{état prêt}
+  \item \alert{activer un des processus prêts}
+\end{enumerate}
+\end{frame}
+
+\section{Ordonnancement}
+\begin{frame}
+\frametitle{\insertsection}
+L'ordonnanceur à la charge de désigner le processus à exécuter (ordonnancer). 
+\begin{itemize}
+\item il consulte la liste des processus \alert{prêts} et en choisit un pour
+  l'activation 
+\end{itemize}
+
+\begin{itemize}
+\item[\ding{212}] applique une \alert{politique d'ordonnancement}
+\end{itemize}
+\vspace{0.5cm}
+
+Comment définir/choisir une \alert{bonne politique} d'ordonnancement~?
+\end{frame}
+
+\begin{frame}
+  \frametitle{\insertsubsection}
+  Nombreux critères~:
+  \begin{itemize}
+  \item équité
+  \item efficacité
+  \item minimiser le temps de réponse
+  \item minimiser le temps d'exécution
+  \item maximiser le rendement, 
+  \item maximiser l'occupation du/des processeur(s),
+  \item  ...
+  \end{itemize}
+  \vspace{0.5cm}
+  
+  \begin{itemize}
+  \item[\ding{212}] \alert{objectifs} parfois \alert{contradictoires}
+  \item[\ding{212}] comportement des processus ne peut être prévu
+  \item[\ding{212}] importance des critères fonction du contexte
+  \end{itemize}
+  \vspace{0.5cm}
+  \ding{212} \alert{pas de politique optimale}, utilisation d'\alert{heuristiques}
+\end{frame}
+
+\subsection{Quelques stratégies}
+\begin{frame}
+  \frametitle{Ordonnancement circulaire}
+  
+  Autres dénominations~: tourniquet, round-robin, FIFO (\emph{Fisrt In First Out}), ...\\
+  \underline{Principe~:}
+  \begin{itemize}
+  \item liste circulaire des processus prêts
+  \item à la fin de son quantum de temps, un processus actif est placé
+    en fin de liste, le premier élément de la liste est ordonnancé.  
+  \end{itemize}
+  
+  \underline{Propriétés~:}
+    \begin{itemize}
+    \item \alert{équité} garantie
+    \item choix du quantum~: compromis 
+      \begin{itemize}
+      \item trop court, nombreux changement de contexte, perte de temps
+      \item trop long, dégradation du temps de réponse
+      \end{itemize}
+    \end{itemize}
+\end{frame}
+
+%\subsection{Priorités}
+\begin{frame}
+  \frametitle{Ordonnancement avec priorités}
+  
+  On affecte une priorité (numérique) à chaque processus.\\
+
+  \underline{Principe~:}
+  \begin{itemize}
+  \item choix du processus le plus prioritaire
+  \item dans la même classe de priorité~: FIFO
+  \end{itemize}
+  \vspace{0.5cm}
+
+  \underline{Propriétés}
+  \begin{itemize}
+  \item risque de famine pour les classes de priorité inférieure
+  \item[\ding{212}] remédier aux problèmes d'équité en faisant évoluer les priorités
+    avec le temps (exp~: baisse en fin de quantum).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Files multiples}
+    On définit des \alert{classes} de processus\\
+    \underline{Principe~:}
+    \begin{itemize}
+    \item à chaque classe correspond une liste (circulaire) de processus
+    \item chaque classe est sélectionnée régulièrement
+    \end{itemize}
+    \vspace{0.2cm}
+    \underline{Propriétés}
+    \begin{itemize}
+    \item respect des priorités
+    \item évite les famines
+    \end{itemize}
+
+\vspace{0.5cm}
+D'autres alogorithmes~: 
+\begin{itemize}
+\item Plus Court Temps d'Exécution
+\item  Plus Court Temps Restant
+\end{itemize}
+\end{frame}
+
+\end{document}
+
+
+
+% LocalWords:  blue ASR beamer currentsection currentsubsection TDs DS Michel
+% LocalWords:  multi-utilisateurs Billaud Ludovic Courtès Operating System PDP
+% LocalWords:  width monotâche batch kilo-mots DEC d'interactivité CTSS Time CP
+% LocalWords:  Sharing multitâche millisecondes Multics QDOS MS-DOS Windows USB
+% LocalWords:  monoprogrammation temps-partagé entrées-sorties CD etats d'E exp
+% LocalWords:  journalisation scheduler préemptif preemptive scheduling PCB
+% LocalWords:  Process Control Block round-robin FIFO Fisrt First Etudiez

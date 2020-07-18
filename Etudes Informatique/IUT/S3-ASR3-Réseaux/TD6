@@ -1,0 +1,96 @@
+TD6
+
+Question 1:
+Labri:
+
+	tlerchun@info-otox:~$ telnet www.labri.fr 80
+	Trying 147.210.8.59...
+	Connected to www3.labri.fr (147.210.8.59).
+	Escape character is '^]'.
+	HEAD / html/1.1
+	Host:www.labri.fr
+
+	HTTP/1.1 403 Forbidden
+	Date: Wed, 08 Jan 2014 13:38:28 GMT
+	Server: Apache
+	Vary: accept-language,accept-charset
+	Accept-Ranges: bytes
+	Connection: close
+	Content-Type: text/html; charset=utf-8
+	Content-Language: fr
+	Expires: Wed, 08 Jan 2014 13:38:28 GMT
+
+	Connection closed by foreign host.
+
+Inria:
+
+	tlerchun@info-otox:~$ telnet www.inria.fr 80
+	Trying 128.93.162.84...
+	Connected to ezp3.inria.fr (128.93.162.84).
+	Escape character is '^]'.
+	HEAD / html/1.1
+	Host: www.inria.fr
+
+	HTTP/1.1 200 OK
+	Date: Wed, 08 Jan 2014 13:58:47 GMT
+	Server: Apache
+	X-Powered-By: eZ Publish
+	Expires: Mon, 26 Jul 1997 05:00:00 GMT
+	Last-Modified: Wed, 08 Jan 2014 13:59:01 GMT
+	Cache-Control: no-cache, must-revalidate
+	Pragma: no-cache
+	Served-by: www.inria.fr
+	Content-language: fr-FR
+	Connection: close
+	Content-Type: text/html; charset=utf-8
+
+	Connection closed by foreign host.
+	tlerchun@info-otox:~$ 
+
+
+ESSI
+	tlerchun@info-otox:~$ telnet www.essi.fr 80
+	Trying 157.169.25.20...
+	Connected to www.essi.fr (157.169.25.20).
+	Escape character is '^]'.
+	HEAD / http/1.1
+	Host: www.essi.fr
+
+	HTTP/1.1 301 Moved Permanently
+	Date: Wed, 08 Jan 2014 13:57:35 GMT
+	Server: Apache/2.2.8 (Ubuntu) mod_jk/1.2.25 PHP/5.2.4-2ubuntu5.27 with Suhosin-Patch mod_ssl/2.2.8 OpenSSL/0.9.8g
+	X-Powered-By: PHP/5.2.4-2ubuntu5.27
+	Request-URI: http://www.polytechnice.fr/ecole.html
+	Content-Location: http://www.polytechnice.fr/ecole.html
+	Location: http://www.polytechnice.fr/ecole.html
+	Content-Type: text/html
+
+
+SUCCES:
+
+	tlerchun@info-otox:~$ telnet www.inria.fr 80
+	Trying 128.93.162.84...
+	Connected to ezp3.inria.fr (128.93.162.84).
+	Escape character is '^]'.
+	HEAD / html/1.1
+	Host: www.inria.fr
+
+	HTTP/1.1 200 OK
+
+
+ERREUR Client:
+
+	tlerchun@info-otox:~$ telnet www.labri.fr 80
+	Trying 147.210.8.59...
+	Connected to www3.labri.fr (147.210.8.59).
+	Escape character is '^]'.
+	HEAD / html/1.1
+	Host:www3.labri.fr
+
+	HTTP/1.1 403 Forbidden
+
+Inchangé:
+
+
+	Code n°304
+

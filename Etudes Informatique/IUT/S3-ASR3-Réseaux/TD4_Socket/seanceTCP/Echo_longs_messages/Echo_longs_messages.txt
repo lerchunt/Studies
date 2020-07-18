@@ -1,0 +1,68 @@
+
+COTE SERVEUR
+------------
+void travail_fils(int fd)
+{
+  char tampon[4096];
+  int rep, env;
+
+  /* reception de la chaine */
+  rep=read(fd, tampon, 4096);
+  printf("recu   : %d\n",rep);
+
+  /* envoi de la chaine recue */
+  env=write(fd, tampon, rep);
+  printf("envoye : %d\n\n",env);
+
+  close(fd);
+}
+
+
+COTE CLIENT
+-----------
+void travail(int fd) 
+{ 
+  char tampon[4096];
+  int rep, env, i;
+
+  /* envoi de la chaine */
+  for (i=0 ; i<4096 ; i++)
+    tampon[i]='1';
+  env=write(fd, tampon, 4096);
+  printf("envoye : %d\n",env);
+
+  memset(tampon, 0, 4096);
+
+  /* reception de la chaine */
+  rep=read(fd, tampon, 4096);
+  printf("recu   : %d\n",rep);
+}
+
+
+
+
+
+tuba~> serveur 3000  
+Le serveur ecoute le port 3000
+recu   : 2896
+envoye : 2896
+
+recu   : 2896
+envoye : 2896
+
+recu   : 4096
+envoye : 4096
+
+
+
+
+
+helicon~> client tuba 3000
+envoye : 4096
+recu   : 2896
+helicon~> client tuba 3000
+envoye : 4096
+recu   : 1448
+helicon~> client tuba 3000
+envoye : 4096
+recu   : 4096

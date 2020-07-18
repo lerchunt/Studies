@@ -1,0 +1,1033 @@
+        -:    0:Source:dry.c
+        -:    0:Graph:dry.gcno
+        -:    0:Data:dry.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#ifdef NOTDEFINED /* To compile and run this file, say "sh dry.c" */
+        -:    2:	case $0 in
+        -:    3:	*.c) ;;
+        -:    4:	sh) echo 'Use "sh dry.c", not "sh < dry.c"' >&2; exit 1;;
+        -:    5:	*) echo 'Filename must end in ".c"' >&2; exit 1;;
+        -:    6:	esac
+        -:    7:	
+        -:    8:	echo "${CC=cc} -c ${CFLAGS=-fprofile-arcs -ftest-coverage} $0 -o dry1.o"
+        -:    9:	      ${CC}    -c ${CFLAGS} $0 -o dry1.o || exit 1
+        -:   10:	echo "${CC} -DPASS2 ${CFLAGS} $0 dry1.o ${LFLAGS} -o dry2"
+        -:   11:	      ${CC} -DPASS2 ${CFLAGS} $0 dry1.o ${LFLAGS} -o dry2 || exit 1
+        -:   12:	./dry2 ${1-50000} 2>/dev/null
+        -:   13:	gcov dry.c
+        -:   14:	mv dry.c.gcov Resultatgcov1.txt
+        -:   15:	echo "${CC=cc} -c -DREG ${CFLAGS=-fprofile-arcs -ftest-coverage} $0 -o dry1.o"
+        -:   16:	      ${CC}    -c -DREG ${CFLAGS} $0 -o dry1.o || exit 1
+        -:   17:	echo "${CC} -DPASS2 -DREG ${CFLAGS} $0 dry1.o ${LFLAGS} -o dry2nr"
+        -:   18:	      ${CC} -DPASS2 -DREG ${CFLAGS} $0 dry1.o ${LFLAGS} -o dry2nr || exit 1
+        -:   19:	./dry2nr ${1-50000} 2>/dev/null
+        -:   20:	gcov dry.c
+        -:   21:	mv dry.c.gcov Resultatgcov2.txt
+        -:   22:	echo "${CC=cc} -c -O ${CFLAGS=-fprofile-arcs -ftest-coverage} $0 -o dry1.o"
+        -:   23:	      ${CC}    -c -O ${CFLAGS} $0 -o dry1.o || exit 1
+        -:   24:	echo "${CC} -DPASS2 -O ${CFLAGS} $0 dry1.o ${LFLAGS} -o dry2o"
+        -:   25:	      ${CC} -DPASS2 -O ${CFLAGS} $0 dry1.o ${LFLAGS} -o dry2o || exit 1
+        -:   26:	./dry2o ${1-50000} 2>/dev/null 
+        -:   27:	gcov dry.c
+        -:   28:	mv dry.c.gcov Resultatgcov3.txt
+        -:   29:	rm -f dry1.o
+        -:   30:
+        -:   31:        exit 0
+        -:   32:#endif
+        -:   33:
+        -:   34:/****************** "DHRYSTONE" Benchmark Program ***************************/
+        -:   35:#define Version "C, Version 2.2"
+        -:   36:/*  File:       dhry_1.c (part 2 of 3)
+        -:   37: *  Author:     Reinhold P. Weicker
+        -:   38: *              Siemens Nixdorf, Paderborn/Germany
+        -:   39: *              weicker@specbench.org
+        -:   40: *  Date:       May 25, 1988
+        -:   41: *  Modified:	Steven Pemberton, CWI, Amsterdam; Steven.Pemberton@cwi.nl
+        -:   42: *  Date:       October, 1993; March 1995
+        -:   43: *              Included both files into one source, that gets compiled
+        -:   44: *              in two passes. Made program auto-compiling, and auto-running,
+        -:   45: *              and generally made it much easier to use.
+        -:   46: *
+        -:   47: *              Original Version (in Ada) published in
+        -:   48: *              "Communications of the ACM" vol. 27., no. 10 (Oct. 1984),
+        -:   49: *              pp. 1013 - 1030, together with the statistics
+        -:   50: *              on which the distribution of statements etc. is based.
+        -:   51: *
+        -:   52: *              In this C version, the following C library functions are used:
+        -:   53: *              - strcpy, strcmp (inside the measurement loop)
+        -:   54: *              - printf, scanf (outside the measurement loop)
+        -:   55: *              In addition, Berkeley UNIX system calls "times ()" or "time ()"
+        -:   56: *              are used for execution time measurement. For measurements
+        -:   57: *              on other systems, these calls have to be changed.
+        -:   58: *
+        -:   59: *  Collection of Results:
+        -:   60: *              Reinhold Weicker (address see above) and
+        -:   61: *              
+        -:   62: *              Rick Richardson
+        -:   63: *              PC Research. Inc.
+        -:   64: *              94 Apple Orchard Drive
+        -:   65: *              Tinton Falls, NJ 07724
+        -:   66: *                      Phone:  (201) 389-8963 (9-17 EST)               
+        -:   67: *                      Usenet: ...!uunet!pcrat!rick
+        -:   68: *
+        -:   69: *      Please send results to Rick Richardson and/or Reinhold Weicker.
+        -:   70: *      Complete information should be given on hardware and software used.
+        -:   71: *      Hardware information includes: Machine type, CPU, type and size
+        -:   72: *      of caches; for microprocessors: clock frequency, memory speed
+        -:   73: *      (number of wait states).
+        -:   74: *      Software information includes: Compiler (and runtime library)
+        -:   75: *      manufacturer and version, compilation switches, OS version.
+        -:   76: *      The Operating System version may give an indication about the compiler;
+        -:   77: *      Dhrystone itself performs no OS calls in the measurement loop.
+        -:   78: *
+        -:   79: *      The complete output generated by the program should be mailed
+        -:   80: *      such that at least some checks for correctness can be made.
+        -:   81: *
+        -:   82: ***************************************************************************
+        -:   83: *
+        -:   84: * Defines:     The following "Defines" are possible:
+        -:   85: *      -DREG          (default: Not defined)
+        -:   86: *              As an approximation to what an average C programmer
+        -:   87: *              might do, causes the "register" storage class to be applied
+        -:   88: *              - for local variables, if they are used (dynamically)
+        -:   89: *                five or more times
+        -:   90: *              - for parameters if they are used (dynamically)
+        -:   91: *                six or more times
+        -:   92: *              Note that an optimal "register" strategy is
+        -:   93: *              compiler-dependent, and that "register" declarations
+        -:   94: *              do not necessarily lead to faster execution.
+        -:   95: *      -DNOSTRUCTASSIGN        (default: Not defined)
+        -:   96: *              Define if the C compiler does not support
+        -:   97: *              assignment of structures.
+        -:   98: *      -DNOENUMS               (default: Not defined)
+        -:   99: *              Define if the C compiler does not support
+        -:  100: *              enumeration types.
+        -:  101: *      -DTIMES                 (default)
+        -:  102: *      -DTIME
+        -:  103: *              The "times" function of UNIX (returning process times)
+        -:  104: *              or the "time" function (returning wallclock time)
+        -:  105: *              is used for measurement. 
+        -:  106: *              For single user machines, "time ()" is adequate. For
+        -:  107: *              multi-user machines where you cannot get single-user
+        -:  108: *              access, use the "times ()" function. If you have
+        -:  109: *              neither, use a stopwatch in the dead of night.
+        -:  110: *              "printf"s are provided marking the points "Start Timer"
+        -:  111: *              and "Stop Timer". DO NOT use the UNIX "time(1)"
+        -:  112: *              command, as this will measure the total time to
+        -:  113: *              run this program, which will (erroneously) include
+        -:  114: *              the time to allocate storage (malloc) and to perform
+        -:  115: *              the initialization.
+        -:  116: *      -DHZ=nnn
+        -:  117: *              In Berkeley UNIX, the function "times" returns process
+        -:  118: *              time in 1/HZ seconds, with HZ = 60 for most systems.
+        -:  119: *              CHECK YOUR SYSTEM DESCRIPTION BEFORE YOU JUST APPLY
+        -:  120: *              A VALUE.
+        -:  121: *
+        -:  122: ***************************************************************************
+        -:  123: *
+        -:  124: *  History:	Version C/2.1 was made for two reasons:
+        -:  125: *
+        -:  126: *	1) There was an obvious need for a common C version of
+        -:  127: *      Dhrystone, since C is at present the most popular system
+        -:  128: *      programming language for the class of processors
+        -:  129: *      (microcomputers, minicomputers) where Dhrystone is used most.
+        -:  130: *      There should be, as far as possible, only one C version of
+        -:  131: *      Dhrystone such that results can be compared without
+        -:  132: *      restrictions. In the past, the C versions distributed
+        -:  133: *      by Rick Richardson (Version 1.1) and by Reinhold Weicker
+        -:  134: *      had small (though not significant) differences.
+        -:  135: *
+        -:  136: *      2) As far as it is possible without changes to the Dhrystone
+        -:  137: *      statistics, optimizing compilers should be prevented from
+        -:  138: *      removing significant statements.
+        -:  139: *
+        -:  140: *      This C version has been developed in cooperation with
+        -:  141: *      Rick Richardson (Tinton Falls, NJ), it incorporates many
+        -:  142: *      ideas from the "Version 1.1" distributed previously by
+        -:  143: *      him over the UNIX network Usenet.
+        -:  144: *      I also thank Chaim Benedelac (National Semiconductor),
+        -:  145: *      David Ditzel (SUN), Earl Killian and John Mashey (MIPS),
+        -:  146: *      Alan Smith and Rafael Saavedra-Barrera (UC at Berkeley)
+        -:  147: *      for their help with comments on earlier versions of the
+        -:  148: *      benchmark.
+        -:  149: *
+        -:  150: *  Changes:    In the initialization part, this version follows mostly
+        -:  151: *      Rick Richardson's version distributed via Usenet, not the
+        -:  152: *      version distributed earlier via floppy disk by Reinhold Weicker.
+        -:  153: *      As a concession to older compilers, names have been made
+        -:  154: *      unique within the first 8 characters.
+        -:  155: *      Inside the measurement loop, this version follows the
+        -:  156: *      version previously distributed by Reinhold Weicker.
+        -:  157: *
+        -:  158: *      At several places in the benchmark, code has been added,
+        -:  159: *      but within the measurement loop only in branches that 
+        -:  160: *      are not executed. The intention is that optimizing compilers
+        -:  161: *      should be prevented from moving code out of the measurement
+        -:  162: *      loop, or from removing code altogether. Since the statements
+        -:  163: *      that are executed within the measurement loop have NOT been
+        -:  164: *      changed, the numbers defining the "Dhrystone distribution"
+        -:  165: *      (distribution of statements, operand types and locality)
+        -:  166: *      still hold. Except for sophisticated optimizing compilers,
+        -:  167: *      execution times for this version should be the same as
+        -:  168: *      for previous versions.
+        -:  169: *
+        -:  170: *      Since it has proven difficult to subtract the time for the
+        -:  171: *      measurement loop overhead in a correct way, the loop check
+        -:  172: *      has been made a part of the benchmark. This does have
+        -:  173: *      an impact - though a very minor one - on the distribution
+        -:  174: *      statistics which have been updated for this version.
+        -:  175: *
+        -:  176: *      All changes within the measurement loop are described
+        -:  177: *      and discussed in the companion paper "Rationale for
+        -:  178: *      Dhrystone version 2".
+        -:  179: *
+        -:  180: *      Because of the self-imposed limitation that the order and
+        -:  181: *      distribution of the executed statements should not be
+        -:  182: *      changed, there are still cases where optimizing compilers
+        -:  183: *      may not generate code for some statements. To a certain
+        -:  184: *      degree, this is unavoidable for small synthetic benchmarks.
+        -:  185: *      Users of the benchmark are advised to check code listings
+        -:  186: *      whether code is generated for all statements of Dhrystone.
+        -:  187: *
+        -:  188: *      Version 2.1 is identical to version 2.0 distributed via
+        -:  189: *      the UNIX network Usenet in March 1988 except that it corrects
+        -:  190: *      some minor deficiencies that were found by users of version 2.0.
+        -:  191: *      The only change within the measurement loop is that a
+        -:  192: *      non-executed "else" part was added to the "if" statement in
+        -:  193: *      Func_3, and a non-executed "else" part removed from Proc_3.
+        -:  194: *
+        -:  195: * Version C/2.2, Steven Pemberton, October 1993
+        -:  196: *	Functionally, identical to version 2.2; the changes are in
+        -:  197: *	how you compile and use it:
+        -:  198: *	- Everything is in one file now, but compiled in 2 passes
+        -:  199: *	- Compile (and run) by running the file through the shell: 'sh dhry.c"
+        -:  200: *	- Uses the system definition of HZ if one can be found
+        -:  201: *	- HZ must be defined, otherwise it won't compile (no defaults here)
+        -:  202: *	- The (uninteresting) output is printed to stderr (dhry2 > /dev/null)
+        -:  203: *	- The number of loops is passed as a parameter, rather than read
+        -:  204: *	  (dhry2 500000)
+        -:  205: *	- If the number of loops is insufficient to get a good result,
+        -:  206: *	  it repeats it with loops*10 until it is enough (rather than just
+        -:  207: *	  stopping)
+        -:  208: *	- Output says which sort of clock it is using, and the HZ value
+        -:  209: *	- You can use -DREG instead of the -DREG=register of previous versions
+        -:  210: *	- Some stylistic cleanups.
+        -:  211: *		
+        -:  212: ***************************************************************************
+        -:  213: *
+        -:  214: *  Compilation model and measurement (IMPORTANT):
+        -:  215: *
+        -:  216: *  The following "ground rules" apply for measurements:
+        -:  217: *  - Separate compilation
+        -:  218: *  - No procedure merging
+        -:  219: *  - Otherwise, compiler optimizations are allowed but should be indicated
+        -:  220: *  - Default results are those without register declarations
+        -:  221: *  See the companion paper "Rationale for Dhrystone Version 2" for a more
+        -:  222: *  detailed discussion of these ground rules.
+        -:  223: *
+        -:  224: *  For 16-Bit processors (e.g. 80186, 80286), times for all compilation
+        -:  225: *  models ("small", "medium", "large" etc.) should be given if possible,
+        -:  226: *  together with a definition of these models for the compiler system used.
+        -:  227: *
+        -:  228: **************************************************************************
+        -:  229: *
+        -:  230: *  Dhrystone (C version) statistics:
+        -:  231: *
+        -:  232: *  [Comment from the first distribution, updated for version 2.
+        -:  233: *   Note that because of language differences, the numbers are slightly
+        -:  234: *   different from the Ada version.]
+        -:  235: *
+        -:  236: *  The following program contains statements of a high level programming
+        -:  237: *  language (here: C) in a distribution considered representative:           
+        -:  238: *
+        -:  239: *    assignments                  52 (51.0 %)
+        -:  240: *    control statements           33 (32.4 %)
+        -:  241: *    procedure, function calls    17 (16.7 %)
+        -:  242: *
+        -:  243: *  103 statements are dynamically executed. The program is balanced with
+        -:  244: *  respect to the three aspects:                                             
+        -:  245: *
+        -:  246: *    - statement type
+        -:  247: *    - operand type
+        -:  248: *    - operand locality
+        -:  249: *         operand global, local, parameter, or constant.                     
+        -:  250: *
+        -:  251: *  The combination of these three aspects is balanced only approximately.    
+        -:  252: *
+        -:  253: *  1. Statement Type:                                                        
+        -:  254: *  -----------------             number
+        -:  255: *
+        -:  256: *     V1 = V2                     9
+        -:  257: *       (incl. V1 = F(..)
+        -:  258: *     V = Constant               12
+        -:  259: *     Assignment,                 7
+        -:  260: *       with array element
+        -:  261: *     Assignment,                 6
+        -:  262: *       with record component
+        -:  263: *                                --
+        -:  264: *                                34       34
+        -:  265: *
+        -:  266: *     X = Y +|-|"&&"|"|" Z        5
+        -:  267: *     X = Y +|-|"==" Constant     6
+        -:  268: *     X = X +|- 1                 3
+        -:  269: *     X = Y *|/ Z                 2
+        -:  270: *     X = Expression,             1
+        -:  271: *           two operators
+        -:  272: *     X = Expression,             1
+        -:  273: *           three operators
+        -:  274: *                                --
+        -:  275: *                                18       18
+        -:  276: *
+        -:  277: *     if ....                    14
+        -:  278: *       with "else"      7
+        -:  279: *       without "else"   7
+        -:  280: *           executed        3
+        -:  281: *           not executed    4
+        -:  282: *     for ...                     7  |  counted every time
+        -:  283: *     while ...                   4  |  the loop condition
+        -:  284: *     do ... while                1  |  is evaluated
+        -:  285: *     switch ...                  1
+        -:  286: *     break                       1
+        -:  287: *     declaration with            1
+        -:  288: *       initialization
+        -:  289: *                                --
+        -:  290: *                                34       34
+        -:  291: *
+        -:  292: *     P (...)  procedure call    11
+        -:  293: *       user procedure      10
+        -:  294: *       library procedure    1
+        -:  295: *     X = F (...)
+        -:  296: *             function  call      6
+        -:  297: *       user function        5                                         
+        -:  298: *       library function     1                                               
+        -:  299: *                                --                                          
+        -:  300: *                                17       17
+        -:  301: *                                        ---
+        -:  302: *                                        103
+        -:  303: *
+        -:  304: *    The average number of parameters in procedure or function calls
+        -:  305: *    is 1.82 (not counting the function values aX *
+        -:  306: *
+        -:  307: *  2. Operators
+        -:  308: *  ------------
+        -:  309: *                          number    approximate
+        -:  310: *                                    percentage
+        -:  311: *
+        -:  312: *    Arithmetic             32          50.8                                 
+        -:  313: *
+        -:  314: *       +                     21          33.3                              
+        -:  315: *       -                      7          11.1                              
+        -:  316: *       *                      3           4.8
+        -:  317: *       / (int div)            1           1.6
+        -:  318: *
+        -:  319: *    Comparison             27           42.8
+        -:  320: *
+        -:  321: *       ==                     9           14.3
+        -:  322: *       /=                     4            6.3
+        -:  323: *       >                      1            1.6
+        -:  324: *       <                      3            4.8
+        -:  325: *       >=                     1            1.6
+        -:  326: *       <=                     9           14.3
+        -:  327: *
+        -:  328: *    Logic                   4            6.3
+        -:  329: *
+        -:  330: *       && (AND-THEN)          1            1.6
+        -:  331: *       |  (OR)                1            1.6
+        -:  332: *       !  (NOT)               2            3.2
+        -:  333: * 
+        -:  334: *                           --          -----
+        -:  335: *                           63          100.1
+        -:  336: *
+        -:  337: *
+        -:  338: *  3. Operand Type (counted once per operand reference):
+        -:  339: *  ---------------
+        -:  340: *                          number    approximate
+        -:  341: *                                    percentage
+        -:  342: *
+        -:  343: *     Integer               175        72.3 %
+        -:  344: *     Character              45        18.6 %
+        -:  345: *     Pointer                12         5.0 %
+        -:  346: *     String30                6         2.5 %
+        -:  347: *     Array                   2         0.8 %
+        -:  348: *     Record                  2         0.8 %
+        -:  349: *                           ---       -------
+        -:  350: *                           242       100.0 %
+        -:  351: *
+        -:  352: *  When there is an access path leading to the final operand (e.g. a record
+        -:  353: *  component), only the final data type on the access path is counted.       
+        -:  354: *
+        -:  355: *
+        -:  356: *  4. Operand Locality:                                                      
+        -:  357: *  -------------------
+        -:  358: *                                number    approximate
+        -:  359: *                                          percentage
+        -:  360: *
+        -:  361: *     local variable              114        47.1 %
+        -:  362: *     global variable              22         9.1 %
+        -:  363: *     parameter                    45        18.6 %
+        -:  364: *        value                        23         9.5 %
+        -:  365: *        reference                    22         9.1 %
+        -:  366: *     function result               6         2.5 %
+        -:  367: *     constant                     55        22.7 %
+        -:  368: *                                 ---       -------
+        -:  369: *                                 242       100.0 %
+        -:  370: *
+        -:  371: *  The program does not compute anything meaningful, but it is syntactically
+        -:  372: *  and semantically correct. All variables have a value assigned to them
+        -:  373: *  before they are used as a source operand.
+        -:  374: *
+        -:  375: *  There has been no explicit effort to account for the effects of a
+        -:  376: *  cache, or to balance the use of long or short displacements for code or
+        -:  377: *  data.
+        -:  378: *
+        -:  379: ***************************************************************************
+        -:  380: */
+        -:  381:
+        -:  382:#include <stdlib.h> 
+        -:  383:#include <string.h> 
+        -:  384:
+        -:  385:/* Compiler and system dependent definitions: */
+        -:  386:
+        -:  387:/* variables for time measurement: */
+        -:  388:
+        -:  389:#ifdef TIME
+        -:  390:
+        -:  391:#define CLOCK_TYPE "time()"
+        -:  392:#undef HZ
+        -:  393:#define HZ	(1) /* time() returns time in seconds */
+        -:  394:extern long     time(); /* see library function "time"  */
+        -:  395:#define Too_Small_Time 2 /* Measurements should last at least 2 seconds */
+        -:  396:#define Start_Timer() Begin_Time = time ( (long *) 0)
+        -:  397:#define Stop_Timer()  End_Time   = time ( (long *) 0)
+        -:  398:
+        -:  399:#else
+        -:  400:
+        -:  401:#ifdef MSC_CLOCK /* Use Microsoft C hi-res clock */
+        -:  402:
+        -:  403:#undef HZ
+        -:  404:#undef TIMES
+        -:  405:#include <time.h>
+        -:  406:#define HZ	CLK_TCK
+        -:  407:#define CLOCK_TYPE "MSC clock()"
+        -:  408:extern clock_t	clock();
+        -:  409:#define Too_Small_Time (2*HZ)
+        -:  410:#define Start_Timer() Begin_Time = clock()
+        -:  411:#define Stop_Timer()  End_Time   = clock()
+        -:  412:
+        -:  413:#else
+        -:  414:                /* Use times(2) time function unless    */
+        -:  415:                /* explicitly defined otherwise         */
+        -:  416:#define CLOCK_TYPE "times()"
+        -:  417:#include <sys/types.h>
+        -:  418:#include <sys/times.h>
+        -:  419:#ifndef HZ	/* Added by SP 900619 */
+        -:  420:#include <sys/param.h> /* If your system doesn't have this, use -DHZ=xxx */
+        -:  421:#else
+        -:  422:	*** You must define HZ!!! ***
+        -:  423:#endif /* HZ */
+        -:  424:#ifndef PASS2
+        -:  425:struct tms      time_info;
+        -:  426:#endif
+        -:  427:/*extern  int     times ();*/
+        -:  428:                /* see library function "times" */
+        -:  429:#define Too_Small_Time (2*HZ)
+        -:  430:                /* Measurements should last at least about 2 seconds */
+        -:  431:#define Start_Timer() times(&time_info); Begin_Time=(long)time_info.tms_utime
+        -:  432:#define Stop_Timer()  times(&time_info); End_Time = (long)time_info.tms_utime
+        -:  433:
+        -:  434:#endif /* MSC_CLOCK */
+        -:  435:#endif /* TIME */
+        -:  436:
+        -:  437:
+        -:  438:#define Mic_secs_Per_Second     1000000.0
+        -:  439:#define NUMBER_OF_RUNS		50000 /* Default number of runs */
+        -:  440:
+        -:  441:#ifdef  NOSTRUCTASSIGN
+        -:  442:#define structassign(d, s)      memcpy(&(d), &(s), sizeof(d))
+        -:  443:#else
+        -:  444:#define structassign(d, s)      d = s
+        -:  445:#endif
+        -:  446:
+        -:  447:#ifdef  NOENUM
+        -:  448:#define Ident_1 0
+        -:  449:#define Ident_2 1
+        -:  450:#define Ident_3 2
+        -:  451:#define Ident_4 3
+        -:  452:#define Ident_5 4
+        -:  453:  typedef int   Enumeration;
+        -:  454:#else
+        -:  455:  typedef       enum    {Ident_1, Ident_2, Ident_3, Ident_4, Ident_5}
+        -:  456:                Enumeration;
+        -:  457:#endif
+        -:  458:        /* for boolean and enumeration types in Ada, Pascal */
+        -:  459:
+        -:  460:/* General definitions: */
+        -:  461:
+        -:  462:#include <stdio.h>
+        -:  463:                /* for strcpy, strcmp */
+        -:  464:
+        -:  465:#define Null 0 
+        -:  466:                /* Value of a Null pointer */
+        -:  467:#define true  1
+        -:  468:#define false 0
+        -:  469:
+        -:  470:typedef int     One_Thirty;
+        -:  471:typedef int     One_Fifty;
+        -:  472:typedef char    Capital_Letter;
+        -:  473:typedef int     Boolean;
+        -:  474:typedef char    Str_30 [31];
+        -:  475:typedef int     Arr_1_Dim [50];
+        -:  476:typedef int     Arr_2_Dim [50] [50];
+        -:  477:
+        -:  478:typedef struct record 
+        -:  479:    {
+        -:  480:    struct record *Ptr_Comp;
+        -:  481:    Enumeration    Discr;
+        -:  482:    union {
+        -:  483:          struct {
+        -:  484:                  Enumeration Enum_Comp;
+        -:  485:                  int         Int_Comp;
+        -:  486:                  char        Str_Comp [31];
+        -:  487:                  } var_1;
+        -:  488:          struct {
+        -:  489:                  Enumeration E_Comp_2;
+        -:  490:                  char        Str_2_Comp [31];
+        -:  491:                  } var_2;
+        -:  492:          struct {
+        -:  493:                  char        Ch_1_Comp;
+        -:  494:                  char        Ch_2_Comp;
+        -:  495:                  } var_3;
+        -:  496:          } variant;
+        -:  497:      } Rec_Type, *Rec_Pointer;
+        -:  498:
+        -:  499:#ifndef PASS2
+        -:  500:
+        -:  501:/* Global Variables: */
+        -:  502:
+        -:  503:Rec_Pointer     Ptr_Glob,
+        -:  504:                Next_Ptr_Glob;
+        -:  505:int             Int_Glob;
+        -:  506:Boolean         Bool_Glob;
+        -:  507:char            Ch_1_Glob,
+        -:  508:                Ch_2_Glob;
+        -:  509:int             Arr_1_Glob [50];
+        -:  510:int             Arr_2_Glob [50] [50];
+        -:  511:
+        -:  512://extern char     *malloc ();
+        -:  513:Enumeration     Func_1 ();
+        -:  514:  /* forward declaration necessary since Enumeration may not simply be int */
+        -:  515:
+        -:  516:#ifndef REG
+        -:  517:        Boolean Reg = false;
+        -:  518:#define REG
+        -:  519:        /* REG becomes defined as empty */
+        -:  520:        /* i.e. no register variables   */
+        -:  521:#else
+        -:  522:        Boolean Reg = true;
+        -:  523:#undef REG
+        -:  524:#define REG register
+        -:  525:#endif
+        -:  526:
+        -:  527:Boolean		Done;
+        -:  528:
+        -:  529:long            Begin_Time,
+        -:  530:                End_Time,
+        -:  531:                User_Time;
+        -:  532:float           Microseconds,
+        -:  533:                Dhrystones_Per_Second;
+        -:  534:
+        -:  535:/* end of variables for time measurement */
+        -:  536:
+        -:  537:
+        -:  538:main (argc, argv) int argc; char *argv[];
+        -:  539:/*****/
+        -:  540:
+        -:  541:  /* main program, corresponds to procedures        */
+        -:  542:  /* Main and Proc_0 in the Ada version             */
+        -:  543:{
+        -:  544:        One_Fifty       Int_1_Loc;
+        -:  545:  REG   One_Fifty       Int_2_Loc;
+        -:  546:        One_Fifty       Int_3_Loc;
+        -:  547:  REG   char            Ch_Index;
+        -:  548:        Enumeration     Enum_Loc;
+        -:  549:        Str_30          Str_1_Loc;
+        -:  550:        Str_30          Str_2_Loc;
+        -:  551:  REG   int             Run_Index;
+        -:  552:  REG   int             Number_Of_Runs;
+        -:  553:
+        -:  554:  /* Arguments */
+        -:  555:  if (argc > 2)
+        -:  556:  {
+        -:  557:     printf ("Usage: %s [number of loops]\n", argv[0]);
+        -:  558:     exit (1);
+        -:  559:  }
+        -:  560:  if (argc == 2)
+        -:  561:  {
+        -:  562:     Number_Of_Runs = atoi (argv[1]);
+        -:  563:  } else
+        -:  564:  {
+        -:  565:     Number_Of_Runs = NUMBER_OF_RUNS;
+        -:  566:  }
+        -:  567:  if (Number_Of_Runs <= 0)
+        -:  568:  {
+        -:  569:     Number_Of_Runs = NUMBER_OF_RUNS;
+        -:  570:  }
+        -:  571:
+        -:  572:  /* Initializations */
+        -:  573:
+        -:  574:  Next_Ptr_Glob = (Rec_Pointer) malloc (sizeof (Rec_Type));
+        -:  575:  Ptr_Glob = (Rec_Pointer) malloc (sizeof (Rec_Type));
+        -:  576:
+        -:  577:  Ptr_Glob->Ptr_Comp                    = Next_Ptr_Glob;
+        -:  578:  Ptr_Glob->Discr                       = Ident_1;
+        -:  579:  Ptr_Glob->variant.var_1.Enum_Comp     = Ident_3;
+        -:  580:  Ptr_Glob->variant.var_1.Int_Comp      = 40;
+        -:  581:  strcpy (Ptr_Glob->variant.var_1.Str_Comp, 
+        -:  582:          "DHRYSTONE PROGRAM, SOME STRING");
+        -:  583:  strcpy (Str_1_Loc, "DHRYSTONE PROGRAM, 1'ST STRING");
+        -:  584:
+        -:  585:  Arr_2_Glob [8][7] = 10;
+        -:  586:        /* Was missing in published program. Without this statement,    */
+        -:  587:        /* Arr_2_Glob [8][7] would have an undefined value.             */
+        -:  588:        /* Warning: With 16-Bit processors and Number_Of_Runs > 32000,  */
+        -:  589:        /* overflow may occur for this array element.                   */
+        -:  590:
+        -:  591:  printf ("\n");
+        -:  592:  printf ("Dhrystone Benchmark, Version %s\n", Version);
+        -:  593:  if (Reg)
+        -:  594:  {
+        -:  595:    printf ("Program compiled with 'register' attribute\n");
+        -:  596:  }
+        -:  597:  else
+        -:  598:  {
+        -:  599:    printf ("Program compiled without 'register' attribute\n");
+        -:  600:  }
+        -:  601:  printf ("Using %s, HZ=%d\n", CLOCK_TYPE, HZ);
+        -:  602:  printf ("\n");
+        -:  603:
+        -:  604:  Done = false;
+        -:  605:  while (!Done) {
+        -:  606:
+        -:  607:    printf ("Trying %d runs through Dhrystone:\n", Number_Of_Runs);
+        -:  608:
+        -:  609:    /***************/
+        -:  610:    /* Start timer */
+        -:  611:    /***************/
+        -:  612:
+        -:  613:    Start_Timer();
+        -:  614:
+        -:  615:    for (Run_Index = 1; Run_Index <= Number_Of_Runs; ++Run_Index)
+        -:  616:    {
+        -:  617:
+        -:  618:      Proc_5();
+        -:  619:      Proc_4();
+        -:  620:	/* Ch_1_Glob == 'A', Ch_2_Glob == 'B', Bool_Glob == true */
+        -:  621:      Int_1_Loc = 2;
+        -:  622:      Int_2_Loc = 3;
+        -:  623:      strcpy (Str_2_Loc, "DHRYSTONE PROGRAM, 2'ND STRING");
+        -:  624:      Enum_Loc = Ident_2;
+        -:  625:      Bool_Glob = ! Func_2 (Str_1_Loc, Str_2_Loc);
+        -:  626:	/* Bool_Glob == 1 */
+        -:  627:      while (Int_1_Loc < Int_2_Loc)  /* loop body executed once */
+        -:  628:      {
+        -:  629:	Int_3_Loc = 5 * Int_1_Loc - Int_2_Loc;
+        -:  630:	  /* Int_3_Loc == 7 */
+        -:  631:	Proc_7 (Int_1_Loc, Int_2_Loc, &Int_3_Loc);
+        -:  632:	  /* Int_3_Loc == 7 */
+        -:  633:	Int_1_Loc += 1;
+        -:  634:      } /* while */
+        -:  635:	/* Int_1_Loc == 3, Int_2_Loc == 3, Int_3_Loc == 7 */
+        -:  636:      Proc_8 (Arr_1_Glob, Arr_2_Glob, Int_1_Loc, Int_3_Loc);
+        -:  637:	/* Int_Glob == 5 */
+        -:  638:      Proc_1 (Ptr_Glob);
+        -:  639:      for (Ch_Index = 'A'; Ch_Index <= Ch_2_Glob; ++Ch_Index)
+        -:  640:			       /* loop body executed twice */
+        -:  641:      {
+        -:  642:	if (Enum_Loc == Func_1 (Ch_Index, 'C'))
+        -:  643:	    /* then, not executed */
+        -:  644:	  {
+        -:  645:	  Proc_6 (Ident_1, &Enum_Loc);
+        -:  646:	  strcpy (Str_2_Loc, "DHRYSTONE PROGRAM, 3'RD STRING");
+        -:  647:	  Int_2_Loc = Run_Index;
+        -:  648:	  Int_Glob = Run_Index;
+        -:  649:	  }
+        -:  650:      }
+        -:  651:	/* Int_1_Loc == 3, Int_2_Loc == 3, Int_3_Loc == 7 */
+        -:  652:      Int_2_Loc = Int_2_Loc * Int_1_Loc;
+        -:  653:      Int_1_Loc = Int_2_Loc / Int_3_Loc;
+        -:  654:      Int_2_Loc = 7 * (Int_2_Loc - Int_3_Loc) - Int_1_Loc;
+        -:  655:	/* Int_1_Loc == 1, Int_2_Loc == 13, Int_3_Loc == 7 */
+        -:  656:      Proc_2 (&Int_1_Loc);
+        -:  657:	/* Int_1_Loc == 5 */
+        -:  658:
+        -:  659:    } /* loop "for Run_Index" */
+        -:  660:
+        -:  661:    /**************/
+        -:  662:    /* Stop timer */
+        -:  663:    /**************/
+        -:  664:
+        -:  665:    Stop_Timer();
+        -:  666:
+        -:  667:    User_Time = End_Time - Begin_Time;
+        -:  668:
+        -:  669:    if (User_Time < Too_Small_Time)
+        -:  670:    {
+        -:  671:      printf ("Measured time too small to obtain meaningful results\n");
+        -:  672:      Number_Of_Runs = Number_Of_Runs * 10;
+        -:  673:      printf ("\n");
+        -:  674:    } else Done = true;
+        -:  675:  }
+        -:  676:
+        -:  677:  fprintf (stderr, "Final values of the variables used in the benchmark:\n");
+        -:  678:  fprintf (stderr, "\n");
+        -:  679:  fprintf (stderr, "Int_Glob:            %d\n", Int_Glob);
+        -:  680:  fprintf (stderr, "        should be:   %d\n", 5);
+        -:  681:  fprintf (stderr, "Bool_Glob:           %d\n", Bool_Glob);
+        -:  682:  fprintf (stderr, "        should be:   %d\n", 1);
+        -:  683:  fprintf (stderr, "Ch_1_Glob:           %c\n", Ch_1_Glob);
+        -:  684:  fprintf (stderr, "        should be:   %c\n", 'A');
+        -:  685:  fprintf (stderr, "Ch_2_Glob:           %c\n", Ch_2_Glob);
+        -:  686:  fprintf (stderr, "        should be:   %c\n", 'B');
+        -:  687:  fprintf (stderr, "Arr_1_Glob[8]:       %d\n", Arr_1_Glob[8]);
+        -:  688:  fprintf (stderr, "        should be:   %d\n", 7);
+        -:  689:  fprintf (stderr, "Arr_2_Glob[8][7]:    %d\n", Arr_2_Glob[8][7]);
+        -:  690:  fprintf (stderr, "        should be:   Number_Of_Runs + 10\n");
+        -:  691:  fprintf (stderr, "Ptr_Glob->\n");
+        -:  692:  fprintf (stderr, "  Ptr_Comp:          %d\n", (int) Ptr_Glob->Ptr_Comp);
+        -:  693:  fprintf (stderr, "        should be:   (implementation-dependent)\n");
+        -:  694:  fprintf (stderr, "  Discr:             %d\n", Ptr_Glob->Discr);
+        -:  695:  fprintf (stderr, "        should be:   %d\n", 0);
+        -:  696:  fprintf (stderr, "  Enum_Comp:         %d\n", Ptr_Glob->variant.var_1.Enum_Comp);
+        -:  697:  fprintf (stderr, "        should be:   %d\n", 2);
+        -:  698:  fprintf (stderr, "  Int_Comp:          %d\n", Ptr_Glob->variant.var_1.Int_Comp);
+        -:  699:  fprintf (stderr, "        should be:   %d\n", 17);
+        -:  700:  fprintf (stderr, "  Str_Comp:          %s\n", Ptr_Glob->variant.var_1.Str_Comp);
+        -:  701:  fprintf (stderr, "        should be:   DHRYSTONE PROGRAM, SOME STRING\n");
+        -:  702:  fprintf (stderr, "Next_Ptr_Glob->\n");
+        -:  703:  fprintf (stderr, "  Ptr_Comp:          %d\n", (int) Next_Ptr_Glob->Ptr_Comp);
+        -:  704:  fprintf (stderr, "        should be:   (implementation-dependent), same as above\n");
+        -:  705:  fprintf (stderr, "  Discr:             %d\n", Next_Ptr_Glob->Discr);
+        -:  706:  fprintf (stderr, "        should be:   %d\n", 0);
+        -:  707:  fprintf (stderr, "  Enum_Comp:         %d\n", Next_Ptr_Glob->variant.var_1.Enum_Comp);
+        -:  708:  fprintf (stderr, "        should be:   %d\n", 1);
+        -:  709:  fprintf (stderr, "  Int_Comp:          %d\n", Next_Ptr_Glob->variant.var_1.Int_Comp);
+        -:  710:  fprintf (stderr, "        should be:   %d\n", 18);
+        -:  711:  fprintf (stderr, "  Str_Comp:          %s\n",
+        -:  712:                                Next_Ptr_Glob->variant.var_1.Str_Comp);
+        -:  713:  fprintf (stderr, "        should be:   DHRYSTONE PROGRAM, SOME STRING\n");
+        -:  714:  fprintf (stderr, "Int_1_Loc:           %d\n", Int_1_Loc);
+        -:  715:  fprintf (stderr, "        should be:   %d\n", 5);
+        -:  716:  fprintf (stderr, "Int_2_Loc:           %d\n", Int_2_Loc);
+        -:  717:  fprintf (stderr, "        should be:   %d\n", 13);
+        -:  718:  fprintf (stderr, "Int_3_Loc:           %d\n", Int_3_Loc);
+        -:  719:  fprintf (stderr, "        should be:   %d\n", 7);
+        -:  720:  fprintf (stderr, "Enum_Loc:            %d\n", Enum_Loc);
+        -:  721:  fprintf (stderr, "        should be:   %d\n", 1);
+        -:  722:  fprintf (stderr, "Str_1_Loc:           %s\n", Str_1_Loc);
+        -:  723:  fprintf (stderr, "        should be:   DHRYSTONE PROGRAM, 1'ST STRING\n");
+        -:  724:  fprintf (stderr, "Str_2_Loc:           %s\n", Str_2_Loc);
+        -:  725:  fprintf (stderr, "        should be:   DHRYSTONE PROGRAM, 2'ND STRING\n");
+        -:  726:  fprintf (stderr, "\n");
+        -:  727:
+        -:  728:
+        -:  729:    Microseconds = (float) User_Time * Mic_secs_Per_Second 
+        -:  730:                        / ((float) HZ * ((float) Number_Of_Runs));
+        -:  731:    Dhrystones_Per_Second = ((float) HZ * (float) Number_Of_Runs)
+        -:  732:                        / (float) User_Time;
+        -:  733:
+        -:  734:    printf ("Microseconds for one run through Dhrystone: ");
+        -:  735:    printf ("%10.1f \n", Microseconds);
+        -:  736:    printf ("Dhrystones per Second:                      ");
+        -:  737:    printf ("%10.0f \n", Dhrystones_Per_Second);
+        -:  738:    printf ("\n");
+        -:  739:  
+        -:  740:}
+        -:  741:
+        -:  742:
+        -:  743:Proc_1 (Ptr_Val_Par)
+        -:  744:/******************/
+        -:  745:
+        -:  746:REG Rec_Pointer Ptr_Val_Par;
+        -:  747:    /* executed once */
+        -:  748:{
+        -:  749:  REG Rec_Pointer Next_Record = Ptr_Val_Par->Ptr_Comp;  
+        -:  750:                                        /* == Ptr_Glob_Next */
+        -:  751:  /* Local variable, initialized with Ptr_Val_Par->Ptr_Comp,    */
+        -:  752:  /* corresponds to "rename" in Ada, "with" in Pascal           */
+        -:  753:  
+        -:  754:  structassign (*Ptr_Val_Par->Ptr_Comp, *Ptr_Glob); 
+        -:  755:  Ptr_Val_Par->variant.var_1.Int_Comp = 5;
+        -:  756:  Next_Record->variant.var_1.Int_Comp 
+        -:  757:        = Ptr_Val_Par->variant.var_1.Int_Comp;
+        -:  758:  Next_Record->Ptr_Comp = Ptr_Val_Par->Ptr_Comp;
+        -:  759:  Proc_3 (&Next_Record->Ptr_Comp);
+        -:  760:    /* Ptr_Val_Par->Ptr_Comp->Ptr_Comp 
+        -:  761:                        == Ptr_Glob->Ptr_Comp */
+        -:  762:  if (Next_Record->Discr == Ident_1)
+        -:  763:    /* then, executed */
+        -:  764:  {
+        -:  765:    Next_Record->variant.var_1.Int_Comp = 6;
+        -:  766:    Proc_6 (Ptr_Val_Par->variant.var_1.Enum_Comp, 
+        -:  767:           &Next_Record->variant.var_1.Enum_Comp);
+        -:  768:    Next_Record->Ptr_Comp = Ptr_Glob->Ptr_Comp;
+        -:  769:    Proc_7 (Next_Record->variant.var_1.Int_Comp, 10, 
+        -:  770:           &Next_Record->variant.var_1.Int_Comp);
+        -:  771:  }
+        -:  772:  else /* not executed */
+        -:  773:    structassign (*Ptr_Val_Par, *Ptr_Val_Par->Ptr_Comp);
+        -:  774:} /* Proc_1 */
+        -:  775:
+        -:  776:
+        -:  777:Proc_2 (Int_Par_Ref)
+        -:  778:/******************/
+        -:  779:    /* executed once */
+        -:  780:    /* *Int_Par_Ref == 1, becomes 4 */
+        -:  781:
+        -:  782:One_Fifty   *Int_Par_Ref;
+        -:  783:{
+        -:  784:  One_Fifty  Int_Loc;  
+        -:  785:  Enumeration   Enum_Loc;
+        -:  786:
+        -:  787:  Int_Loc = *Int_Par_Ref + 10;
+        -:  788:  do /* executed once */
+        -:  789:    if (Ch_1_Glob == 'A')
+        -:  790:      /* then, executed */
+        -:  791:    {
+        -:  792:      Int_Loc -= 1;
+        -:  793:      *Int_Par_Ref = Int_Loc - Int_Glob;
+        -:  794:      Enum_Loc = Ident_1;
+        -:  795:    } /* if */
+        -:  796:  while (Enum_Loc != Ident_1); /* true */
+        -:  797:} /* Proc_2 */
+        -:  798:
+        -:  799:
+        -:  800:Proc_3 (Ptr_Ref_Par)
+        -:  801:/******************/
+        -:  802:    /* executed once */
+        -:  803:    /* Ptr_Ref_Par becomes Ptr_Glob */
+        -:  804:
+        -:  805:Rec_Pointer *Ptr_Ref_Par;
+        -:  806:
+        -:  807:{
+        -:  808:  if (Ptr_Glob != Null)
+        -:  809:    /* then, executed */
+        -:  810:    *Ptr_Ref_Par = Ptr_Glob->Ptr_Comp;
+        -:  811:  Proc_7 (10, Int_Glob, &Ptr_Glob->variant.var_1.Int_Comp);
+        -:  812:} /* Proc_3 */
+        -:  813:
+        -:  814:
+        -:  815:Proc_4 () /* without parameters */
+        -:  816:/*******/
+        -:  817:    /* executed once */
+        -:  818:{
+        -:  819:  Boolean Bool_Loc;
+        -:  820:
+        -:  821:  Bool_Loc = Ch_1_Glob == 'A';
+        -:  822:  Bool_Glob = Bool_Loc | Bool_Glob;
+        -:  823:  Ch_2_Glob = 'B';
+        -:  824:} /* Proc_4 */
+        -:  825:
+        -:  826:
+        -:  827:Proc_5 () /* without parameters */
+        -:  828:/*******/
+        -:  829:    /* executed once */
+        -:  830:{
+        -:  831:  Ch_1_Glob = 'A';
+        -:  832:  Bool_Glob = false;
+        -:  833:} /* Proc_5 */
+        -:  834:
+        -:  835:
+        -:  836:        /* Procedure for the assignment of structures,          */
+        -:  837:        /* if the C compiler doesn't support this feature       */
+        -:  838:#ifdef  NOSTRUCTASSIGN
+        -:  839:memcpy (d, s, l)
+        -:  840:register char   *d;
+        -:  841:register char   *s;
+        -:  842:register int    l;
+        -:  843:{
+        -:  844:        while (l--) *d++ = *s++;
+        -:  845:}
+        -:  846:#endif
+        -:  847:
+        -:  848:
+        -:  849:#else /* PASS2 */
+        -:  850:
+        -:  851:#ifndef REG
+        -:  852:#define REG
+        -:  853:        /* REG becomes defined as empty */
+        -:  854:        /* i.e. no register variables   */
+        -:  855:#else
+        -:  856:#undef REG
+        -:  857:#define REG register
+        -:  858:#endif
+        -:  859:
+        -:  860:extern  int     Int_Glob;
+        -:  861:extern  char    Ch_1_Glob;
+        -:  862:
+        -:  863:
+555550000:  864:Proc_6 (Enum_Val_Par, Enum_Ref_Par)
+        -:  865:/*********************************/
+        -:  866:    /* executed once */
+        -:  867:    /* Enum_Val_Par == Ident_3, Enum_Ref_Par becomes Ident_2 */
+        -:  868:
+        -:  869:Enumeration  Enum_Val_Par;
+        -:  870:Enumeration *Enum_Ref_Par;
+        -:  871:{
+555550000:  872:  *Enum_Ref_Par = Enum_Val_Par;
+555550000:  873:  if (! Func_3 (Enum_Val_Par))
+        -:  874:    /* then, not executed */
+    #####:  875:    *Enum_Ref_Par = Ident_4;
+555550000:  876:  switch (Enum_Val_Par)
+        -:  877:  {
+        -:  878:    case Ident_1: 
+    #####:  879:      *Enum_Ref_Par = Ident_1;
+    #####:  880:      break;
+        -:  881:    case Ident_2: 
+    #####:  882:      if (Int_Glob > 100)
+        -:  883:        /* then */
+    #####:  884:      *Enum_Ref_Par = Ident_1;
+    #####:  885:      else *Enum_Ref_Par = Ident_4;
+        -:  886:      break;
+        -:  887:    case Ident_3: /* executed */
+555550000:  888:      *Enum_Ref_Par = Ident_2;
+555550000:  889:      break;
+        -:  890:    case Ident_4: break;
+        -:  891:    case Ident_5: 
+    #####:  892:      *Enum_Ref_Par = Ident_3;
+    #####:  893:      break;
+        -:  894:  } /* switch */
+555550000:  895:} /* Proc_6 */
+        -:  896:
+        -:  897:
+1666650000:  898:Proc_7 (Int_1_Par_Val, Int_2_Par_Val, Int_Par_Ref)
+        -:  899:/**********************************************/
+        -:  900:    /* executed three times                                      */ 
+        -:  901:    /* first call:      Int_1_Par_Val == 2, Int_2_Par_Val == 3,  */
+        -:  902:    /*                  Int_Par_Ref becomes 7                    */
+        -:  903:    /* second call:     Int_1_Par_Val == 10, Int_2_Par_Val == 5, */
+        -:  904:    /*                  Int_Par_Ref becomes 17                   */
+        -:  905:    /* third call:      Int_1_Par_Val == 6, Int_2_Par_Val == 10, */
+        -:  906:    /*                  Int_Par_Ref becomes 18                   */
+        -:  907:One_Fifty       Int_1_Par_Val;
+        -:  908:One_Fifty       Int_2_Par_Val;
+        -:  909:One_Fifty      *Int_Par_Ref;
+        -:  910:{
+        -:  911:  One_Fifty Int_Loc;
+        -:  912:
+1666650000:  913:  Int_Loc = Int_1_Par_Val + 2;
+1666650000:  914:  *Int_Par_Ref = Int_2_Par_Val + Int_Loc;
+1666650000:  915:} /* Proc_7 */
+        -:  916:
+        -:  917:
+555550000:  918:Proc_8 (Arr_1_Par_Ref, Arr_2_Par_Ref, Int_1_Par_Val, Int_2_Par_Val)
+        -:  919:/*********************************************************************/
+        -:  920:    /* executed once      */
+        -:  921:    /* Int_Par_Val_1 == 3 */
+        -:  922:    /* Int_Par_Val_2 == 7 */
+        -:  923:Arr_1_Dim       Arr_1_Par_Ref;
+        -:  924:Arr_2_Dim       Arr_2_Par_Ref;
+        -:  925:int             Int_1_Par_Val;
+        -:  926:int             Int_2_Par_Val;
+        -:  927:{
+        -:  928:  REG One_Fifty Int_Index;
+        -:  929:  REG One_Fifty Int_Loc;
+        -:  930:
+555550000:  931:  Int_Loc = Int_1_Par_Val + 5;
+555550000:  932:  Arr_1_Par_Ref [Int_Loc] = Int_2_Par_Val;
+555550000:  933:  Arr_1_Par_Ref [Int_Loc+1] = Arr_1_Par_Ref [Int_Loc];
+555550000:  934:  Arr_1_Par_Ref [Int_Loc+30] = Int_Loc;
+1666650000:  935:  for (Int_Index = Int_Loc; Int_Index <= Int_Loc+1; ++Int_Index)
+1111100000:  936:    Arr_2_Par_Ref [Int_Loc] [Int_Index] = Int_Loc;
+555550000:  937:  Arr_2_Par_Ref [Int_Loc] [Int_Loc-1] += 1;
+555550000:  938:  Arr_2_Par_Ref [Int_Loc+20] [Int_Loc] = Arr_1_Par_Ref [Int_Loc];
+555550000:  939:  Int_Glob = 5;
+555550000:  940:} /* Proc_8 */
+        -:  941:
+        -:  942:
+1666650000:  943:Enumeration Func_1 (Ch_1_Par_Val, Ch_2_Par_Val)
+        -:  944:/*************************************************/
+        -:  945:    /* executed three times                                         */
+        -:  946:    /* first call:      Ch_1_Par_Val == 'H', Ch_2_Par_Val == 'R'    */
+        -:  947:    /* second call:     Ch_1_Par_Val == 'A', Ch_2_Par_Val == 'C'    */
+        -:  948:    /* third call:      Ch_1_Par_Val == 'B', Ch_2_Par_Val == 'C'    */
+        -:  949:
+        -:  950:Capital_Letter   Ch_1_Par_Val;
+        -:  951:Capital_Letter   Ch_2_Par_Val;
+        -:  952:{
+        -:  953:  Capital_Letter        Ch_1_Loc;
+        -:  954:  Capital_Letter        Ch_2_Loc;
+        -:  955:
+        -:  956:  Ch_1_Loc = Ch_1_Par_Val;
+        -:  957:  Ch_2_Loc = Ch_1_Loc;
+1666650000:  958:  if (Ch_2_Loc != Ch_2_Par_Val)
+        -:  959:    /* then, executed */
+        -:  960:    return (Ident_1);
+        -:  961:  else  /* not executed */
+        -:  962:  {
+    #####:  963:    Ch_1_Glob = Ch_1_Loc;
+    #####:  964:    return (Ident_2);
+        -:  965:   }
+        -:  966:} /* Func_1 */
+        -:  967:
+        -:  968:
+555550000:  969:Boolean Func_2 (Str_1_Par_Ref, Str_2_Par_Ref)
+        -:  970:/*************************************************/
+        -:  971:    /* executed once */
+        -:  972:    /* Str_1_Par_Ref == "DHRYSTONE PROGRAM, 1'ST STRING" */
+        -:  973:    /* Str_2_Par_Ref == "DHRYSTONE PROGRAM, 2'ND STRING" */
+        -:  974:
+        -:  975:Str_30  Str_1_Par_Ref;
+        -:  976:Str_30  Str_2_Par_Ref;
+        -:  977:{
+        -:  978:  REG One_Thirty        Int_Loc;
+        -:  979:      Capital_Letter    Ch_Loc;
+        -:  980:
+        -:  981:  Int_Loc = 2;
+1666650000:  982:  while (Int_Loc <= 2) /* loop body executed once */
+555550000:  983:    if (Func_1 (Str_1_Par_Ref[Int_Loc],
+555550000:  984:                Str_2_Par_Ref[Int_Loc+1]) == Ident_1)
+        -:  985:      /* then, executed */
+        -:  986:    {
+        -:  987:      Ch_Loc = 'A';
+555550000:  988:      Int_Loc += 1;
+        -:  989:    } /* if, while */
+        -:  990:  if (Ch_Loc >= 'W' && Ch_Loc < 'Z')
+        -:  991:    /* then, not executed */
+        -:  992:    Int_Loc = 7;
+        -:  993:  if (Ch_Loc == 'R')
+        -:  994:    /* then, not executed */
+        -:  995:    return (true);
+        -:  996:  else /* executed */
+        -:  997:  {
+555550000:  998:    if (strcmp (Str_1_Par_Ref, Str_2_Par_Ref) > 0)
+        -:  999:      /* then, not executed */
+        -: 1000:    {
+    #####: 1001:      Int_Loc += 7;
+    #####: 1002:      Int_Glob = Int_Loc;
+    #####: 1003:      return (true);
+        -: 1004:    }
+        -: 1005:    else /* executed */
+        -: 1006:      return (false);
+        -: 1007:  } /* if Ch_Loc */
+        -: 1008:} /* Func_2 */
+        -: 1009:
+        -: 1010:
+555550000: 1011:Boolean Func_3 (Enum_Par_Val)
+        -: 1012:/***************************/
+        -: 1013:    /* executed once        */
+        -: 1014:    /* Enum_Par_Val == Ident_3 */
+        -: 1015:Enumeration Enum_Par_Val;
+        -: 1016:{
+        -: 1017:  Enumeration Enum_Loc;
+        -: 1018:
+        -: 1019:  Enum_Loc = Enum_Par_Val;
+555550000: 1020:  if (Enum_Loc == Ident_3)
+        -: 1021:    /* then, executed */
+        -: 1022:    return (true);
+        -: 1023:  else /* not executed */
+    #####: 1024:    return (false);
+        -: 1025:} /* Func_3 */
+        -: 1026:
+        -: 1027:#endif /* PASS2 */
+        -: 1028:

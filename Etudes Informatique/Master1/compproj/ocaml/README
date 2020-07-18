@@ -1,0 +1,7 @@
+usage:
+1) make
+2) ./min-ml program.ml, where program.ml is a min-ml program
+
+Needed for compiling:
+ocaml 4.01 distribution (including ocamlbuild, ocamlyacc)
+

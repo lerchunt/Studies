@@ -1,0 +1,4679 @@
+%!PS-Adobe-3.0
+%%Title: AnimeGraphicElement.cc, Ennemi.cc, EnnemiSprite.cc, FondSprite.cc, GameModel.cc, GameView.cc, GraphicElement.cc, jeu.cc, Joueur.cc, JoueurSprite.cc
+%%For: Benoît
+%%Creator: a2ps version 4.14
+%%CreationDate: Sun Jun  2 21:49:50 2013
+%%BoundingBox: 24 50 571 792
+%%DocumentData: Clean7Bit
+%%Orientation: Landscape
+%%Pages: 22
+%%PageOrder: Ascend
+%%DocumentMedia: A4dj 595 842 0 () ()
+%%DocumentNeededResources: font Courier
+%%+ font Courier-Bold
+%%+ font Courier-BoldOblique
+%%+ font Courier-Oblique
+%%+ font Helvetica
+%%+ font Helvetica-Bold
+%%+ font Symbol
+%%+ font Times-Bold
+%%+ font Times-Roman
+%%DocumentProcessColors: Black 
+%%DocumentSuppliedResources: procset a2ps-a2ps-hdr
+%%+ procset a2ps-black+white-Prolog
+%%+ encoding ISO-8859-1Encoding
+%%EndComments
+/a2psdict 200 dict def
+a2psdict begin
+%%BeginProlog
+%%Copyright: (c) 1988, 89, 90, 91, 92, 93 Miguel Santana
+%%Copyright: (c) 1995, 96, 97, 98 Akim Demaille, Miguel Santana
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+
+% EPSF import as in the Red Book
+/BeginInclude {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack 
+  userdict begin
+    0 setgray 0 setlinecap
+    1 setlinewidth 0 setlinejoin
+    10 setmiterlimit [ ] 0 setdash newpath
+    gs_languagelevel 1 ne {
+      false setstrokeadjust false setoverprint 
+    } if
+} bind def
+
+/EndInclude {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+/BeginEPSF {
+  BeginInclude
+  /showpage { } def
+} bind def
+
+/EndEPSF {
+  EndInclude
+} bind def
+
+% Page prefeed
+/page_prefeed {         % bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} bind def
+
+/deffont {
+  findfont exch scalefont def
+} bind def
+
+/reencode_font {
+  findfont reencode 2 copy definefont pop def
+} bind def
+
+% Function c-show (str => -)
+% centers text only according to x axis.
+/c-show { 
+  dup stringwidth pop
+  2 div neg 0 rmoveto
+  show
+} bind def
+
+% Function l-show (str => -)
+% prints texts so that it ends at currentpoint
+/l-show {
+  dup stringwidth pop neg 
+  0 
+  rmoveto show
+} bind def
+
+% center-fit show (str w => -)
+% show centered, and scale currentfont so that the width is less than w
+/cfshow {
+  exch dup stringwidth pop
+  % If the title is too big, try to make it smaller
+  3 2 roll 2 copy
+  gt
+  { % if, i.e. too big
+    exch div
+    currentfont exch scalefont setfont
+  } { % ifelse
+    pop pop 
+  }
+  ifelse
+  c-show			% center title
+} bind def
+
+% Return the y size of the current font
+% - => fontsize
+/currentfontsize {
+  currentfont /FontType get 0 eq {
+    currentfont /FontMatrix get 3 get
+  }{
+    currentfont /FontMatrix get 3 get 1000 mul
+  } ifelse
+} bind def
+
+% reencode the font
+% <encoding-vector> <fontdict> -> <newfontdict>
+/reencode { %def
+  dup length 5 add dict begin
+    { %forall
+      % <vector> <key> <val>
+      1 index /FID ne 
+      { def }{ pop pop } ifelse
+    } forall
+    /Encoding exch def % -
+
+    % Use the font's bounding box to determine the ascent, descent,
+    % and overall height; don't forget that these values have to be
+    % transformed using the font's matrix.
+    % We use `load' because sometimes BBox is executable, sometimes not.
+    % Since we need 4 numbers an not an array avoid BBox from being executed
+    /FontBBox load aload pop
+    FontMatrix transform /Ascent exch def pop
+    FontMatrix transform /Descent exch def pop
+    /FontHeight Ascent Descent sub def
+
+    % Get the underline position and thickness if they're defined.
+    % Use 1 if they are not defined.
+    currentdict /FontInfo 2 copy known
+    { get
+      /UnderlinePosition 2 copy % <FontInfo> /UP <FontInfo> /UP
+      2 copy known
+      { get }{ pop pop 1 } ifelse
+      0 exch FontMatrix transform exch pop
+      def % <FontInfo>
+
+      /UnderlineThickness 2 copy % <FontInfo> /UT <FontInfo> /UT
+      2 copy known
+      { get }{ pop pop 1 } ifelse
+      0 exch FontMatrix transform exch pop
+      def % <FontInfo>
+      pop % -
+    }{ pop pop
+    } ifelse
+
+    currentdict
+  end 
+} bind def
+
+% composite fonts for ASCII-EUC mixed strings
+% Version 1.2 1/31/1990
+% Original Ken'ichi HANDA (handa@etl.go.jp)
+% Modified Norio Katayama (katayama@rd.nacsis.ac.jp),1998
+% Extend & Fix Koji Nakamaru (maru@on.cs.keio.ac.jp), 1999
+% Anyone can freely copy, modify, distribute this program.
+
+/copyfont {	% font-dic extra-entry-count  copyfont  font-dic
+	1 index maxlength add dict begin
+	{	1 index /FID ne 2 index /UniqueID ne and
+		{def} {pop pop} ifelse
+	} forall
+	currentdict
+	end
+} bind def
+
+/compositefont { % ASCIIFontName EUCFontName RomanScale RomanOffset Rot(T/F) compositefont font
+    /RomanRotation exch def
+    /RomanOffset exch def
+    /RomanScale exch def
+    userdict /fixeucfont_dict known not {
+	userdict begin
+	    /fixeucfont_dict 2 dict begin
+		/UpperByteEncoding [
+		    16#00 1 16#20 { pop 0 } for
+		    16#21 1 16#28 { 16#20 sub } for
+		    16#29 1 16#2F { pop 0 } for
+		    16#30 1 16#74 { 16#27 sub } for
+		    16#75 1 16#FF { pop 0 } for
+		] def
+	        /LowerByteEncoding [
+		    16#00 1 16#A0 { pop /.notdef } for
+		    16#A1 1 16#FE { 16#80 sub 16 2 string cvrs
+				    (cXX) dup 1 4 -1 roll
+				    putinterval cvn } for
+		    /.notdef
+		] def
+		currentdict
+	    end def
+	end
+    } if
+    findfont dup /FontType get 0 eq {
+	14 dict begin
+	    %
+	    % 7+8 bit EUC font
+	    %
+	    12 dict begin
+		/EUCFont exch def
+		/FontInfo (7+8 bit EUC font) readonly def
+		/PaintType 0 def
+		/FontType 0 def
+		/FontMatrix matrix def
+		% /FontName
+		/Encoding fixeucfont_dict /UpperByteEncoding get def
+		/FMapType 2 def
+		EUCFont /WMode known
+		{ EUCFont /WMode get /WMode exch def }
+		{ /WMode 0 def } ifelse
+		/FDepVector [
+		    EUCFont /FDepVector get 0 get
+		    [ 16#21 1 16#28 {} for 16#30 1 16#74 {} for ]
+		    {
+			13 dict begin
+			    /EUCFont EUCFont def
+			    /UpperByte exch 16#80 add def	
+			    % /FontName
+			    /FontInfo (EUC lower byte font) readonly def
+			    /PaintType 0 def
+			    /FontType 3 def
+			    /FontMatrix matrix def
+			    /FontBBox {0 0 0 0} def
+			    /Encoding
+				fixeucfont_dict /LowerByteEncoding get def
+			    % /UniqueID
+			    % /WMode
+			    /BuildChar {
+				gsave
+				exch dup /EUCFont get setfont
+				/UpperByte get
+				2 string
+				dup 0 4 -1 roll put
+				dup 1 4 -1 roll put
+				dup stringwidth setcharwidth
+				0 0 moveto show
+				grestore
+			    } bind def
+			    currentdict
+			end
+			/lowerbytefont exch definefont
+		    } forall
+		] def
+		currentdict
+	    end
+	    /eucfont exch definefont
+	    exch
+	    findfont 1 copyfont dup begin
+		RomanRotation {
+			/FontMatrix FontMatrix
+			[ 0 RomanScale neg RomanScale 0 RomanOffset neg 0 ]
+			matrix concatmatrix def
+		}{
+			/FontMatrix FontMatrix
+			[ RomanScale 0 0 RomanScale 0 RomanOffset ] matrix concatmatrix
+			def
+			/CDevProc
+			    {pop pop pop pop 0 exch -1000 exch 2 div 880} def
+		} ifelse
+	    end
+	    /asciifont exch definefont
+	    exch
+	    /FDepVector [ 4 2 roll ] def
+	    /FontType 0 def
+	    /WMode 0 def
+	    /FMapType 4 def
+	    /FontMatrix matrix def
+	    /Encoding [0 1] def
+	    /FontBBox {0 0 0 0} def
+%	    /FontHeight 1.0 def % XXXX
+	    /FontHeight RomanScale 1.0 ge { RomanScale }{ 1.0 } ifelse def
+	    /Descent -0.3 def   % XXXX
+	    currentdict
+	end
+	/tmpfont exch definefont
+	pop
+	/tmpfont findfont
+    }{
+	pop findfont 0 copyfont
+    } ifelse
+} def	
+
+/slantfont {	% FontName slant-degree  slantfont  font'
+    exch findfont 1 copyfont begin
+    [ 1 0 4 -1 roll 1 0 0 ] FontMatrix exch matrix concatmatrix
+    /FontMatrix exch def
+    currentdict
+    end
+} def
+
+% Function print line number (<string> # -)
+/# {
+  gsave
+    sx cw mul neg 2 div 0 rmoveto
+    f# setfont
+    c-show
+  grestore
+} bind def
+
+% -------- Some routines to enlight plain b/w printings ---------
+
+% Underline
+% width --
+/dounderline {
+  currentpoint
+  gsave
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    0 rlineto
+    stroke
+  grestore
+} bind def
+
+% Underline a string
+% string --
+/dounderlinestring {
+  stringwidth pop
+  dounderline
+} bind def
+
+/UL {
+  /ul exch store
+} bind def
+
+% Draw a box of WIDTH wrt current font
+% width --
+/dobox {
+  currentpoint
+  gsave
+    newpath
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    dup 0 rlineto
+    0 currentfont /FontHeight get currentfontsize mul rlineto
+    neg 0 rlineto
+    closepath
+    stroke
+  grestore
+} bind def
+
+/BX {
+  /bx exch store
+} bind def
+
+% Box a string
+% string --
+/doboxstring {
+  stringwidth pop
+  dobox
+} bind def
+
+%
+% ------------- Color routines ---------------
+%
+/FG /setrgbcolor load def
+
+% Draw the background
+% width --
+/dobackground {
+  currentpoint
+  gsave
+    newpath
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    dup 0 rlineto
+    0 currentfont /FontHeight get currentfontsize mul rlineto
+    neg 0 rlineto
+    closepath
+    bgcolor aload pop setrgbcolor
+    fill
+  grestore
+} bind def
+
+% Draw bg for a string
+% string --
+/dobackgroundstring {
+  stringwidth pop
+  dobackground
+} bind def
+
+
+/BG {
+  dup /bg exch store
+  { mark 4 1 roll ] /bgcolor exch store } if
+} bind def
+
+
+/Show {
+  bg { dup dobackgroundstring } if
+  ul { dup dounderlinestring } if
+  bx { dup doboxstring } if
+  show
+} bind def
+
+% Function T(ab), jumps to the n-th tabulation in the current line
+/T {
+  cw mul x0 add
+  bg { dup currentpoint pop sub dobackground } if
+  ul { dup currentpoint pop sub dounderline } if
+  bx { dup currentpoint pop sub dobox } if
+  y0 moveto
+} bind def
+
+% Function n: move to the next line
+/n {
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+% Function N: show and move to the next line
+/N {
+  Show
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+/S {
+  Show
+} bind def
+
+%%BeginResource: procset a2ps-a2ps-hdr 2.0 2
+%%Copyright: (c) 1988, 89, 90, 91, 92, 93 Miguel Santana
+%%Copyright: (c) 1995, 96, 97, 98 Akim Demaille, Miguel Santana
+% Function title: prints page header.
+% <ct> <rt> <lt> are passed as argument
+/title { 
+  % 1. Draw the background
+  x v get y v get moveto
+  gsave
+    0 th 2 div neg rmoveto 
+    th setlinewidth
+    0.95 setgray
+    pw 0 rlineto stroke
+  grestore
+  % 2. Border it
+  gsave
+    0.7 setlinewidth
+    pw 0 rlineto
+    0 th neg rlineto
+    pw neg 0 rlineto
+    closepath stroke
+  grestore
+  % stk: ct rt lt
+  x v get y v get th sub 1 add moveto
+%%IncludeResource: font Helvetica
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  % 3. The left title
+  gsave
+    dup stringwidth pop fnfs 0.8 mul add exch % leave space took on stack
+    fnfs 0.8 mul hm rmoveto
+    show			% left title
+  grestore
+  exch
+  % stk: ct ltw rt
+  % 4. the right title
+  gsave
+    dup stringwidth pop fnfs 0.8 mul add exch % leave space took on stack
+    dup
+    pw exch stringwidth pop fnfs 0.8 mul add sub
+    hm
+    rmoveto
+    show			% right title
+  grestore
+  % stk: ct ltw rtw
+  % 5. the center title
+  gsave
+    pw 3 1 roll
+    % stk: ct pw ltw rtw
+    3 copy 
+    % Move to the center of the left room
+    sub add 2 div hm rmoveto
+    % What is the available space in here?
+    add sub fnfs 0.8 mul sub fnfs 0.8 mul sub
+    % stk: ct space_left
+%%IncludeResource: font Helvetica-Bold
+  fHelvetica-Bold fnfs scalefont setfont
+    cfshow
+  grestore
+} bind def
+
+% Function border: prints virtual page border
+/border { %def
+  gsave				% print four sides
+    0 setgray
+    x v get y v get moveto
+    0.7 setlinewidth		% of the square
+    pw 0 rlineto
+    0 ph neg rlineto
+    pw neg 0 rlineto
+    closepath stroke
+  grestore
+} bind def
+
+% Function water: prints a water mark in background
+/water { %def
+  gsave
+    scx scy moveto rotate
+%%IncludeResource: font Times-Bold
+  fTimes-Bold 100 scalefont setfont
+    .97 setgray
+    dup stringwidth pop 2 div neg -50 rmoveto
+    show
+  grestore
+} bind def
+
+% Function rhead: prints the right header
+/rhead {  %def
+  lx ly moveto
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  l-show
+} bind def
+
+% Function footer (cf rf lf -> -)
+/footer {
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  dx dy moveto
+  show
+
+  snx sny moveto
+  l-show
+  
+  fnx fny moveto
+  c-show
+} bind def
+%%EndResource
+%%BeginResource: procset a2ps-black+white-Prolog 2.0 1
+
+% Function T(ab), jumps to the n-th tabulation in the current line
+/T { 
+  cw mul x0 add y0 moveto
+} bind def
+
+% Function n: move to the next line
+/n { %def
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+% Function N: show and move to the next line
+/N {
+  Show
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+}  bind def
+
+/S {
+  Show
+} bind def
+
+/p {
+  false UL
+  false BX
+  fCourier bfs scalefont setfont
+  Show
+} bind def
+
+/sy {
+  false UL
+  false BX
+  fSymbol bfs scalefont setfont
+  Show
+} bind def
+
+/k {
+  false UL
+  false BX
+  fCourier-Oblique bfs scalefont setfont
+  Show
+} bind def
+
+/K {
+  false UL
+  false BX
+  fCourier-Bold bfs scalefont setfont
+  Show
+} bind def
+
+/c {
+  false UL
+  false BX
+  fCourier-Oblique bfs scalefont setfont
+  Show
+} bind def
+
+/C {
+  false UL
+  false BX
+  fCourier-BoldOblique bfs scalefont setfont
+  Show 
+} bind def
+
+/l {
+  false UL
+  false BX
+  fHelvetica bfs scalefont setfont
+  Show
+} bind def
+
+/L {
+  false UL
+  false BX
+  fHelvetica-Bold bfs scalefont setfont
+  Show 
+} bind def
+
+/str{
+  false UL
+  false BX
+  fTimes-Roman bfs scalefont setfont
+  Show
+} bind def
+
+/e{
+  false UL
+  true BX
+  fHelvetica-Bold bfs scalefont setfont
+  Show
+} bind def
+
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier
+%%IncludeResource: font Courier-Oblique
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Times-Roman
+%%IncludeResource: font Symbol
+%%IncludeResource: font Courier-BoldOblique
+%%BeginResource: encoding ISO-8859-1Encoding
+/ISO-8859-1Encoding [
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/space /exclam /quotedbl /numbersign /dollar /percent /ampersand /quoteright 
+/parenleft /parenright /asterisk /plus /comma /minus /period /slash 
+/zero /one /two /three /four /five /six /seven 
+/eight /nine /colon /semicolon /less /equal /greater /question 
+/at /A /B /C /D /E /F /G 
+/H /I /J /K /L /M /N /O 
+/P /Q /R /S /T /U /V /W 
+/X /Y /Z /bracketleft /backslash /bracketright /asciicircum /underscore 
+/quoteleft /a /b /c /d /e /f /g 
+/h /i /j /k /l /m /n /o 
+/p /q /r /s /t /u /v /w 
+/x /y /z /braceleft /bar /braceright /asciitilde /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/space /exclamdown /cent /sterling /currency /yen /brokenbar /section 
+/dieresis /copyright /ordfeminine /guillemotleft /logicalnot /hyphen /registered /macron 
+/degree /plusminus /twosuperior /threesuperior /acute /mu /paragraph /bullet 
+/cedilla /onesuperior /ordmasculine /guillemotright /onequarter /onehalf /threequarters /questiondown 
+/Agrave /Aacute /Acircumflex /Atilde /Adieresis /Aring /AE /Ccedilla 
+/Egrave /Eacute /Ecircumflex /Edieresis /Igrave /Iacute /Icircumflex /Idieresis 
+/Eth /Ntilde /Ograve /Oacute /Ocircumflex /Otilde /Odieresis /multiply 
+/Oslash /Ugrave /Uacute /Ucircumflex /Udieresis /Yacute /Thorn /germandbls 
+/agrave /aacute /acircumflex /atilde /adieresis /aring /ae /ccedilla 
+/egrave /eacute /ecircumflex /edieresis /igrave /iacute /icircumflex /idieresis 
+/eth /ntilde /ograve /oacute /ocircumflex /otilde /odieresis /divide 
+/oslash /ugrave /uacute /ucircumflex /udieresis /yacute /thorn /ydieresis 
+] def
+%%EndResource
+% Initialize page description variables.
+/sh 595 def
+/sw 842 def
+/llx 50 def
+/urx 792 def
+/ury 571 def
+/lly 24 def
+/#copies 1 def
+/th 15.000000 def
+/fnfs 11 def
+/bfs 7.473382 def
+/cw 4.484029 def
+
+% Dictionary for ISO-8859-1 support
+/iso1dict 8 dict begin
+  /fCourier ISO-8859-1Encoding /Courier reencode_font
+  /fCourier-Bold ISO-8859-1Encoding /Courier-Bold reencode_font
+  /fCourier-BoldOblique ISO-8859-1Encoding /Courier-BoldOblique reencode_font
+  /fCourier-Oblique ISO-8859-1Encoding /Courier-Oblique reencode_font
+  /fHelvetica ISO-8859-1Encoding /Helvetica reencode_font
+  /fHelvetica-Bold ISO-8859-1Encoding /Helvetica-Bold reencode_font
+  /fTimes-Bold ISO-8859-1Encoding /Times-Bold reencode_font
+  /fTimes-Roman ISO-8859-1Encoding /Times-Roman reencode_font
+currentdict end def
+/bgcolor [ 0 0 0 ] def
+/bg false def
+/ul false def
+/bx false def
+% The font for line numbering
+/f# /Helvetica findfont bfs .6 mul scalefont def
+/fSymbol /Symbol findfont def
+/hm fnfs 0.25 mul def
+/pw
+   cw 81.400000 mul
+def
+/ph
+   505.947993 th add
+def
+/pmw urx llx sub pw 2 mul sub 1 div def
+/pmh 0 def
+/v 0 def
+/x [
+  0
+  dup pmw add pw add
+] def
+/y [
+  pmh ph add 0 mul ph add
+  dup
+] def
+/scx sw 2 div def
+/scy sh 2 div def
+/snx urx def
+/sny lly 2 add def
+/dx llx def
+/dy sny def
+/fnx scx def
+/fny dy def
+/lx snx def
+/ly ury fnfs 0.8 mul sub def
+/sx 0 def
+/tab 8 def
+/x0 0 def
+/y0 0 def
+%%EndSetup
+
+%%Page: (1) 1
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(#include) K
+( ") p
+(AnimeGraphicElement.h) str
+(") p n
+(using) K
+( ) p
+(namespace) K
+( sf;) p n
+(//constructeurs) c n
+(AnimeGraphicElement::AnimeGraphicElement\(\)) p n
+({}) N
+(AnimeGraphicElement::AnimeGraphicElement\(Image *image, ) S
+(int) k
+( x, ) p
+(int) k
+( y, ) p
+(int) k
+( w,) p
+(int) k
+( h) p n
+(\):Sprite\(*image\)) N
+({) N
+() S 8 T (_clock.Reset\(\);) N
+() S 8 T (_w = w;) N
+() S 8 T (_h = h;) N
+(}) N
+(//destructeur) c n
+(AnimeGraphicElement::~AnimeGraphicElement\(\)) p n
+({}) N
+(AnimeGraphicElement.cc) (Page 1/1) (mai 09, 13 13:47) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(AnimeGraphicElement.cc) (1/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1-2) 2
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(#include) K
+( ") p
+(Ennemi.h) str
+(") p n
+(#include) K
+( ") p
+(jeu_const.h) str
+(") p n
+() N
+(#include) K
+( <iostream>) p n
+(using) K
+( ) p
+(namespace) K
+( std;) p n
+(//==================================) c n
+(// Constructeurs) N
+(//============================================) N
+(Ennemi::Ennemi\(\) : Personnage\(\){}) p n
+() N
+(Ennemi::Ennemi\() S
+(int) k
+( x, ) p
+(int) k
+( y, ) p
+(int) k
+( w, ) p
+(int) k
+( h, ) p
+(int) k
+( dx, ) p
+(int) k
+( dy, ) p
+(int) k
+( vie,) p
+(bool) k
+( vivant, ) p
+() k n
+(int) S
+( type, ) p
+(bool) k
+( touche,) p
+(float) k
+( apparition\) : Personnage\(x,y,w,h,dx,dy,vie,vivant\){) p n
+() S 8 T (_type=type;) N
+() S 8 T (_touche = touche;) N
+() S 8 T (_apparition = apparition;) N
+() S 8 T () S
+(switch) K
+(\(_type\)) p 24 T () S 32 T () S
+(//on initialise la vie en fonction du type d'enn) c n
+(emi) N
+() p 8 T ({) N
+() S 8 T () S
+(case) K
+( 1:) p n
+() S 8 T () S 16 T (_vie = 2;) N
+() S 8 T () S 16 T () S
+(break) K
+(;) p n
+() S 8 T () S
+(case) K
+( 2:) p n
+() S 8 T () S 16 T (_vie = 6;) N
+() S 8 T () S 16 T () S
+(break) K
+(;) p n
+() S 8 T () S
+(case) K
+( 3:) p n
+() S 8 T () S 16 T (_vie = 15;) N
+() S 8 T () S 16 T () S
+(break) K
+(;) p n
+() S 8 T (}) N
+(}) N
+(//================================) c n
+(// Destructeur) N
+(//===============================) N
+(Ennemi::~Ennemi\(\){}) p n
+() N
+(//=================================) c n
+(// Accesseurs en lecture) N
+(//===================================) N
+(int) k
+( Ennemi::getType\(\) ) p
+(const) K
+({) p n
+() S 8 T () S
+(return) K
+( _type;) p n
+(}) N
+(//========================================) c n
+(float) k
+( Ennemi::getApparition\(\)) p
+(const) K
+({) p n
+() S 8 T () S
+(return) K
+( _apparition;) p n
+(}) N
+(//=========================================) c n
+(bool) k
+( Ennemi::getTouche\(\) ) p
+(const) K
+({) p n
+() S 8 T () S
+(return) K
+( _touche;) p n
+(}) N
+(//=========================================) c n
+(bool) k
+( Ennemi::getTirer\(\)) p n
+({) N
+() S 8 T () S
+(if) K
+( \(_clock2.GetElapsedTime\(\)>2\)) p 40 T () S 48 T () S
+(//retourne true toutes les 2 sec) c n
+(ondes, false sinon) N
+() p 8 T ({) N
+() S 8 T () S 16 T (_clock2.Reset\(\);) N
+() S 8 T () S 16 T () S
+(return) K
+( ) p
+(true) k
+(;) p n
+() S 8 T (}) N
+() S 8 T () S
+(else) K n
+() p 8 T () S 16 T () S
+(return) K
+( ) p
+(false) k
+(;) p n
+(}) N
+() N
+(//==============================) c n
+(//Methodes) N
+(//===============================) N
+(void) k
+( Ennemi::deplacer\() p
+(int) k
+( y\)) p 32 T () S 40 T () S 48 T () S
+(//prend en parametre la position) c n
+( en y du joueur) N
+({) p 8 T () S 16 T () N
+(Ennemi.cc) (Page 1/2) (juin 02, 13 21:38) title
+border
+/v 1 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p 8 T () S
+(if) K
+(\(_x<0-_w\)) p 24 T () S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S
+(//s'il s) c n
+(ort de l'ecran, _vivant passe a false \(l'ennemi meurt sans passer par l'\303\251tat to) N
+(uch\303\251\)) N
+() p 8 T () S 16 T (_vivant =) S
+(false) k
+(;) p 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S 32 T () N
+() S 8 T () S 16 T () N
+() S 8 T () S
+(if) K
+(\(_clock.GetElapsedTime\(\)>0.02\)) p 48 T () S
+(//toutes les 0.02s:) c n
+() p 8 T ({) N
+() S 8 T () S 16 T (_x -= _dx;) N
+() N
+() S 8 T () S 16 T () S
+(if) K
+(\(!_touche\)) p 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S
+(//s'il n'est pas) c n
+( touch\303\251 ) N
+() p 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S 24 T () S
+(if) K
+(\(_y<=y\)) p 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S
+(//il se ) c n
+(d\303\251place vers le joueur) N
+() p 8 T () S 16 T () S 24 T () S 32 T (_y +=_dy;) N
+() S 8 T () S 16 T () S 24 T () S
+(else) K n
+() p 8 T () S 16 T () S 24 T () S 32 T (_y -= _dy;) N
+() S 8 T () S 16 T (}) N
+() S 8 T () S 16 T (_clock.Reset\(\);) N
+() S 8 T (}) N
+(}) N
+(//=======================================) c n
+(int) k
+( Ennemi::mourrir\(\)) p 24 T () S 32 T () S 40 T () S 48 T () S 56 T () S
+(//retourne tout le temps) c n
+( 0 sauf la derniere fois qu'on l'appelle, retourne alors 1 \(pour incrementer le ) N
+(score une seule fois\)) N
+({) p n
+() S 8 T () S
+(if) K
+( \(_clock2.GetElapsedTime\(\)>=1\)) p 48 T () S
+(//il reste touch\303\251 pendant 0.4s ) c n
+(puis _vivant passe \303\240 false) N
+() p 8 T ({) N
+() S 8 T () S 16 T (_touche = ) S
+(false) k
+(;) p n
+() S 8 T () S 16 T (_vivant = ) S
+(false) k
+(;) p n
+() S 8 T () S 16 T () S
+(return) K
+( 1;) p n
+() S 8 T (}) S 16 T () N
+() S 8 T () S
+(else) K n
+() p 8 T () S 16 T () S
+(return) K
+( 0;) p n
+(}) N
+(//=====================================) c n
+(void) k
+( Ennemi::etreTouche\() p
+(int) k
+( puissance\)) p 40 T () N
+({) N
+() S 8 T (_vie -=puissance;) N
+() S 8 T () N
+() S 8 T () S
+(if) K
+(\(_vie <=0\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T (_touche = ) S
+(true) k
+(;) p n
+() S 8 T () S 16 T (_clock2.Reset\(\);) N
+() S 8 T (}) N
+(}) N
+(Ennemi.cc) (Page 2/2) (juin 02, 13 21:38) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(Ennemi.cc) (2/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1-2) 3
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(#include) K
+( ") p
+(EnnemiSprite.h) str
+(") p n
+(using) K
+( ) p
+(namespace) K
+( sf;) p n
+() N
+(//==============================) c n
+(//constructeurs) N
+(//==============================) N
+(EnnemiSprite::EnnemiSprite\(\) : AnimeGraphicElement\(\)) p n
+({}) N
+(//==============================) c n
+(EnnemiSprite::EnnemiSprite\(Image *image, ) p
+(int) k
+( x, ) p
+(int) k
+( y, ) p
+(int) k
+( w, ) p
+(int) k
+( h,) p
+(bool) k
+( anime, ) p
+() k n
+(bool) S
+( explose\)) p 16 T (:  AnimeGraphicElement\(image,x,y,w,h\)) N
+({) N
+() S 8 T (_anime = anime;) N
+() S 8 T (_explose=explose;) N
+() S 8 T (_buffer.LoadFromFile\(") S
+(musiques/dragon_mort.wav) str
+("\);) p n
+() S 8 T (_sound.SetBuffer\(_buffer\);) S 40 T () S
+(//on set le son selon celui donn\303\251 en pa) c n
+(rametres) N
+(}) p n
+() N
+(//==============================) c n
+(//destructeur) N
+(//==============================) N
+(EnnemiSprite::~EnnemiSprite\(\){}) p n
+() N
+(//==============================) c n
+(//accesseurs) N
+(//==============================) N
+(void) k
+( EnnemiSprite::setExplose\(\)) p n
+({) S 8 T () N
+() S 8 T () S
+(if) K
+(\(_explose ==) p
+(false) k
+(\)) p n
+() S 8 T () S 16 T (_clock.Reset\(\);) N
+() S 8 T () S 16 T () N
+() S 8 T (_explose = ) S
+(true) k
+(;) p n
+() S 8 T (_anime = ) S
+(false) k
+(;) p n
+() N
+(}) N
+(//==============================) c n
+(void) k
+( EnnemiSprite::setAnime\() p
+(bool) k
+( anime\)) p n
+({) N
+() S 8 T (_anime=anime;) N
+() S 8 T (_explose=!anime;) N
+(}) N
+() N
+(//==============================) c n
+(//methodes) N
+(//==============================) N
+() p n
+(void) k
+( EnnemiSprite::draw\(RenderWindow * _window\)) p n
+({) N
+() S 8 T () S
+(if) K
+( \(_anime\)) p 24 T () S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S
+(//animation de l'ennemi:) c n
+() p 8 T ({) N
+() S 8 T () S 16 T () S
+(if) K
+(\(_clock.GetElapsedTime\(\) <=0.1\)) p 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S
+(// en fonction de la valeur de la clock) c n
+() p 8 T () S 16 T () S 24 T (SetSubRect\(sf::IntRect\(0, 0, 150, 100\)\);) S 72 T () S 80 T () S
+() c n
+(//on ajuste le rectangle de lecture) N
+() p 8 T () S 16 T () S
+(else) K
+( ) p
+(if) K
+( \(_clock.GetElapsedTime\(\) <=0.2\)) p n
+() S 8 T () S 16 T () S 24 T (SetSubRect\(sf::IntRect\(150, 0, 300, 100\)\);) N
+() S 8 T () S 16 T () S
+(else) K
+( ) p
+(if) K
+( \(_clock.GetElapsedTime\(\) <=0.3\)) p n
+() S 8 T () S 16 T () S 24 T (SetSubRect\(sf::IntRect\(300, 0, 450, 100\)\);) N
+() S 8 T () S 16 T () S
+(else) K
+( ) p
+(if) K
+( \(_clock.GetElapsedTime\(\) <=0.4\)) p n
+() S 8 T () S 16 T () S 24 T (SetSubRect\(sf::IntRect\(450, 0, 600, 100\)\);) N
+() S 8 T () S 16 T () S
+(else) K
+( ) p
+(if) K
+( \(_clock.GetElapsedTime\(\) <=0.5\)) p n
+() S 8 T () S 16 T () S 24 T (SetSubRect\(sf::IntRect\(600, 0, 750, 100\)\);) N
+() S 8 T () S 16 T () S
+(else) K n
+() p 8 T () S 16 T () S 24 T (SetSubRect\(sf::IntRect\(750, 0, 900, 100\)\);) S 72 T () N
+() S 8 T () S 16 T () S 24 T () N
+(EnnemiSprite.cc) (Page 1/2) (juin 02, 13 21:40) title
+border
+/v 1 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p 8 T () S 16 T () S
+(if) K
+(\(_clock.GetElapsedTime\(\)>0.6\)) p 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S
+(//en fin d'animation on reset la clock pour recommencer) c n
+() p 8 T () S 16 T () S 24 T (_clock.Reset\(\);) N
+() S 8 T (}) N
+() S 8 T () S
+(if) K
+(\(_explose\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T () S
+(if) K
+(\(_sound.GetStatus\(\)!=sf::Sound::Playing\)) p n
+() S 8 T () S 16 T (_sound.Play\(\);) N
+() S 8 T () S 16 T () N
+() S 8 T () S 16 T () S
+(if) K
+(\(_clock.GetElapsedTime\(\) <=0.3\)) p 56 T () S 64 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T (SetSubRect\(sf::IntRect\(0, 100, 150, 200\)\);) N
+() S 8 T () S 16 T () S
+(else) K
+( ) p
+(if) K
+( \(_clock.GetElapsedTime\(\) <=0.6\)) p n
+() S 8 T () S 16 T () S 24 T (SetSubRect\(sf::IntRect\(150, 100, 300, 200\)\);) N
+() S 8 T () S 16 T () S
+(else) K
+( ) p
+(if) K
+( \(_clock.GetElapsedTime\(\) <=0.8\)) p n
+() S 8 T () S 16 T () S 24 T (SetSubRect\(sf::IntRect\(300, 100, 450, 200\)\);) N
+() S 8 T () S 16 T () S
+(else) K n
+() p 8 T () S 16 T () S 24 T (SetSubRect\(sf::IntRect\(450, 100, 600, 200\)\);) N
+() S 8 T (}) N
+() N
+() S 8 T (Resize\(_w,_h\);) N
+() S 8 T (_window->Draw\(*) S
+(this) K
+(\);) p n
+(}) N
+(EnnemiSprite.cc) (Page 2/2) (juin 02, 13 21:40) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(EnnemiSprite.cc) (3/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 4
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(#include) K
+( ") p
+(FondSprite.h) str
+(") p n
+(using) K
+( ) p
+(namespace) K
+( sf;) p n
+() N
+(//==============================) c n
+(//constructeurs) N
+(//==============================) N
+() p n
+(FondSprite::FondSprite\(\):AnimeGraphicElement\(\)) N
+({}) N
+() N
+(FondSprite::FondSprite\(Image *image, ) S
+(int) k
+( x, ) p
+(int) k
+( y,) p
+(int) k
+( w, ) p
+(int) k
+( h,) p
+(int) k
+( dx,) p
+(int) k
+( taille) p n
+(\) : AnimeGraphicElement\(image,x,y,w,h\)) N
+({) N
+() S 8 T (_x1 = 0;) N
+() S 8 T (_x2 = _w;) S 24 T () N
+() S 8 T (_dx = dx;) N
+() S 8 T (_taille = taille;) N
+(}) N
+() N
+(//==============================) c n
+(//destructeur) N
+(//==============================) N
+(FondSprite::~FondSprite\(\)) p n
+({}) N
+() N
+(//==============================) c n
+(//methodes) N
+(//==============================) N
+() p n
+(//dessine le fond sans le d\303\251filer) c n
+(void) k
+( FondSprite::draw\(RenderWindow * _window\)) p n
+({) N
+() S 8 T (_x1 = 0;) N
+() S 8 T (_x2 = _w;) N
+() S 8 T (_clock.Reset\(\);) N
+() S 8 T () N
+() S 8 T (SetSubRect\(sf::IntRect\(_x1,0,_x2,_h\)\);) N
+() S 8 T (Resize\(_w,_h\);) N
+() S 8 T (_window->Draw\(*) S
+(this) K
+(\);) p 32 T () N
+(}) N
+() N
+(//dessine le fond en d\303\251filant) c n
+(void) k
+( FondSprite::defiler\(sf::RenderWindow * _window\)) p n
+({) N
+() S 8 T () S
+(if) K
+(\(_clock.GetElapsedTime\(\)>=0.001\)) p 48 T () S
+(//toutes les 0.001 secondes:) c n
+() p 8 T ({) N
+() S 8 T () S 16 T () S
+(if) K
+( \(_x2>=_taille\)) p 40 T () S 48 T () S 56 T () S 64 T () S
+(//si le rectangl) c n
+(e de lecture a d\303\251pass\303\251 la taille de l'image) N
+() p 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S 24 T (_x1 = 0;) S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S
+(//on le ) c n
+(remet au d\303\251but) N
+() p 8 T () S 16 T () S 24 T (_x2=_w;) N
+() S 8 T () S 16 T (}) N
+() S 8 T () S 16 T () S
+(else) K
+( ) p 24 T () S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S
+(//sinon ) c n
+(on le d\303\251place ) N
+() p 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S 24 T (_x1+=_dx;) N
+() S 8 T () S 16 T () S 24 T (_x2+=_dx;) N
+() S 8 T () S 16 T (}) N
+() S 8 T () S 16 T (_clock.Reset\(\);) N
+() S 8 T (}) N
+() S 8 T () N
+() S 8 T (SetSubRect\(sf::IntRect\(_x1,0,_x2,_h\)\);) N
+() S 8 T (Resize\(_w,_h\);) N
+() S 8 T (_window->Draw\(*) S
+(this) K
+(\);) p 32 T () N
+(}) N
+() N
+(FondSprite.cc) (Page 1/1) (mai 30, 13 17:45) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(FondSprite.cc) (4/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1-2) 5
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(#include) K
+( ") p
+(GameModel.h) str
+(") p n
+(#include) K
+( <iostream>) p n
+(#include) K
+( <fstream>) p n
+(#include) K
+( <sstream>) p n
+() N
+(using) K
+( ) p
+(namespace) K
+( std;) p n
+() N
+() N
+(///***************************************************) c n
+(///CONSTRUCTEURS) N
+(///***************************************************) N
+() p n
+(//=======================================) c n
+(// Constructeur par d\351faut) N
+(//=======================================) N
+(GameModel::GameModel\(\) ) p n
+() S 8 T (: _w\(MODEL_WIDTH\), _h\(MODEL_HEIGHT\) {) N
+() S 8 T (_joueur = ) S
+(new) K
+( Joueur\(\);) p 32 T () S 40 T () N
+(}) N
+(//=======================================) c n
+(//constructeur param\351tr\351) N
+(//=======================================) N
+(GameModel::GameModel\() p
+(int) k
+( w, ) p
+(int) k
+( h\)) p n
+() S 8 T (:  _w\(w\), _h\(h\){) N
+() S 8 T () S 16 T () N
+() S 8 T (_nb_ennemis_de_base=_nb_ennemis = NOMBRE_ENNEMIS;) N
+() S 8 T (_duree_niveau=DUREE_NIVEAU;) N
+() S 8 T (_duree_chargement =  DUREE_CHARGEMENT;) N
+() S 8 T (_duree_intro = DUREE_INTRO;) N
+() S 8 T (_duree_restart = DUREE_RESTART;) N
+() S 8 T (_intro = ) S
+(true) k
+(;) p n
+() S 8 T () N
+() S 8 T (_joueur = ) S
+(new) K
+( Joueur\(50, \(h-JOUEUR_HEIGHT\)/2, JOUEUR_WIDTH, JOUEUR_HEIGH) p n
+(T, JOUEUR_X_SPEED, JOUEUR_Y_SPEED, JOUEUR_VIE, ) S
+(true) k
+(, NB_VIES,TIR_PUISSANCE,TIR_P) p n
+(UISSANCE_SECONDAIRE\);) N
+() S 8 T () N
+() S 8 T (_clock.Reset\(\);) N
+(}) N
+(//=======================================) c n
+(// Destructeur) N
+(//=======================================) N
+(GameModel::~GameModel\(\){) p n
+() S 8 T () S
+(if) K
+(\(_joueur != ) p
+(NULL) K
+(\)) p n
+() S 8 T () S 16 T () S
+(delete) K
+( _joueur;) p n
+() S 8 T () S 16 T () N
+() S 8 T (std::list<Tir*>::iterator it1;) N
+() S 8 T () S
+(for) K
+( \(it1=_tirs.begin\(\);it1!=_tirs.end\(\);it1++\)) p 56 T () S 64 T () N
+() S 8 T () S 16 T () S
+(delete) K
+( *it1;) p 32 T () N
+() S 8 T () S 16 T () N
+() S 8 T (std::list<Ennemi*>::iterator it2;) N
+() S 8 T () S
+(for) K
+( \(it2=_ennemis.begin\(\);it2!=_ennemis.end\(\);it2++\)) p 64 T () S 72 T () N
+() S 8 T () S 16 T () S
+(delete) K
+( *it2;) p 32 T () N
+(}) N
+() N
+() N
+(///***************************************************) c n
+(///ACCESSEURS) N
+(///***************************************************) N
+(//==================================) N
+(std::list<Ennemi*>* GameModel::getEnnemis\(\) ) p n
+({) N
+() S 8 T () S
+(return) K
+( &_ennemis;) p n
+(}) N
+(//========================================) c n
+(Joueur* ) p
+(const) K
+( GameModel::getJoueur\(\) ) p
+(const) K n
+({) p n
+() S 8 T () S
+(return) K
+( _joueur;) p n
+(GameModel.cc) (Page 1/9) (juin 01, 13 17:26) title
+border
+/v 1 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(}) p n
+(//=============================================) c n
+(std::list<Tir*>* GameModel::getNewTirs\(\)) p n
+({) N
+() S 8 T () S
+(return) K
+( & _new_tirs;) p n
+(}) N
+(//================================================) c n
+(std::list<Tir*>*GameModel::getExTirs\(\)) p n
+({) N
+() S 8 T () S
+(return) K
+( &_ex_tirs;) p n
+(}) N
+(//================================================) c n
+(std::list<Ennemi*>*GameModel::getExEnnemis\(\)) p n
+({) N
+() S 8 T () S
+(return) K
+( &_ex_ennemis;) p n
+(}) N
+(//======================================) c n
+(bool) k
+( GameModel::getQuitter\(\)) p
+(const) K n
+({) p n
+() S 8 T () S
+(return) K
+( _quitter;) p n
+(}) N
+(//========================================) c n
+(bool) k
+( GameModel::getMenu\(\)) p
+(const) K n
+({) p n
+() S 8 T () S
+(return) K
+( _menu;) p n
+(}) N
+(//======================================) c n
+(bool) k
+( GameModel::getJeu\(\)) p
+(const) K n
+({) p n
+() S 8 T () S
+(return) K
+( _jeu;) p n
+(}) N
+(//========================================) c n
+(bool) k
+( GameModel::getChargement\(\)) p
+(const) K n
+({) p n
+() S 8 T () S
+(return) K
+( _chargement;) p n
+(}) N
+(//========================================) c n
+(bool) k
+( GameModel::getGameOver\(\)) p
+(const) K n
+({) p n
+() S 8 T () S
+(return) K
+( _game_over;) p n
+(}) N
+(//========================================) c n
+(bool) k
+( GameModel::getIntro\(\)) p
+(const) K n
+({) p n
+() S 8 T () S
+(return) K
+( _intro;) p n
+(}) N
+(//========================================) c n
+(bool) k
+( GameModel::getRecommencerNiveau\(\)) p
+(const) K n
+({) p n
+() S 8 T () S
+(return) K
+( _recommencer_niveau;) p n
+(}) N
+(//==============================================) c n
+(void) k
+( GameModel::setChoixMenu\() p
+(int) k
+( choix\)) p n
+({) N
+() S 8 T (_choix_menu = choix;) N
+(}) N
+() N
+(//========================================) c n
+(float) k
+( GameModel::getClock\(\)) p
+(const) K n
+({) p n
+() S 8 T () S
+(return) K
+( _clock.GetElapsedTime\(\);) p n
+(}) N
+(//=======================================) c n
+() p n
+() N
+(///***************************************************) c n
+(///FONCTIONS DU NEXTSTEP) N
+(GameModel.cc) (Page 2/9) (juin 01, 13 17:26) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(GameModel.cc) (5/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (3-4) 6
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(///***************************************************) c n
+() p n
+(//=======================================) c n
+(//fonction principale) N
+(//=======================================) N
+(void) k
+( GameModel::nextStep\(\)) p 32 T () S 40 T () S 48 T () S 56 T () S 64 T () N
+({) S 8 T () S 16 T () N
+() S 8 T () S
+(if) K
+(\(_intro\)) p n
+() S 8 T () S 16 T (introduire\(\);) N
+() S 8 T () S 16 T () N
+() S 8 T () S
+(else) K
+( ) p
+(if) K
+(\(_chargement\)) p 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S 56 T () N
+() S 8 T () S 16 T (charger\(\);) S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () N
+() S 8 T () S 16 T () N
+() S 8 T () S
+(else) K
+( ) p
+(if) K
+(\(_jeu\)) p 24 T () S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S
+(//si on est en jeu) c n
+() p 8 T ({) S 16 T () N
+() S 8 T () S 16 T () S
+(if) K
+(\(_clock.GetElapsedTime\(\)<_duree_niveau\)) p 64 T () S
+(//et que le nive) c n
+(au n'est pas fini...on joue) N
+() p 8 T () S 16 T () S 24 T (jouer\(\);) S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () N
+() S 8 T () S 16 T () S
+(else) K
+( ) p 24 T () S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S
+(//si le niveau est fini \(le joueur a r\351ussi\)) c n
+() p 8 T () S 16 T ({) S 24 T () S 32 T () N
+() S 8 T () S 16 T () S 24 T (_jeu = ) S
+(false) k
+(;) p 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S
+(//on lance le chargement) c n
+() p 8 T () S 16 T () S 24 T (_niveau++;) N
+() S 8 T () S 16 T () S 24 T (_joueur->augmenterPuissance\(\);) S 56 T () S 64 T () S 72 T () S
+(//on aug) c n
+(mente la puissance du joueur) N
+() p 8 T () S 16 T () S 24 T (_clock.Reset\(\);) N
+() S 8 T () S 16 T () S 24 T (_chargement =) S
+(true) k
+(;) p n
+() S 8 T () S 16 T (}) S 24 T () S 32 T () N
+() S 8 T (}) N
+() S 8 T () S
+(else) K
+( ) p
+(if) K
+( \(_game_over\)) p 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S
+(//si on ) c n
+(est au game over) N
+() p 8 T ({) N
+() S 8 T () S 16 T () S
+(if) K
+( \(_clock.GetElapsedTime\(\)>4\)) p 48 T () S 56 T () S 64 T () S
+(//on reste ainsi) c n
+( pendant 4 sec) N
+() p 8 T () S 16 T () S 24 T (nouveauJeu\(\);) S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () S
+() c n
+(//et on relance le jeu) N
+() p 8 T (}) N
+() N
+() S 8 T () S
+(else) K
+( ) p
+(if) K
+( \(_recommencer_niveau\)) p 40 T () S 48 T () S 56 T () S 64 T () N
+() S 8 T () S 16 T (restart\(\);) N
+(}) N
+() N
+(//======================================) c n
+(//jeu) N
+(//=====================================) N
+(void) k
+( GameModel::jouer\(\)) p n
+({) N
+() S 8 T (std::list<Tir*>::iterator it1;) N
+() S 8 T (std::list<Ennemi*>::iterator ite;) N
+() S 8 T (std::list<Tir*>::iterator it2;) S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () N
+() S 8 T () S 16 T () S 24 T () N
+(//deplacement des ennemis et gestion des \351tats) c n
+() p 8 T () S
+(for) K
+( \(ite=_ennemis.begin\(\); ite!= _ennemis.end\(\);\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T () S
+(if) K
+(\(\(*ite\)->getApparition\(\)<=_clock.GetElapsedTime\(\)\)) p 72 T () S 80 T () N
+() S 0 T () S
+(//s'il est l'heure pour l'ennemi de se bouger:) c n
+() p 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S 24 T (\(*ite\)->deplacer\(_joueur->getY\(\)\);) S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S 32 T () S
+(//on le deplace) c n
+() p 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () N
+() S 8 T () S 16 T () S 24 T () S
+(if) K
+( \(\(*ite\)->getTouche\(\)\)) p 56 T () S 64 T () S 72 T () S 80 T () N
+(GameModel.cc) (Page 3/9) (juin 01, 13 17:26) title
+border
+/v 1 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p 0 T () S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S
+(//s'il est touch\351:) c n
+() p 8 T () S 16 T () S 24 T ({) N
+() S 8 T () S 16 T () S 24 T () S 32 T (_nb_ennemis_touches+=\(*ite\)->mourrir\(\);) S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S 32 T () S
+(//on incremente le nombre d'ennemi touch\351 et les) c n
+( scores) N
+() p 8 T () S 16 T () S 24 T () S 32 T (_score_total += \(*ite\)->mourrir\(\)*\(*ite\)->getTyp) N
+(e\(\);) N
+() S 8 T () S 16 T () S 24 T () S 32 T (_score_niveau += \(*ite\)->mourrir\(\)*\(*ite\)->getTy) N
+(pe\(\);) N
+() S 8 T () S 16 T () S 24 T (}) N
+() S 8 T () S 16 T () S 24 T () S
+(else) K
+( ) p 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S 56 T () S
+(//sinon il tire et on ge) c n
+(re la collision avec le joueur) N
+() p 8 T () S 16 T () S 24 T ({) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(if) K
+(\(\(*ite\)->getTirer\(\)\){) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (_new_tirs.push_back\() S
+(new) K
+( Tir\(\(*ite\)->getX) p n
+(\(\),\(*ite\)->getY\(\)+ENNEMI_HEIGHT*2/3-TIR_HEIGHT/2,) S 56 T () S
+(//ajout du tir dans la l) c n
+(iste de nouveaux tirs) N
+() p 8 T () S 16 T () S 24 T () S 32 T () S 40 T (TIR_WIDTH,TIR_HEIGHT,TIR_ENNEMI_X_SPEED,) N
+(TIR_Y_SPEED,\(*ite\)->getType\(\)*10,) S
+(true) k
+(, ) p
+(false) k
+(\)\);) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (}) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S 56 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(if) K
+(\(_joueur->getY\(\)>\(*ite\)->getY\(\) && _joueur->ge) p n
+(tY\(\)+JOUEUR_HEIGHT<\(*ite\)->getY\(\)+ENNEMI_HEIGHT) S 48 T () S 56 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (&& _joueur->getX\(\)>\(*ite\)->getX\(\) && _jo) N
+(ueur->getX\(\)+JOUEUR_WIDTH<\(*ite\)->getX\(\)+ENNEMI_WIDTH\)) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (_joueur->perdreVie\(\);) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () N
+() S 8 T () S 16 T () S 24 T (}) S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () N
+() S 8 T () S 16 T (}) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () N
+() S 8 T () S 16 T () S
+(if) K
+( \(!\(*ite\)->getVivant\(\)\)) p 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S 32 T () S
+(//s'il est mort:) c n
+() p 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S 24 T (_ex_ennemis.push_back\(*ite\);) S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S
+(//on l'ajoute \340 la liste d'ennemis supprim\351s) c n
+() p 8 T () S 16 T () S 24 T () S
+(delete) K
+( *ite;) p 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S
+(//et on delete+supprime) c n
+() p 8 T () S 16 T () S 24 T (ite=_ennemis.erase\(ite\);) N
+() S 8 T () S 16 T (}) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () N
+() S 8 T () S 16 T () S
+(else) K n
+() p 8 T () S 16 T () S 24 T (++ite;) N
+() S 8 T () S 16 T () N
+() S 8 T (}) N
+() N
+() N
+(//remplissage de la liste de tirs avec les tirs cr\351\351s) c n
+() p 8 T () S
+(for) K
+(\(it2 = _new_tirs.begin\(\);it2 !=_new_tirs.end\(\);it2++\)) p n
+() S 8 T () S 16 T (_tirs.push_back\(*it2\);) S 40 T () S 48 T () N
+() S 8 T () S 16 T () N
+(//deplacement des tirs et collision ) c n
+() p 8 T () S
+(for) K
+( \(it1=_tirs.begin\(\); it1!= _tirs.end\(\);\)) p n
+() S 8 T ({) S 16 T () N
+() S 8 T () S 16 T () S
+(if) K
+( \(!\(*it1\)->getVivant\(\)\)) p 48 T () S 56 T () S 64 T () S 72 T () S
+(//si le ) c n
+(tir est mort:) N
+() p 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S 24 T (_ex_tirs.push_back\(*it1\);) S 56 T () S 64 T () S 72 T () S 80 T () S
+() c n
+(//on l'ajoute \340 la liste de tirs supprim\351s) N
+() p 8 T () S 16 T () S 24 T () S
+(delete) K
+( \(*it1\);) p 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S
+(//et on le delete+supprime) c n
+() p 8 T () S 16 T () S 24 T (it1=_tirs.erase\(it1\);) S 48 T () S 56 T () S 64 T () N
+() S 8 T () S 16 T (}) N
+() S 8 T () S 16 T () S
+(else) K n
+() p 8 T () S 16 T ({) S 24 T () S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () N
+() S 8 T () S 16 T () S 24 T (\(*it1\)->deplacer\(\);) N
+(GameModel.cc) (Page 4/9) (juin 01, 13 17:26) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(GameModel.cc) (6/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (5-6) 7
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () N
+() S 8 T () S 16 T () S 24 T () S
+(if) K
+(\(\(*it1\)->getAllie\(\)\)) p 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S 32 T () S
+(//si c'est un tir allie collision avec les ennem) c n
+(is) N
+() p 8 T () S 16 T () S 24 T ({) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S
+(for) K
+( \(ite=_ennemis.begin\(\); ite!= _ennemis.end\(\);) p n
+(ite++\)) S 8 T () S 16 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T ({) S 40 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S
+(if) K
+(\(\(*it1\)->getPuissance\(\) == TIR_PUISSAN) p n
+(CE_SECONDAIRE\)) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T ({) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S
+(if) K
+(\(\(*it1\)->getY\(\)>\(*ite\)->getY\(\)) p n
+( && \(*it1\)->getY\(\)+TIR_HEIGHT_SECONDAIRE<\(*ite\)->getY\(\)+ENNEMI_HEIGHT) S 72 T () S 80 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T (&& \(*it1\)->getX\(\)>\(*ite\)->getX\(\)) N
+( && \(*it1\)->getX\(\)+TIR_WIDTH_SECONDAIRE<\(*ite\)->getX\(\)+ENNEMI_WIDTH ) S 72 T () S 80 T () N
+() S 0 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T (&& !\(*ite\)->getTouche\(\)&& \(*it1\)) N
+(->getVivant\(\)\)) S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S 32 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S 56 T (\(*ite\)->etreTouche\(\(*it1) N
+(\)->getPuissance\(\)\);) S 24 T () S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (}) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S
+(else) K
+( ) p
+(if) K
+(\(\(*it1\)->getY\(\)>\(*ite\)->getY\(\) &&) p n
+( \(*it1\)->getY\(\)+TIR_HEIGHT<\(*ite\)->getY\(\)+ENNEMI_HEIGHT) S 56 T () S 64 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (&& \(*it1\)->getX\(\)>\(*ite\)->getX\(\) && \(*it) N
+(1\)->getX\(\)+TIR_WIDTH<\(*ite\)->getX\(\)+ENNEMI_WIDTH ) S 56 T () S 64 T () S 72 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (&& !\(*ite\)->getTouche\(\)&& \(*it1\)->getViv) N
+(ant\(\)\)) S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T ({) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T (\(*ite\)->etreTouche\(\(*it1\)->getPu) N
+(issance\(\)\);) S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S 32 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T (\(*it1\)->setVivant\() S
+(false) k
+(\);) p 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (}) N
+() S 8 T () S 16 T () S 24 T () S 32 T (}) N
+() S 8 T () S 16 T () S 24 T (}) N
+() S 8 T () S 16 T () S 24 T () S
+(else) K
+( ) p
+(if) K
+(\(\(*it1\)->getY\(\)>_joueur->getY\(\) && \(*it1\)->getY\(\)) p n
+(+TIR_HEIGHT<_joueur->getY\(\)+JOUEUR_HEIGHT) S 48 T () S 56 T () S
+(//si c'est un tir ennemi) c n
+( collision anvec le joueur) N
+() p 8 T () S 16 T () S 24 T () S 32 T () S 40 T (&& \(*it1\)->getX\(\)>_joueur->getX\(\) && \(*i) N
+(t1\)->getX\(\)<_joueur->getX\(\)+JOUEUR_WIDTH) N
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T (&& \(*it1\)->getVivant\(\)\)) N
+() S 8 T () S 16 T () S 24 T ({) N
+() S 8 T () S 16 T () S 24 T () S 32 T (_joueur->etreTouche\(\(*it1\)->getPuissance\(\)\);) N
+() S 8 T () S 16 T () S 24 T () S 32 T (\(*it1\)->setVivant\() S
+(false) k
+(\);) p n
+() S 8 T () S 16 T () S 24 T (}) S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () N
+() S 8 T () S 16 T () S 24 T (it1++;) N
+() S 8 T () S 16 T (}) N
+() S 8 T (}) N
+() S 8 T () N
+(//gestion du joueur) c 24 T () S 32 T () S 40 T () S 48 T () S 56 T () N
+() p 8 T () S
+(if) K
+( \(!_joueur->getVivant\(\)\)) p 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () S
+() c n
+(//s'il est mort on passe au game over) N
+() p 8 T ({) N
+() S 8 T () S 16 T (_clock.Reset\(\);) N
+() S 8 T () S 16 T (_jeu = ) S
+(false) k
+(;) p n
+() S 8 T () S 16 T (_game_over=) S
+(true) k
+(;) p n
+() S 8 T (}) N
+() S 8 T () S
+(else) K
+( ) p
+(if) K
+(\(_joueur->getNbVies\(\)<_vies_joueur\)) p 56 T () S 64 T () S
+(//s'il a perdu u) c n
+(ne vie) N
+(GameModel.cc) (Page 5/9) (juin 01, 13 17:26) title
+border
+/v 1 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p 8 T ({) S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S
+(// on recommence le niveau) c n
+() p 8 T () S 16 T (_vies_joueur--;) N
+() S 8 T () S 16 T (_jeu = ) S
+(false) k
+(;) p n
+() S 8 T () S 16 T (_recommencer_niveau =) S
+(true) k
+(;) p n
+() S 8 T () S 16 T (_clock.Reset\(\);) S 32 T () S 40 T () S 48 T () N
+() S 8 T (}) N
+(}) S 8 T () N
+() N
+(//========================================) c n
+(//chargement) N
+(//======================================) N
+(void) k
+( GameModel::charger\(\)) p n
+({) N
+() S 8 T () S
+(if) K
+(\(_clock.GetElapsedTime\(\)<_duree_chargement\)) p 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S
+(//pendant le chargement on gere l'animation de la sorciere) c n
+() p 8 T () S 16 T (_joueur->arriver\(_duree_chargement,_clock.GetElapsedTime\(\)\);) N
+() N
+() S 8 T () S
+(else) K n
+() p 8 T ({) N
+() S 8 T () S 16 T (_chargement = ) S
+(false) k
+(;) p 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S 32 T () S
+(//a la fin du chargement on cr\351e le niveau et on) c n
+( passe au jeu) N
+() p 8 T () S 16 T (_jeu = ) S
+(true) k
+(;) p 32 T () N
+() S 8 T () S 16 T (creerNiveau\(\);) N
+() S 8 T (}) N
+(}) N
+() N
+(//==================================) c n
+(//introduction) N
+(//==================================) N
+(void) k
+( GameModel::introduire\(\)) p n
+({) N
+() S 8 T () S
+(if) K
+( \(_clock.GetElapsedTime\(\)>_duree_intro\)) p 56 T () S 64 T () S 72 T () N
+() S 8 T ({) N
+() S 8 T () S 16 T (_intro = ) S
+(false) k
+(;) p n
+() S 8 T () S 16 T (nouveauJeu\(\);) S 32 T () N
+() S 8 T (}) N
+() S 8 T () S
+(else) K n
+() p 8 T () S 16 T (_joueur->arriverIntro\(_duree_intro,_clock.GetElapsedTime\(\)\);   ) S
+(/) c n
+(/animation de l'intro) N
+() p 8 T () N
+(}) N
+(//======================================) c n
+(//restart du niveau apres perte d'une vie) N
+(//=====================================) N
+(void) k
+( GameModel::restart\(\)) p n
+({) N
+() S 8 T () S
+(if) K
+( \(_clock.GetElapsedTime\(\)>_duree_restart\)) p 56 T () S 64 T () S 72 T () N
+() S 8 T ({) N
+() S 8 T () S 16 T (_score_total-=_score_niveau;) S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () S
+() c n
+(//on enleve les points gagn\351s pendant le niveau) N
+() p 8 T () S 16 T (creerNiveau\(\);) S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S
+(//on recree le niveau) c n
+() p 8 T () S 16 T (_recommencer_niveau = ) S
+(false) k
+(;) p n
+() S 8 T () S 16 T (_jeu = ) S
+(true) k
+(;) p n
+() S 8 T (}) S 16 T () N
+() S 8 T () S
+(else) K
+( ) p
+(if) K
+( \(_clock.GetElapsedTime\(\)>_duree_restart/3\)) p n
+() S 8 T () S 16 T (_joueur->arriver\(_duree_restart/3,_clock.GetElapsedTime\(\)-2\);) S 80 T () S
+() c n
+(//animation de la sorciere) N
+(}) p n
+() N
+(///***************************************************) c n
+(///METHODES DIVERSES) N
+(///***************************************************) N
+() p n
+(//=================================) c n
+(GameModel.cc) (Page 6/9) (juin 01, 13 17:26) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(GameModel.cc) (7/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (7-8) 8
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(//cr\351ation d'un tir) c n
+(//==================================) N
+(void) k
+( GameModel::creerTir\(\)) p n
+({) N
+() S 8 T () S
+(if) K
+( \(_joueur->getTirer\(\)\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T (Tir *t = ) S
+(new) K
+( Tir\(_joueur->getX\(\)+JOUEUR_WIDTH,_joueur->getY\(\)+JO) p n
+(UEUR_HEIGHT/2-TIR_HEIGHT/2,TIR_WIDTH,TIR_HEIGHT,TIR_X_SPEED,TIR_Y_SPEED,_joueur-) N
+(>getPuissance\(\),) S
+(true) k
+(,) p
+(true) k
+(\);) p n
+() S 8 T () S 16 T (_new_tirs.push_back\(t\);) S 40 T () S 48 T () S 56 T () S 64 T () S
+(//il est ajout\351 ) c n
+(\340 la liste de nouveaux tirs) N
+() p 8 T (}) N
+(}) N
+(//==============================) c n
+(void) k
+( GameModel::creerTirSecondaire\(\)) p n
+({) N
+() S 8 T () S
+(if) K
+( \(_joueur->getTirerSecondaire\(\)\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T (Tir *t = ) S
+(new) K
+( Tir\(_joueur->getX\(\)+JOUEUR_WIDTH,_joueur->getY\(\)+JO) p n
+(UEUR_HEIGHT/2-TIR_HEIGHT/2,TIR_WIDTH_SECONDAIRE,TIR_HEIGHT_SECONDAIRE,TIR_X_SPEE) N
+(D_SECONDAIRE,TIR_Y_SPEED,_joueur->getPuissanceSecondaire\(\),) S
+(true) k
+(,) p
+(true) k
+(\);) p n
+() S 8 T () S 16 T (_new_tirs.push_back\(t\);) S 40 T () S 48 T () S 56 T () S 64 T () S
+(//il est ajout\351 ) c n
+(\340 la liste de nouveaux tirs) N
+() p 8 T (}) N
+(}) N
+(//=======================================) c n
+(// Fonctions pour afficher les infos) N
+(//=======================================) N
+() p n
+(std::string GameModel::NiveauToString\(\) ) S
+(const) K n
+({) p 8 T () N
+() S 8 T (std::ostringstream s;) N
+() S 8 T (s<<") S
+(Niveau: ) str
+("<<_niveau;) p n
+() S 8 T () S
+(return) K
+( s.str\(\);) p 24 T () N
+(}) N
+(//=================================) c n
+(std::string GameModel::EnnemisTuesToString\(\) ) p
+(const) K n
+({) p 8 T () N
+() S 8 T (std::ostringstream s;) N
+() S 8 T (s<<") S
+(Ennemis tues: ) str
+("<<_nb_ennemis_touches<<") p
+(/) str
+("<<_nb_ennemis;) p n
+() S 8 T () S
+(return) K
+( s.str\(\);) p 24 T () N
+(}) N
+(//=================================) c n
+(std::string GameModel::ScoreToString\(\) ) p
+(const) K n
+({) p 8 T () N
+() S 8 T (std::ostringstream s;) N
+() S 8 T (s<<") S
+(Score: ) str
+("<<_score_total;) p n
+() S 8 T () S
+(return) K
+( s.str\(\);) p 24 T () N
+(}) N
+() N
+(//===================================) c n
+(//cr\351ation d'un niveau) N
+(//=================================) N
+(void) k
+( GameModel::creerNiveau\(\)) p n
+({) S 8 T () S 16 T () S 24 T () S 32 T () N
+() S 8 T (_nb_ennemis_touches =0;) N
+() S 8 T (_score_niveau =0;) N
+() S 8 T () N
+() S 8 T (std::list<Tir*>::iterator it1;) S 40 T () N
+() S 8 T () S
+(for) K
+( \(it1=_tirs.begin\(\);it1!=_tirs.end\(\);it1++\)) p 56 T () S 64 T () N
+() S 8 T ({) N
+() S 8 T () S 16 T (_ex_tirs.push_back\(*it1\);) N
+() S 8 T () S 16 T () S
+(delete) K
+( \(*it1\);) p n
+() S 8 T (}) N
+() S 8 T (_tirs.clear\(\);) S 24 T () N
+() S 8 T () N
+() S 8 T () S
+(for) K
+( \(it1=_new_tirs.begin\(\);it1!=_new_tirs.end\(\);it1++\)) p 64 T () S 72 T () N
+(GameModel.cc) (Page 7/9) (juin 01, 13 17:26) title
+border
+/v 1 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p 8 T ({) N
+() S 8 T () S 16 T (_ex_tirs.push_back\(*it1\);) N
+() S 8 T () S 16 T () S
+(delete) K
+( \(*it1\);) p n
+() S 8 T (}) N
+() S 8 T (_new_tirs.clear\(\);) S 32 T () N
+() N
+() S 8 T (std::list<Ennemi*>::iterator it2;) S 48 T () N
+() S 8 T () S
+(for) K
+( \(it2=_ennemis.begin\(\);it2!=_ennemis.end\(\);it2++\)) p 64 T () S 72 T () N
+() S 8 T ({) N
+() S 8 T () S 16 T (_ex_ennemis.push_back\(*it2\);) N
+() S 8 T () S 16 T () S
+(delete) K
+( \(*it2\);) p n
+() S 8 T (}) N
+() S 8 T (_ennemis.clear\(\);) N
+() S 8 T () N
+() N
+(//creation des ennemis) c 24 T () N
+() p 8 T () S
+(int) k
+( type =_niveau;) p n
+() S 8 T () S
+(if) K
+( \(_niveau >3\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T (type = 3;) S 32 T () N
+() S 8 T () S 16 T (_nb_ennemis=_niveau*5;) N
+() S 8 T (}) N
+() S 8 T () S
+(else) K n
+() p 8 T () S 16 T (_nb_ennemis=_nb_ennemis_de_base;) N
+() S 8 T () S 16 T () S 24 T () N
+() S 8 T () S
+(for) K
+(\() p
+(int) k
+( i =0;i<_nb_ennemis;i++\)) p 40 T () S 48 T () S 56 T () S 64 T () N
+() S 8 T ({) N
+() S 8 T () S 16 T () S
+(int) k
+( proba = rand\(\) % MODEL_HEIGHT;) p 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S
+(//definit al\351atoirement la pos) c n
+() p 8 T () S 16 T () S
+(float) k
+( moment = \(rand\(\)%\(\(_duree_niveau-12\)*10\)\)/10.0;) p 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S
+(//definit aleatoirement le moment d'apparition entre 0 et le tem) c n
+(ps max du niveau-12) N
+() p 8 T () S 16 T (_ennemis.push_back\() S
+(new) K
+( Ennemi\(MODEL_WIDTH+ENNEMI_WIDTH,proba,ENN) p n
+(EMI_WIDTH, ENNEMI_HEIGHT,ENNEMI_X_SPEED,ENNEMI_Y_SPEED,type*2,) S
+(true) k
+(,type,) p
+(false) k
+(,mo) p n
+(ment\)\);) N
+() S 8 T (}) N
+() S 8 T () N
+() S 8 T (_joueur->initialiser\(\);) N
+() S 8 T (_clock.Reset\(\);) N
+(}) N
+(//==============================) c n
+(//nouveau jeu) N
+(//=============================) N
+(void) k
+( GameModel::nouveauJeu\(\)) p n
+({) S 8 T () N
+() S 8 T () S
+(delete) K
+( _joueur;) p n
+() S 8 T (_joueur = ) S
+(new) K
+( Joueur\(50, \(_h-JOUEUR_HEIGHT\)/2, JOUEUR_WIDTH, JOUEUR_HEIG) p n
+(HT, JOUEUR_X_SPEED, JOUEUR_Y_SPEED, JOUEUR_VIE, ) S
+(true) k
+(, NB_VIES,TIR_PUISSANCE,TIR_) p n
+(PUISSANCE_SECONDAIRE\);) N
+() S 8 T () N
+() S 8 T (_niveau =0;) N
+() S 8 T (_choix_menu = 0;) N
+() S 8 T (_nb_ennemis_touches=0;) N
+() S 8 T (_score_total =0;) N
+() S 8 T (_score_niveau = 0;) N
+() S 8 T (_vies_joueur=NB_VIES;) N
+() S 8 T () S 16 T () N
+() S 8 T (_menu = ) S
+(true) k
+(;) p n
+() S 8 T (_jeu = ) S
+(false) k
+(;) p n
+() S 8 T (_chargement = ) S
+(false) k
+(;) p n
+() S 8 T (_quitter = ) S
+(false) k
+(;) p n
+() S 8 T (_game_over =) S
+(false) k
+(;) p n
+() S 8 T (_recommencer_niveau = ) S
+(false) k
+(;) p n
+(}) N
+() N
+(///***************************************************) c n
+(///FONCTIONS RELATIVES AU MENU) N
+(GameModel.cc) (Page 8/9) (juin 01, 13 17:26) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(GameModel.cc) (8/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (9) 9
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(///***************************************************) c n
+() p n
+(//=========================================) c n
+(//valide le choix du menu courant) N
+(//========================================) N
+(void) k
+( GameModel::validerMenu\(\)) p n
+({) N
+() S 8 T () S
+(switch) K
+( \(_choix_menu\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T () S
+(case) K
+( \( 1\):) p n
+() S 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S 24 T (_menu = ) S
+(false) k
+(;) p n
+() S 8 T () S 16 T () S 24 T (_quitter = ) S
+(false) k
+(;) p n
+() S 8 T () S 16 T () S 24 T (_jeu = ) S
+(false) k
+(;) p n
+() S 8 T () S 16 T () S 24 T (_niveau++;) N
+() S 8 T () S 16 T () S 24 T (creerNiveau\(\);) S 40 T () N
+() S 8 T () S 16 T () S 24 T (_chargement = ) S
+(true) k
+(;) p n
+() S 8 T () S 16 T () S 24 T () S
+(break) K
+(;) p n
+() S 8 T () S 16 T (}) N
+() N
+() S 8 T () S 16 T () S
+(case) K
+( \( 2\):) p n
+() S 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S 24 T (_menu = ) S
+(false) k
+(;) p n
+() S 8 T () S 16 T () S 24 T () S
+(break) K
+(;) p n
+() S 8 T () S 16 T (}) N
+() S 8 T () S 16 T () S
+(case) K
+( \( 3\):) p n
+() S 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S 24 T (_jeu = ) S
+(false) k
+(;) p n
+() S 8 T () S 16 T () S 24 T (_menu = ) S
+(false) k
+(;) p n
+() S 8 T () S 16 T () S 24 T (_chargement = ) S
+(false) k
+(;) p n
+() S 8 T () S 16 T () S 24 T (_quitter = ) S
+(true) k
+(;) p n
+() S 8 T () S 16 T () S 24 T () S
+(break) K
+(;) p n
+() S 8 T () S 16 T (}) N
+() S 8 T () S 16 T () S
+(default) K
+(:) p n
+() S 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S 24 T (_menu = ) S
+(true) k
+(;) p n
+() S 8 T () S 16 T () S 24 T (_jeu = ) S
+(false) k
+(;) p n
+() S 8 T () S 16 T () S 24 T (_quitter = ) S
+(false) k
+(;) p n
+() S 8 T () S 16 T () S 24 T (_chargement = ) S
+(false) k
+(;) p n
+() S 8 T () S 16 T () S 24 T () S
+(break) K
+(;) p n
+() S 8 T () S 16 T (}) N
+() S 8 T (}) N
+(}) N
+(//=======================================) c n
+(//compare le choix courant avec un entier en parametre) N
+(//========================================) N
+(bool) k
+( GameModel::ChoixMenuValide\() p
+(int) k
+( choix\) ) p
+(const) K n
+({) p n
+() S 8 T () S
+(if) K
+(\(_choix_menu == choix\)) p n
+() S 8 T () S 16 T () S
+(return) K
+( ) p
+(true) k
+(;) p n
+() S 8 T () S
+(else) K n
+() p 8 T () S 16 T () S
+(return) K
+( ) p
+(false) k
+(;) p n
+(}) N
+() N
+() N
+(GameModel.cc) (Page 9/9) (juin 01, 13 17:26) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(GameModel.cc) (9/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1-2) 10
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(#include) K
+( ") p
+(GameView.h) str
+(") p n
+(#include) K
+( <iostream>) p n
+() N
+(using) K
+( ) p
+(namespace) K
+( std;) p n
+(using) K
+( ) p
+(namespace) K
+( sf;) p n
+() N
+(//=======================================) c n
+(// Constructeur) N
+(//=======================================) N
+(GameView::GameView\() p
+(int) k
+( w, ) p
+(int) k
+( h, ) p
+(int) k
+( bpp\): _w\(w\), _h\(h\)) p n
+({) N
+() S 8 T (_window = ) S
+(new) K
+( RenderWindow\(sf::VideoMode\(w, h, bpp\), ") p
+(Jeu) str
+(", sf::Style::C) p n
+(lose\);) N
+() N
+() S 8 T (_font = ) S
+(new) K
+( Font\(\);) p 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () N
+() S 8 T (_font->LoadFromFile\(") S
+(images/Antique Olive.ttf) str
+("\);) p 64 T () N
+() S 8 T (_texte = ) S
+(new) K
+( String\(") p
+(hello) str
+("\);) p 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 8 T () N
+() S 8 T (_rectangle_fond= sf::Shape::Rectangle\(13, 73,117,87, sf::Color::Red, 1, ) N
+(sf::Color::White\);) S 24 T () S 32 T () N
+() S 8 T () S 16 T () N
+() S 8 T () S
+(if) K
+( \(!_menu_image.LoadFromFile\(") p
+(images/menu.png) str
+("\) || !_background_image.Load) p n
+(FromFile\(") S
+(images/fond.png) str
+("\) ||) p n
+() S 8 T ( ! _joueur_image.LoadFromFile\(") S
+(images/sorciere.png) str
+("\) || ! _tir_image.LoadFrom) p n
+(File\(") S
+(images/sort.png) str
+("\)) p n
+() S 8 T (    || ! _jouer_image.LoadFromFile\(") S
+(images/jouer.png) str
+("\) || ! _fermer_image.Lo) p n
+(adFromFile\(") S
+(images/fermer.png) str
+("\)||) p n
+() S 8 T (     ! _scores_image.LoadFromFile\(") S
+(images/scores.png) str
+("\) || !_ennemis_image.Lo) p n
+(adFromFile\(") S
+(images/dragon.png) str
+("\)) p n
+() S 8 T (     || !_ennemis2_image.LoadFromFile\(") S
+(images/dragon2.png) str
+("\)|| !_ennemis3_ima) p n
+(ge.LoadFromFile\(") S
+(images/dragon3.png) str
+("\)) p n
+() S 8 T (    || ! _rideau_image.LoadFromFile\(") S
+(images/rideau.png) str
+("\) || ! _coeur_image.L) p n
+(oadFromFile\(") S
+(images/coeur.png) str
+("\)) p n
+() S 8 T (    ||! _tir_ennemi_image.LoadFromFile\(") S
+(images/boule.png) str
+("\)|| !_background_im) p n
+(age2.LoadFromFile\(") S
+(images/fond2b.png) str
+("\)) p n
+() S 8 T (    ||! _tir_ennemi2_image.LoadFromFile\(") S
+(images/boule2.png) str
+("\)||! _tir_ennemi3) p n
+(_image.LoadFromFile\(") S
+(images/boule3.png) str
+("\)) p n
+() S 8 T (    ||! _game_over_image.LoadFromFile\(") S
+(images/gameOver.png) str
+("\)|| ! _tir2_imag) p n
+(e.LoadFromFile\(") S
+(images/sort2.png) str
+("\)\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T (_background_sprite = ) S
+(new) K
+( FondSprite;) p n
+() S 8 T () S 16 T (_background_sprite2 = ) S
+(new) K
+( FondSprite;) p n
+() S 8 T () S 16 T (_joueur_sprite = ) S
+(new) K
+( JoueurSprite;) p n
+() S 8 T () S 16 T (_menu_sprite = ) S
+(new) K
+( GraphicElement;) p n
+() S 8 T () S 16 T (_jouer_sprite = ) S
+(new) K
+( GraphicElement;) p n
+() S 8 T () S 16 T (_fermer_sprite = ) S
+(new) K
+( GraphicElement;) p n
+() S 8 T () S 16 T (_scores_sprite = ) S
+(new) K
+( GraphicElement;) p 56 T () N
+() S 8 T () S 16 T (_coeur_sprite = ) S
+(new) K
+( GraphicElement;) p n
+() S 8 T () S 16 T (_rideau_sprite = ) S
+(new) K
+( GraphicElement; ) p n
+() S 8 T () S 16 T (_game_over_sprite = ) S
+(new) K
+( GraphicElement;) p 56 T ( ) N
+() S 8 T () S 16 T (_tir_disponible_sprite = ) S
+(new) K
+( GraphicElement;) p n
+() S 8 T (}) N
+() S 8 T () S
+(else) K
+( ) p n
+() S 8 T ({) N
+() S 8 T () S 16 T (_background_sprite = ) S
+(new) K
+( FondSprite\(&_background_image,0,0,MODEL) p n
+(_WIDTH,MODEL_HEIGHT,VITESSE_FOND1,TAILLE_FOND1\);) N
+() S 8 T () S 16 T (_background_sprite2 = ) S
+(new) K
+( FondSprite\(&_background_image2,0,0,MOD) p n
+(EL_WIDTH,MODEL_HEIGHT,VITESSE_FOND2,TAILLE_FOND2\);) N
+() S 8 T () S 16 T (_joueur_sprite = ) S
+(new) K
+( JoueurSprite\(&_joueur_image ,w/2,h/2,JOUEUR) p n
+(_WIDTH,JOUEUR_HEIGHT,) S
+(false) k
+(,) p
+(false) k
+(,) p
+(false) k
+(,) p
+(false) k
+(\);) p 48 T () N
+() S 8 T () S 16 T (_menu_sprite = ) S
+(new) K
+( GraphicElement\(&_menu_image,0,0,MODEL_WIDTH, ) p n
+(MODEL_HEIGHT\);) N
+() S 8 T () S 16 T (_jouer_sprite = ) S
+(new) K
+( GraphicElement\(&_jouer_image,150,h/2,250,75\)) p n
+(;) N
+() S 8 T () S 16 T (_scores_sprite = ) S
+(new) K
+( GraphicElement\(&_scores_image,475,h/2,250,7) p n
+(5\);) N
+(GameView.cc) (Page 1/9) (juin 02, 13 21:43) title
+border
+/v 1 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p 8 T () S 16 T (_fermer_sprite = ) S
+(new) K
+( GraphicElement\(&_fermer_image,800,h/2,250,7) p n
+(5\);) N
+() S 8 T () S 16 T (_coeur_sprite = ) S
+(new) K
+( GraphicElement\(&_coeur_image,0,0,50,50\);) p n
+() S 8 T () S 16 T (_rideau_sprite = ) S
+(new) K
+( GraphicElement\(&_rideau_image,0,0,MODEL_WID) p n
+(TH,MODEL_HEIGHT\);) N
+() S 8 T () S 16 T (_game_over_sprite = ) S
+(new) K
+( GraphicElement\(&_game_over_image,0,0,MOD) p n
+(EL_WIDTH,MODEL_HEIGHT\);) N
+() S 8 T () S 16 T (_tir_disponible_sprite  = ) S
+(new) K
+( GraphicElement\(&_tir2_image,0,0,TI) p n
+(R_WIDTH_SECONDAIRE,TIR_HEIGHT_SECONDAIRE\);) N
+() S 8 T (}) N
+() S 8 T () N
+() S 8 T (_buffer.LoadFromFile\(") S
+(musiques/tir_sorciere.wav) str
+("\); ) p 64 T () S 72 T () S
+(// sourc) c n
+(e du son du tir de la sorci\350re) N
+() p 8 T (_sound.SetBuffer\(_buffer\);) S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S
+(// on associe le buffer au son) c n
+() p n
+() S 8 T (_musique_de_fond.OpenFromFile\(") S
+(musiques/musique.wav) str
+("\); ) p 64 T () S
+(// source de la ) c n
+(musique de fond) N
+() p 8 T (_musique_de_fond.SetLoop\() S
+(true) k
+(\); ) p 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S
+(// la musique tourne en boucle) c n
+(}) p n
+() N
+(//=======================================) c n
+(// Destructeur) N
+(//=======================================) N
+(GameView::~GameView\(\){) p n
+() S 8 T () S
+(if) K
+(\(_rideau_sprite != ) p
+(NULL) K
+(\)) p n
+() S 8 T () S 16 T () S
+(delete) K
+( _rideau_sprite;) p n
+() S 8 T () S
+(if) K
+(\(_coeur_sprite != ) p
+(NULL) K
+(\)) p n
+() S 8 T () S 16 T () S
+(delete) K
+( _coeur_sprite;) p n
+() S 8 T () S
+(if) K
+(\(_window!= ) p
+(NULL) K
+(\)) p n
+() S 8 T () S 16 T () S
+(delete) K
+( _window;) p n
+() S 8 T () S
+(if) K
+( \(_joueur_sprite!=) p
+(NULL) K
+(\)) p n
+() S 8 T () S 16 T () S
+(delete) K
+( _joueur_sprite;) p n
+() S 8 T () S
+(if) K
+( \(_background_sprite!=) p
+(NULL) K
+(\)) p n
+() S 8 T () S 16 T () S
+(delete) K
+( _background_sprite;) p n
+() S 8 T () S
+(if) K
+( \(_background_sprite2!=) p
+(NULL) K
+(\)) p n
+() S 8 T () S 16 T () S
+(delete) K
+( _background_sprite2;) p n
+() S 8 T () S
+(if) K
+(\(_font!= ) p
+(NULL) K
+(\)) p n
+() S 8 T () S 16 T () S
+(delete) K
+( _font;) p n
+() S 8 T () S
+(if) K
+(\(_texte!=) p
+(NULL) K
+(\)) p n
+() S 8 T () S 16 T () S
+(delete) K
+( _texte; ) p n
+() S 8 T () S
+(if) K
+( \(_menu_sprite!=) p
+(NULL) K
+(\)) p n
+() S 8 T () S 16 T () S
+(delete) K
+( _menu_sprite;) p n
+() S 8 T () S
+(if) K
+( \(_jouer_sprite!=) p
+(NULL) K
+(\)) p n
+() S 8 T () S 16 T () S
+(delete) K
+( _jouer_sprite;) p n
+() S 8 T () S
+(if) K
+( \(_fermer_sprite!=) p
+(NULL) K
+(\)) p n
+() S 8 T () S 16 T () S
+(delete) K
+( _fermer_sprite;) p n
+() S 8 T () S 16 T () S 24 T () N
+() S 8 T (map<Ennemi*,EnnemiSprite*>::iterator ite;) N
+() S 8 T () S
+(for) K
+(\(ite=_ennemisToSprite.begin\(\);ite!=_ennemisToSprite.end\(\);ite++\)) p n
+() S 8 T () S 16 T () S
+(delete) K
+( ite->second;) p n
+() S 8 T () S 16 T () N
+() S 8 T (map<Tir *, GraphicElement *>::iterator it;) N
+() S 8 T () S
+(for) K
+(\(it=_tirsToSprite.begin\(\);it!=_tirsToSprite.end\(\);it++\)) p n
+() S 8 T () S 16 T () S
+(delete) K
+( it->second;) p n
+(}) N
+() N
+(//=======================================) c n
+(// Accesseurs en \351criture) N
+(//=======================================) N
+(void) k
+( GameView::setModel\(GameModel * model\){) p n
+() S 8 T (_model = model;) N
+(}) N
+() N
+(//=======================================) c n
+(// Synchronize) N
+(GameView.cc) (Page 2/9) (juin 02, 13 21:43) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(GameView.cc) (10/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (3-4) 11
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(//=======================================) c n
+(void) k
+( GameView::synchronize\(\)) p n
+({) S 8 T () N
+() S 8 T (list<Tir*>::iterator it1;) N
+() S 8 T () N
+(//suppression des tirs morts) c n
+() p 8 T (list<Tir*>*ptrExTirs = _model->getExTirs\(\);) S 56 T () N
+() S 8 T () S
+(for) K
+(\(it1 = ptrExTirs->begin\(\);it1!=ptrExTirs->end\(\);it1++\)) p 72 T () S 80 T () N
+() S 8 T ({) N
+() S 8 T () S 16 T () S
+(delete) K
+( _tirsToSprite[*it1];) p n
+() S 8 T () S 16 T (_tirsToSprite.erase\(*it1\);) N
+() S 8 T (}) N
+() S 8 T (\(*ptrExTirs\).clear\(\);) S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S
+(//on vide ensuit) c n
+(e la liste du model) N
+() p 8 T () N
+(//ajout des nouveaux tirs) c 32 T () S 40 T () N
+() p 8 T (list<Tir*>*ptrNewTirs = _model->getNewTirs\(\);) N
+() S 8 T () S
+(for) K
+(\(it1=ptrNewTirs->begin\(\);it1!=ptrNewTirs->end\(\);it1++\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T () S
+(if) K
+(\(\(*it1\)->getAllie\(\)\)) p n
+() S 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S 24 T () S
+(if) K
+(\(\(*it1\)->getPuissance\(\)==TIR_PUISSANCE_SECONDAIRE\)) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (_tirsToSprite[\(*it1\)]= ) S
+(new) K
+( GraphicElement\(&_tir2) p n
+(_image,\(*it1\)->getX\(\),\(*it1\)->getY\(\),TIR_WIDTH_SECONDAIRE,TIR_HEIGHT_SECONDAIRE\)) N
+(;) N
+() S 8 T () S 16 T () S 24 T () S
+(else) K n
+() p 8 T () S 16 T () S 24 T () S 32 T (_tirsToSprite[\(*it1\)]= ) S
+(new) K
+( GraphicElement\(&_tir_) p n
+(image,\(*it1\)->getX\(\),\(*it1\)->getY\(\),TIR_WIDTH,TIR_HEIGHT\);) N
+() S 8 T () S 16 T () S 24 T () N
+() S 8 T () S 16 T (}) N
+() S 8 T () S 16 T () S
+(else) K n
+() p 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S 24 T () S
+(if) K
+(\(\(*it1\)->getPuissance\(\)==10\)) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (_tirsToSprite[\(*it1\)]= ) S
+(new) K
+( GraphicElement\(&_tir_) p n
+(ennemi_image,\(*it1\)->getX\(\),\(*it1\)->getY\(\),TIR_ENNEMI_WIDTH,TIR_ENNEMI_HEIGHT\);) N
+() S 8 T () S 16 T () S 24 T () S
+(else) K
+( ) p
+(if) K
+(\(\(*it1\)->getPuissance\(\)==20\)) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (_tirsToSprite[\(*it1\)]= ) S
+(new) K
+( GraphicElement\(&_tir_) p n
+(ennemi2_image,\(*it1\)->getX\(\),\(*it1\)->getY\(\),TIR_ENNEMI_WIDTH,TIR_ENNEMI_HEIGHT\);) N
+() S 8 T () S 16 T () S 24 T () S
+(else) K n
+() p 8 T () S 16 T () S 24 T () S 32 T (_tirsToSprite[\(*it1\)]= ) S
+(new) K
+( GraphicElement\(&_tir_) p n
+(ennemi3_image,\(*it1\)->getX\(\),\(*it1\)->getY\(\),TIR_ENNEMI_WIDTH,TIR_ENNEMI_HEIGHT\);) N
+() S 0 T () N
+() S 8 T () S 16 T (}) S 24 T () N
+() S 8 T (}) N
+() S 8 T (\(*ptrNewTirs\).clear\(\);) S 32 T () S 40 T () S 48 T () S 56 T () S
+(//on vide ensuite la lis) c n
+(te du model) N
+() p n
+(//mise \340 jour du map de tirs) c n
+() p 8 T (map<Tir*,GraphicElement*>::iterator it;) N
+() S 8 T () S
+(for) K
+( \(it=_tirsToSprite.begin\(\);it!=_tirsToSprite.end\(\);it++\)) p n
+() S 8 T () S 16 T () S 24 T (it->second->SetPosition\(it->first->getX\(\),it->first->get) N
+(Y\(\)\);) S 8 T () N
+() S 8 T () S 16 T () S 24 T () N
+() S 8 T () N
+() S 8 T (list<Ennemi*>::iterator it2;) S 40 T () N
+(//suppression des ennemis morts) c n
+() p 8 T (list<Ennemi*>*ptrExEnnemis = _model->getExEnnemis\(\);) N
+() S 8 T () S 16 T () N
+() S 8 T () S
+(for) K
+(\(it2 = ptrExEnnemis->begin\(\);it2!=ptrExEnnemis->end\(\);it2++\)) p 72 T () S 80 T () N
+() S 8 T ({) N
+() S 8 T () S 16 T () S
+(delete) K
+( _ennemisToSprite[*it2];) p n
+() S 8 T () S 16 T (_ennemisToSprite.erase\(*it2\);) N
+() S 8 T (}) S 16 T () N
+() S 8 T (\(*ptrExEnnemis\).clear\(\);) S 40 T () S 48 T () S 56 T () S
+(//on vide ensuite la lis) c n
+(te du model) N
+() p n
+(//ajout des nouveaux ennemis) c n
+(GameView.cc) (Page 3/9) (juin 02, 13 21:43) title
+border
+/v 1 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p 8 T (list<Ennemi*>* ptrEnnemis = _model->getEnnemis\(\);) N
+() S 8 T () S
+(if) K
+(\( _ennemisToSprite.empty\(\)\)) p 40 T () S 48 T () S 56 T () S 64 T () S
+(//si le map d'en) c n
+(nemis est vide on le remplit) N
+() p 8 T ({) N
+() S 8 T () S 16 T () S
+(for) K
+( \(it2=ptrEnnemis->begin\(\);it2!=ptrEnnemis->end\(\);it2++\)) p n
+() S 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S 24 T () S
+(if) K
+( \(\(*it2\)->getType\(\)==1\)) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (_ennemisToSprite[\(*it2\)] =) S
+(new) K
+( EnnemiSprite\(&_enn) p n
+(emis_image,\(*it2\)->getX\(\),\(*it2\)->getY\(\),ENNEMI_WIDTH,ENNEMI_HEIGHT,) S
+(true) k
+(,) p
+(false) k
+(\);) p n
+() S 8 T () S 16 T () S 24 T () S
+(else) K
+( ) p
+(if) K
+( \(\(*it2\)->getType\(\)==2\)) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (_ennemisToSprite[\(*it2\)] =) S
+(new) K
+( EnnemiSprite\(&_enn) p n
+(emis2_image,\(*it2\)->getX\(\),\(*it2\)->getY\(\),ENNEMI_WIDTH,ENNEMI_HEIGHT,) S
+(true) k
+(,) p
+(false) k
+(\)) p n
+(;) N
+() S 8 T () S 16 T () S 24 T () S
+(else) K n
+() p 8 T () S 16 T () S 24 T () S 32 T (_ennemisToSprite[\(*it2\)] =) S
+(new) K
+( EnnemiSprite\(&_enn) p n
+(emis3_image,\(*it2\)->getX\(\),\(*it2\)->getY\(\),ENNEMI_WIDTH,ENNEMI_HEIGHT,) S
+(true) k
+(,) p
+(false) k
+(\)) p n
+(;) N
+() S 8 T () S 16 T (}) S 24 T () N
+() S 8 T (}) N
+() S 8 T () S 16 T () N
+(//mise \340 jour du map d'ennemi) c 32 T () N
+() p 8 T (map<Ennemi*,EnnemiSprite*>::iterator ite;) N
+() S 8 T () S
+(for) K
+( \(ite=_ennemisToSprite.begin\(\);ite!=_ennemisToSprite.end\(\);ite++\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T (ite->second->SetPosition\(ite->first->getX\(\),ite->first->getY\(\)\);) N
+() S 0 T () N
+() S 8 T () S 16 T () S
+(if) K
+(\(ite->first->getTouche\(\)\)) p 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S 32 T () N
+() S 8 T () S 16 T () S 24 T (ite->second->setExplose\(\);) S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S 32 T () N
+() S 8 T (}) N
+() S 8 T () S 16 T () N
+() S 8 T () S 16 T () S 24 T () N
+(//synchro du joueur) c n
+() p 8 T (_joueur_sprite->SetPosition\(_model->getJoueur\(\)->getX\(\),_model->getJoueu) N
+(r\(\)->getY\(\)\);) N
+() N
+(}) N
+() N
+(//=======================================) c n
+(// Fonctions de dessin) N
+(//=======================================) N
+() p n
+(//fonction principale) c n
+(void) k
+( GameView::draw\(\)) p n
+({) N
+() S 8 T (_window->Clear\(\);) N
+() S 8 T () N
+() S 8 T () S
+(if) K
+( \(_model->getIntro\(\)\)) p n
+() S 8 T () S 16 T (drawIntro\(\);) N
+() S 8 T () N
+() S 8 T () S
+(else) K
+( ) p
+(if) K
+( \(_model->getRecommencerNiveau\(\)\)) p n
+() S 8 T () S 16 T (drawRecommencerNiveau\(\);) N
+() S 8 T () S 16 T () N
+() S 8 T () S
+(else) K
+( ) p
+(if) K
+(\(_model->getMenu\(\)\)) p 40 T () S 48 T () N
+() S 8 T () S 16 T (drawMenu\(\);) S 32 T () S 40 T () S 48 T () S 56 T () N
+() S 8 T () S 16 T () N
+() S 8 T () S
+(else) K
+( ) p
+(if) K
+(\(_model->getJeu\(\)\)) p 40 T () S 48 T () N
+() S 8 T () S 16 T (drawJeu\(\);) S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () N
+() S 8 T () S 16 T () N
+() S 8 T () S
+(else) K
+( ) p
+(if) K
+( \(_model->getChargement\(\)\)) p 48 T () N
+() S 8 T () S 16 T (drawChargement\(\);) S 40 T () S 48 T () S 56 T () N
+() S 8 T () S 16 T () N
+() S 8 T () S
+(else) K
+( ) p
+(if) K
+(\(_model->getGameOver\(\)\)) p n
+() S 8 T () S 16 T (drawGameOver\(\);) N
+() N
+() S 8 T (_window->Display\(\);) S 32 T () S 40 T () S 48 T () N
+(GameView.cc) (Page 4/9) (juin 02, 13 21:43) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(GameView.cc) (11/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (5-6) 12
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(}) p n
+() N
+(//dessin du menu) c n
+(void) k
+( GameView::drawMenu\(\)) p n
+({) N
+() S 8 T (_menu_sprite->draw\(_window\);) N
+() S 8 T () S 16 T () N
+() S 8 T () S
+(if) K
+( \(_model->ChoixMenuValide\(1\)==) p
+(true) k
+(\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T (_jouer_sprite->resize\(300,90\);) N
+() S 8 T () S 16 T (_fermer_sprite->resize\(250,75\);) N
+() S 8 T () S 16 T (_scores_sprite->resize\(250,75\);) N
+() S 8 T (}) N
+() S 8 T () S
+(if) K
+( \(_model->ChoixMenuValide\(3\)==) p
+(true) k
+(\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T (_fermer_sprite->resize\(300,90\);) N
+() S 8 T () S 16 T (_jouer_sprite->resize\(250,75\);) N
+() S 8 T () S 16 T (_scores_sprite->resize\(250,75\);) N
+() S 8 T (}) N
+() S 8 T () S
+(if) K
+( \(_model->ChoixMenuValide\(2\)==) p
+(true) k
+(\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T (_fermer_sprite->resize\(250,75\);) N
+() S 8 T () S 16 T (_jouer_sprite->resize\(250,75\);) N
+() S 8 T () S 16 T (_scores_sprite->resize\(300,90\);) N
+() S 8 T (}) N
+() S 8 T () S
+(if) K
+( \(_model->ChoixMenuValide\(0\)==) p
+(true) k
+(\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T (_fermer_sprite->resize\(250,75\);) N
+() S 8 T () S 16 T (_jouer_sprite->resize\(250,75\);) N
+() S 8 T () S 16 T (_scores_sprite->resize\(250,75\);) N
+() S 8 T (}) N
+() S 8 T () N
+() S 8 T (_jouer_sprite->draw\(_window\);) N
+() S 8 T (_fermer_sprite->draw\(_window\);) N
+() S 8 T (_scores_sprite->draw\(_window\);) N
+(}) N
+() N
+(//dessin du jeu) c n
+(void) k
+( GameView::drawJeu\(\)) p n
+({) N
+() S 8 T () S
+(if) K
+( \(_musique_de_fond.GetStatus\(\)!=sf::Sound::Playing\)) p n
+() S 8 T () S 16 T () S 24 T (_musique_de_fond.Play\(\);) S 56 T () S 64 T () S 72 T () S
+(//on lan) c n
+(ce la musique) N
+() p n
+(//affichage du fond) c n
+() p 8 T (_background_sprite->defiler\(_window\);) N
+() S 8 T () S 16 T () N
+(//affichage du joueur) c n
+() p 8 T (_joueur_sprite->draw\(_window\);) S 40 T () N
+() S 8 T () S 16 T () N
+(//parcours et affichage du map de tirs) c n
+() p 8 T (map<Tir*, GraphicElement *>::iterator it;) N
+() S 8 T () S
+(for) K
+(\(it = _tirsToSprite.begin\(\);it != _tirsToSprite.end\(\); ++it\)) p 72 T () S 80 T () N
+() S 0 T () S 8 T () N
+() S 8 T () S 16 T (it->second->draw\(_window\);) N
+() S 8 T () S 16 T () N
+(//parcours et affichage du map d'ennemis) c 48 T () S 56 T () N
+() p 8 T (map<Ennemi*, EnnemiSprite *>::iterator ite;) N
+() S 8 T () S
+(for) K
+(\(ite = _ennemisToSprite.begin\(\);ite != _ennemisToSprite.end\(\); ++ite\)) p n
+() S 0 T () N
+() S 8 T () S 16 T (ite->second->draw\(_window\);) N
+() S 8 T () N
+(//affichage du fond2) c 24 T () S 32 T () N
+() p 8 T (_background_sprite2->defiler\(_window\);) S 48 T () N
+() N
+(//affichage des coeurs) c n
+() p 8 T () S
+(for) K
+(\() p
+(int) k
+( i =0;i<_model->getJoueur\(\)->getNbVies\(\);i++\) ) p 64 T () S 72 T () N
+(GameView.cc) (Page 5/9) (juin 02, 13 21:43) title
+border
+/v 1 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p 8 T ({) N
+() S 8 T () S 16 T (_coeur_sprite->SetPosition\(i*50,0\);) N
+() S 8 T () S 16 T (_coeur_sprite->draw\(_window\);) N
+() S 8 T (}) N
+() N
+(//affichage des ennemis tu\351s) c 32 T () N
+() p 8 T (*_texte = String\(_model->EnnemisTuesToString\(\)\);) S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () N
+() S 8 T (_texte->SetFont\(*_font\);) N
+() S 8 T (_texte->SetSize\(30.f\);) N
+() S 8 T (_texte->SetPosition\(300,10\);) N
+() S 8 T (_texte->SetColor\(sf::Color\(50,50,50\)\);) N
+() S 8 T (_window->Draw\(*_texte\);) S 32 T () N
+() S 8 T () N
+(//affichage du score) c n
+() p 8 T (*_texte = String\(_model->ScoreToString\(\)\);) N
+() S 8 T (_texte->SetFont\(*_font\);) N
+() S 8 T (_texte->SetSize\(30.f\);) N
+() S 8 T (_texte->SetPosition\(1050,10\);) N
+() S 8 T (_texte->SetColor\(sf::Color\(50,50,50\)\);) N
+() S 8 T (_window->Draw\(*_texte\);) S 32 T () N
+() S 8 T () N
+(//dessin des rectangles de vie) c n
+() p 8 T (_window->Draw\(_rectangle_fond\);) S 40 T () N
+() S 8 T (_window->Draw\(sf::Shape::Rectangle\(15, 75,_model->getJoueur\(\)->getVie\(\)+) N
+(15, 85, sf::Color::Green\)\);) N
+() S 8 T () N
+(//dessin du tir secondaire s'il est disponible) c n
+() p 8 T () S
+(if) K
+(\(_model->getJoueur\(\)->getClock\(\)>5\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T (_tir_disponible_sprite->SetPosition\(200,20\);) N
+() S 8 T () S 16 T (_tir_disponible_sprite->draw\(_window\);) N
+() S 8 T (}) N
+(}) N
+() N
+(//dessin du chargement) c n
+(void) k
+( GameView::drawChargement\(\)) p n
+({) N
+() S 8 T (_background_sprite->draw\(_window\);) N
+() S 8 T () N
+() S 8 T (_joueur_sprite->setBas\() S
+(false) k
+(\);) p 40 T () S 48 T () S 56 T () S 64 T () S
+(//on selectionne) c n
+( l'animation du sprite) N
+() p 8 T (_joueur_sprite->setHaut\() S
+(false) k
+(\);) p 40 T () N
+() S 8 T (_joueur_sprite->draw\(_window\);) N
+() S 8 T () N
+() S 8 T (_background_sprite2->draw\(_window\);) S 48 T () N
+() S 8 T () N
+() S 8 T (_rideau_sprite->SetPosition\(0,-_model->getClock\(\)*MODEL_HEIGHT/DUREE_CHA) N
+(RGEMENT\);) S 16 T () S
+(//le rideau bouge proportionnellement \340 la dur\351e du chargement) c n
+() p 8 T (_rideau_sprite->draw\(_window\);) N
+() S 8 T () N
+() S 8 T (*_texte = String\(_model->NiveauToString\(\)\);) S 56 T () N
+() S 8 T (_texte->SetFont\(*_font\);) N
+() S 8 T (_texte->SetSize\(100.f\);) N
+() S 8 T (_texte->SetPosition\(400,600\);) N
+() S 8 T (_texte->SetColor\(sf::Color\(50,50,50\)\);) N
+() S 8 T (_window->Draw\(*_texte\);) S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () N
+(}) N
+(//dessin du game over) c n
+(void) k
+( GameView::drawGameOver\(\)) p n
+({) N
+() S 8 T (_game_over_sprite->draw\(_window\);) N
+() S 8 T () N
+() S 8 T (*_texte = String\(_model->ScoreToString\(\)\);) N
+() S 8 T (_texte->SetFont\(*_font\);) N
+() S 8 T (_texte->SetSize\(60.f\);) N
+(GameView.cc) (Page 6/9) (juin 02, 13 21:43) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(GameView.cc) (12/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (7-8) 13
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p 8 T (_texte->SetPosition\(480,620\);) N
+() S 8 T (_texte->SetColor\(sf::Color\(50,50,50\)\);) N
+() S 8 T (_window->Draw\(*_texte\);) S 32 T () N
+(}) N
+(//dessin de l'intro) c n
+(void) k
+( GameView::drawIntro\(\)) p n
+({) N
+() S 8 T (_menu_sprite->draw\(_window\);) N
+() S 8 T () N
+() S 8 T (_joueur_sprite->setBas\() S
+(false) k
+(\);) p n
+() S 8 T (_joueur_sprite->setHaut\() S
+(false) k
+(\);) p 40 T () N
+() S 8 T (_joueur_sprite->draw\(_window\);) N
+() S 8 T () S 16 T () N
+() S 8 T (*_texte = String\(") S
+(SHOOT THEM UP!!) str
+("\);) p n
+() S 8 T (_texte->SetFont\(*_font\);) N
+() S 8 T (_texte->SetSize\(80.f\);) N
+() S 8 T (_texte->SetPosition\(250,150\);) N
+() S 8 T (_texte->SetColor\(sf::Color\(50,50,50\)\);) N
+() S 8 T (_window->Draw\(*_texte\);) S 32 T () N
+(}) N
+(//dessin du restart du niveau) c n
+(void) k
+( GameView::drawRecommencerNiveau\(\)) p n
+({) S 8 T () N
+() S 8 T () S
+(if) K
+(\(_model->getClock\(\)<DUREE_RESTART/3\)) p 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S
+(//on baisse le rideau) c n
+() p 8 T ({) N
+() S 8 T () S 16 T (_background_sprite->defiler\(_window\);) S 56 T () N
+() S 8 T () S 16 T (_background_sprite2->defiler\(_window\);) S 56 T () S 64 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T () N
+() S 8 T () S 16 T (_rideau_sprite->SetPosition\(0,_model->getClock\(\)*3*MODEL_HEIGHT/) N
+(DUREE_RESTART-MODEL_HEIGHT\);) N
+() S 8 T (}) N
+() N
+() S 8 T () S
+(else) K
+( ) p
+(if) K
+( \(_model->getClock\(\)>DUREE_RESTART/3*2\)) p 56 T () S 64 T () S 72 T () S 80 T () S
+() c n
+(//on monte le rideau ) N
+() p 8 T ({) N
+() S 8 T () S 16 T (_background_sprite->draw\(_window\);) N
+() S 8 T () S 16 T () N
+() S 8 T () S 16 T (_joueur_sprite->setBas\() S
+(false) k
+(\);) p n
+() S 8 T () S 16 T (_joueur_sprite->setHaut\() S
+(false) k
+(\);) p 48 T () N
+() S 8 T () S 16 T (_joueur_sprite->draw\(_window\);) S 48 T () N
+() S 8 T () S 16 T () N
+() S 8 T () S 16 T (_background_sprite2->draw\(_window\);) S 56 T () N
+() S 8 T () S 16 T () N
+() S 8 T () S 16 T (_rideau_sprite->SetPosition\(0,\(2-_model->getClock\(\)\)*3*MODEL_HEI) N
+(GHT/DUREE_RESTART\);) N
+() S 8 T (}) N
+() S 8 T () N
+() S 8 T (_rideau_sprite->draw\(_window\);) N
+() S 8 T () N
+() S 8 T (*_texte = String\(") S
+(Try again!) str
+("\);) p n
+() S 8 T (_texte->SetFont\(*_font\);) N
+() S 8 T (_texte->SetSize\(100.f\);) N
+() S 8 T (_texte->SetPosition\(400,600\);) N
+() S 8 T (_texte->SetColor\(sf::Color\(50,50,50\)\);) N
+() S 8 T (_window->Draw\(*_texte\);) S 32 T () N
+(}) N
+() N
+(//================================================) c n
+(// Traitement des evenements) N
+(// Retourne false si un evenement de fin est re\347u) N
+(//================================================) N
+() p n
+(//fonction principale) c n
+(bool) k
+( GameView::treatEvents\(GameModel * model\)) p n
+({) N
+() S 8 T () S
+(bool) k
+( result = ) p
+(false) k
+(;) p n
+(GameView.cc) (Page 7/9) (juin 02, 13 21:43) title
+border
+/v 1 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p n
+() S 8 T () S
+(if) K
+(\(_window->IsOpened\(\)\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T (result = ) S
+(true) k
+(;) p n
+() S 8 T () S 16 T (Event event;) N
+() S 8 T () S 16 T () S
+(while) K
+( \(_window->GetEvent\(event\)\) ) p n
+() S 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S 24 T () S
+(if) K
+( \(\(event.Type == Event::Closed\) ||\(\(event.Type == Even) p n
+(t::KeyPressed\) && \(event.Key.Code == sf::Key::Escape\)\) || model->getQuitter\(\)\) ) N
+() S 8 T () S 16 T () S 24 T ({) N
+() S 8 T () S 16 T () S 24 T () S 32 T (_window->Close\(\);) N
+() S 8 T () S 16 T () S 24 T () S 32 T (result = ) S
+(false) k
+(;) p n
+() S 8 T () S 16 T () S 24 T (}) N
+() S 8 T () S 16 T (}) S 24 T () N
+() S 8 T () S 16 T () N
+() S 8 T () S 16 T () S
+(if) K
+(\(model->getMenu\(\)\)) p 40 T () S 48 T () S 56 T () S 64 T () N
+() S 8 T () S 16 T () S 24 T (treatEventsMenu\(model,event\);) S 56 T () N
+() S 8 T () S 16 T () N
+() S 8 T () S 16 T () S
+(else) K
+( ) p
+(if) K
+(\(model->getJeu\(\)\)) p 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 8 T () S 16 T () S 24 T (treatEventsJeu\(model\);) S 48 T () S 56 T () S 64 T () N
+() S 8 T (}) S 16 T () N
+() S 8 T () S 16 T () S
+(return) K
+( result;) p n
+(}) N
+() N
+(//traitement des evenements du jeu) c n
+(void) k
+( GameView::treatEventsJeu\(GameModel*model\)) p n
+({) N
+() S 8 T () S
+(const) K
+( sf::Input& input=_window->GetInput\(\);) p n
+() N
+() S 8 T () S
+(if) K
+( \(input.IsKeyDown\(sf::Key::Space\)\)) p 48 T () S 56 T () S
+(//tir principal) c n
+() p 8 T () S 16 T ({) S 24 T () N
+() S 8 T () S 16 T () S 24 T () S
+(if) K
+(\(_clock.GetElapsedTime\(\)>0.1\)) p n
+() S 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S 24 T (_sound.Play\(\);) N
+() S 8 T () S 16 T () S 24 T (_model->creerTir\(\);) S 48 T () S 56 T () S 64 T () S 72 T () S
+(//on dem) c n
+(ande au modele de creer le tir) N
+() p 8 T () S 16 T () S 24 T (_clock.Reset\(\);) N
+() S 8 T () S 16 T (}) S 24 T () S 32 T () S 40 T () N
+() S 8 T () S 16 T (}) N
+() S 8 T () N
+() S 8 T () S
+(if) K
+( \(input.IsKeyDown\(sf::Key::Return\)\)) p 48 T () S 56 T () S
+(//tir secondaire) c n
+() p 8 T () S 16 T (_model->creerTirSecondaire\(\);) N
+() S 8 T () N
+() S 8 T () N
+() S 8 T () S
+(if) K
+( \(input.IsKeyDown\(sf::Key::Up\)\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T (model->getJoueur\(\)->deplacerY\() S
+(true) k
+(\);) p 56 T () S 64 T () S 72 T () S 80 T () S
+() c n
+(//bouge le MovableElement...) N
+() p 8 T () S 16 T (_joueur_sprite->setHaut\() S
+(true) k
+(\);) p 48 T () S 56 T () S 64 T () S 72 T () S 80 T () S
+() c n
+(//avertit le sprite) N
+() p 8 T () S 16 T (_joueur_sprite->setBas\() S
+(false) k
+(\);) p n
+() S 8 T () S 16 T (_joueur_sprite->setRecule\() S
+(false) k
+(\);) p n
+() S 8 T (}) N
+() S 8 T () S 16 T () S 24 T () N
+() S 8 T () S
+(else) K
+( ) p
+(if) K
+( \(input.IsKeyDown\(sf::Key::Down\)\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T (model->getJoueur\(\)->deplacerY\() S
+(false) k
+(\);) p 56 T () S 64 T () S 72 T () S
+(//bouge ) c n
+(le MovableElement...) N
+() p 8 T () S 16 T (_joueur_sprite->setBas\() S
+(true) k
+(\);) p 48 T () S 56 T () S 64 T () S 72 T () S 80 T () S
+() c n
+(//avertit le sprite) N
+() p 8 T () S 16 T (_joueur_sprite->setHaut\() S
+(false) k
+(\);) p n
+() S 8 T () S 16 T (_joueur_sprite->setRecule\() S
+(false) k
+(\);) p n
+() S 8 T (}) N
+() S 8 T () N
+() S 8 T () S
+(else) K
+( ) p
+(if) K
+( \(input.IsKeyDown\(sf::Key::Left\)\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T (model->getJoueur\(\)->deplacerX\() S
+(true) k
+(\);) p 56 T () S 64 T () S 72 T () S
+(//bouge ) c n
+(GameView.cc) (Page 8/9) (juin 02, 13 21:43) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(GameView.cc) (13/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (9) 14
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(le MovableElement...) c n
+() p 8 T () S 16 T (_joueur_sprite->setBas\() S
+(false) k
+(\);) p 48 T () S 56 T () S 64 T () S 72 T () S 80 T () S
+() c n
+(//avertit le sprite) N
+() p 8 T () S 16 T (_joueur_sprite->setHaut\() S
+(false) k
+(\);) p n
+() S 8 T () S 16 T (_joueur_sprite->setRecule\() S
+(true) k
+(\);) p n
+() S 8 T (}) N
+() S 8 T () N
+() S 8 T () S
+(else) K
+( ) p
+(if) K
+( \(input.IsKeyDown\(sf::Key::Right\)\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T (model->getJoueur\(\)->deplacerX\() S
+(false) k
+(\);) p 56 T () S 64 T () S 72 T () S
+(//bouge ) c n
+(le MovableElement...) N
+() p 8 T () S 16 T (_joueur_sprite->setBas\() S
+(false) k
+(\);) p 48 T () S 56 T () S 64 T () S 72 T () S 80 T () S
+() c n
+(//avertit le sprite) N
+() p 8 T () S 16 T (_joueur_sprite->setHaut\() S
+(false) k
+(\);) p n
+() S 8 T () S 16 T (_joueur_sprite->setRecule\() S
+(false) k
+(\);) p n
+() S 8 T (}) N
+() S 8 T () S 16 T () S 24 T () N
+() S 8 T () S
+(else) K n
+() p 8 T ({) N
+() S 8 T () S 16 T (_joueur_sprite->setBas\() S
+(false) k
+(\);) p n
+() S 8 T () S 16 T (_joueur_sprite->setHaut\() S
+(false) k
+(\);) p 48 T () N
+() S 8 T () S 16 T (_joueur_sprite->setRecule\() S
+(false) k
+(\);) p 56 T () N
+() S 8 T (}) N
+(}) N
+() N
+(//traitement des evenements du menu) c n
+(void) k
+( GameView::treatEventsMenu\(GameModel *model,sf::Event event\)) p 72 T () S 80 T () S
+() c n
+(//le choix du menu est stock\351 dans le model) N
+({) p n
+() S 8 T () S
+(const) K
+( sf::Input& input=_window->GetInput\(\);) p n
+() S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () N
+() S 8 T () S
+(if) K
+( \(input.GetMouseY\(\)>MODEL_HEIGHT/2 && input.GetMouseY\(\)<MODEL_HEIGHT/2) p n
+(+63 && input.GetMouseX\(\)>150 && input.GetMouseX\(\)<400\)) N
+() S 8 T () S 16 T (model->setChoixMenu\(1\);) N
+() S 8 T () S
+(else) K
+( ) p
+(if) K
+( \(input.GetMouseY\(\)>MODEL_HEIGHT/2 && input.GetMouseY\(\)<MODEL_HEI) p n
+(GHT/2+63 && input.GetMouseX\(\)>475 && input.GetMouseX\(\)<725\)) N
+() S 8 T () S 16 T (model->setChoixMenu\(2\);) N
+() S 8 T () S
+(else) K
+( ) p
+(if) K
+( \(input.GetMouseY\(\)>MODEL_HEIGHT/2 && input.GetMouseY\(\)<MODEL_HEI) p n
+(GHT/2+63 && input.GetMouseX\(\)>800 && input.GetMouseX\(\)<1050\)) N
+() S 8 T () S 16 T (model->setChoixMenu\(3\);) N
+() S 8 T () S
+(else) K n
+() p 8 T () S 16 T (model->setChoixMenu\(0\);) S 40 T () N
+() S 8 T () S 16 T () N
+() S 8 T () S
+(if) K
+( \(input.IsMouseButtonDown\(sf::Mouse::Left\)\)) p n
+() S 8 T () S 16 T (model->validerMenu\(\);) S 40 T () S 48 T () N
+(}) N
+() N
+() N
+() N
+() N
+(GameView.cc) (Page 9/9) (juin 02, 13 21:43) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(GameView.cc) (14/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 15
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(#include) K
+( ") p
+(GraphicElement.h) str
+(") p n
+(#include) K
+( <iostream>) p n
+() N
+(using) K
+( ) p
+(namespace) K
+( std;) p n
+(using) K
+( ) p
+(namespace) K
+( sf;) p n
+() N
+(//=======================================) c n
+(// Constructeur) N
+(//=======================================) N
+(GraphicElement::GraphicElement\(\):  Sprite\(\), _x\(0\), _y\(0\)) p n
+({}) N
+(//=========================================) c n
+(GraphicElement::GraphicElement\(Image *image, ) p
+(int) k
+( x, ) p
+(int) k
+( y,) p
+(int) k
+( w,) p
+(int) k
+( h\)) p n
+() S 8 T (:  Sprite\(*image\), _x\(x\), _y\(y\), _w\(w\), _h\(h\)) N
+({) N
+() S 8 T (Resize\(w, h\);) N
+() S 8 T (SetPosition\(x,y\);) N
+(}) N
+(//=============================================) c n
+(GraphicElement::~GraphicElement\(\)) p n
+({}) N
+() N
+(//=======================================) c n
+(// Methodes) N
+(//=======================================) N
+(void) k
+( GraphicElement::resize\() p
+(int) k
+( w, ) p
+(int) k
+( h\){) p n
+() S 8 T (_x -=\(w-_w\)/2;) S 24 T () S 32 T () S
+(//recentre le sprite) c n
+() p 8 T (_y -=\(h-_h\)/2;) S 24 T () S 32 T () S
+(//) c n
+() p 8 T () N
+() S 8 T (_w = w;) N
+() S 8 T (_h = h;) N
+() S 8 T () N
+() S 8 T (Resize\(_w, _h\);) N
+() S 8 T (SetPosition\(_x,_y\);) N
+(}) N
+(//========================================) c n
+(void) k
+( GraphicElement::draw\(RenderWindow * window\){) p n
+() S 8 T (window->Draw\(*) S
+(this) K
+(\);) p n
+(}) N
+(GraphicElement.cc) (Page 1/1) (mai 09, 13 10:45) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(GraphicElement.cc) (15/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 16
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(#include) K
+( ") p
+(GameView.h) str
+(") p n
+(#include) K
+( ") p
+(GameModel.h) str
+(") p n
+(#include) K
+( ") p
+(jeu_const.h) str
+(") p n
+(#include) K
+( <iostream>) p n
+(using) K
+( ) p
+(namespace) K
+( std;) p n
+() N
+(int) k
+( main\(\){) p n
+( ) N
+(  GameModel * model = ) S
+(new) K
+( GameModel\(MODEL_WIDTH, MODEL_HEIGHT\);) p n
+(  GameView * view = ) S
+(new) K
+( GameView\(VIEW_WIDTH, VIEW_HEIGHT, VIEW_BPP\);) p n
+(  view->setModel\(model\);) N
+(  ) N
+() S 8 T () S
+(while) K
+(\(view->treatEvents\(model\)\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T (model->nextStep\(\);) N
+() S 8 T () S 16 T (view->synchronize\(\);) N
+() S 8 T () S 16 T (view->draw\(\);) N
+() S 8 T (}) N
+() N
+(  ) S
+(delete) K
+( view;) p n
+(  ) S
+(delete) K
+( model;) p n
+(  ) N
+(  ) S
+(return) K
+( EXIT_SUCCESS;) p n
+(}) N
+(jeu.cc) (Page 1/1) (mai 30, 13 17:46) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(jeu.cc) (16/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1-2) 17
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(#include) K
+( ") p
+(Joueur.h) str
+(") p n
+(#include) K
+( ") p
+(jeu_const.h) str
+(") p n
+(#include) K
+( <iostream>) p n
+(#include) K
+( <fstream>) p n
+(#include) K
+( <sstream>) p n
+() N
+(using) K
+( ) p
+(namespace) K
+( std;) p n
+(//=======================================) c n
+(// Constructeurs) N
+(//=======================================) N
+(Joueur::Joueur\(\) : Personnage\(\){}) p n
+(//=======================================) c n
+(Joueur::Joueur\() p
+(int) k
+( x, ) p
+(int) k
+( y, ) p
+(int) k
+( w, ) p
+(int) k
+( h, ) p
+(int) k
+( dx, ) p
+(int) k
+( dy, ) p
+(int) k
+( vie,) p
+(bool) k
+( vivant, ) p
+() k n
+(int) S
+( nbVies, ) p
+(int) k
+( puissance,) p
+(int) k
+( puissanceSecondaire\) : Personnage\(x,y,w,h,dx,dy,vi) p n
+(e, vivant\){) N
+() S 8 T (_nb_vies=nbVies;) N
+() S 8 T (_puissance = puissance;) N
+() S 8 T (_puissance_secondaire = puissanceSecondaire;) N
+() S 8 T (_clock3.Reset\(\);) N
+(}) N
+() N
+(//=======================================) c n
+(// Destructeur) N
+(//=======================================) N
+(Joueur::~Joueur\(\){}) p n
+() N
+(//=======================================) c n
+(// Accesseurs en lecture) N
+(//=======================================) N
+(int) k
+( Joueur::getNbVies\(\) ) p
+(const) K
+({) p n
+() S 8 T () S
+(return) K
+( _nb_vies;) p n
+(}) N
+(//========================================) c n
+(int) k
+( Joueur::getVie\(\) ) p
+(const) K n
+({) p n
+() S 8 T () S
+(return) K
+( _vie;) p n
+(}) N
+(//=========================================) c n
+(int) k
+( Joueur::getPuissance\(\)) p
+(const) K n
+({) p n
+() S 8 T () S
+(return) K
+( _puissance;) p n
+(}) N
+(//=========================================) c n
+(int) k
+( Joueur::getPuissanceSecondaire\(\)) p
+(const) K n
+({) p n
+() S 8 T () S
+(return) K
+( _puissance_secondaire;) p n
+(}) N
+(//========================================) c n
+(float) k
+( Joueur::getClock\(\)) p
+(const) K n
+({) p n
+() S 8 T () S
+(return) K
+( _clock3.GetElapsedTime\(\);) p n
+(}) N
+(//====================================) c n
+(bool) k
+( Joueur::getTirer\(\)) p n
+({) N
+() S 8 T () S
+(if) K
+( \(_clock2.GetElapsedTime\(\)>0.1\)) p 48 T () S 56 T () S
+(//retourne true toutes l) c n
+(es 2 secondes, false sinon) N
+() p 8 T ({) N
+() S 8 T () S 16 T (_clock2.Reset\(\);) N
+() S 8 T () S 16 T () S
+(return) K
+( ) p
+(true) k
+(;) p n
+() S 8 T (}) N
+() S 8 T () S
+(else) K n
+() p 8 T () S 16 T () S
+(return) K
+( ) p
+(false) k
+(;) p n
+(}) N
+(//====================================) c n
+(bool) k
+( Joueur::getTirerSecondaire\(\)) p n
+({) N
+(Joueur.cc) (Page 1/3) (juin 01, 13 17:50) title
+border
+/v 1 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p 8 T () S
+(if) K
+( \(_clock3.GetElapsedTime\(\)>5\)) p 40 T () S 48 T () S
+(//retourne true toutes les 2 sec) c n
+(ondes, false sinon) N
+() p 8 T ({) N
+() S 8 T () S 16 T (_clock3.Reset\(\);) N
+() S 8 T () S 16 T () S
+(return) K
+( ) p
+(true) k
+(;) p n
+() S 8 T (}) N
+() S 8 T () S
+(else) K n
+() p 8 T () S 16 T () S
+(return) K
+( ) p
+(false) k
+(;) p n
+(}) N
+() N
+(//========================================) c n
+(//Methodes) N
+(//========================================) N
+(void) k
+( Joueur::deplacerY\() p
+(bool) k
+( up\)) p 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S
+(//prend un boole) c n
+(en en parametre qui indique si le joueur) N
+({) p 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S
+(//se d\303\251place vers le haut ou ve) c n
+(rs le bas) N
+() p 8 T () S
+(if) K
+( \(_clock.GetElapsedTime\(\)>0.005\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T () S
+(if) K
+( \(up\)) p n
+() S 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S 24 T () S
+(if) K
+( \(_y>=0\)) p 40 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T (_y=_y-_dy;) N
+() S 8 T () S 16 T (}) N
+() S 8 T () S 16 T () S
+(else) K n
+() p 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S 24 T () S
+(if) K
+( \(_y<=MODEL_HEIGHT-_h\)) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (_y=_y+_dy;) N
+() S 8 T () S 16 T (}) S 24 T () N
+() S 8 T () S 16 T (_clock.Reset\(\);) N
+() S 8 T (}) N
+(}) N
+(//=================================) c n
+(void) k
+( Joueur::deplacerX\() p
+(bool) k
+( left\)) p 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S
+(//prend ) c n
+(un booleen en parametre qui indique si le joueur) N
+({) p 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () N
+() S 0 T () S 8 T () S 16 T () S 24 T () S 32 T () S 40 T () S 48 T () S
+(//se d\303\251place vers la gauche ou ) c n
+(droite) N
+() p 8 T () S
+(if) K
+( \(_clock.GetElapsedTime\(\)>0.005\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T () S
+(if) K
+( \(left\)) p n
+() S 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S 24 T () S
+(if) K
+( \(_x>=0\)) p 40 T () N
+() S 8 T () S 16 T () S 24 T () S 32 T (_x=_x-_dx;) N
+() S 8 T () S 16 T (}) N
+() S 8 T () S 16 T () S
+(else) K n
+() p 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S 24 T () S
+(if) K
+( \(_x<=MODEL_WIDTH-_w\)) p n
+() S 8 T () S 16 T () S 24 T () S 32 T (_x=_x+_dx;) N
+() S 8 T () S 16 T (}) S 24 T () N
+() S 8 T () S 16 T (_clock.Reset\(\);) N
+() S 8 T (}) N
+(}) N
+(//=========================================) c n
+(void) k
+( Joueur::arriver\() p
+(int) k
+( duree,) p
+(float) k
+( temps\)) p 48 T () S 56 T () S 64 T () S
+(//deplacement du) c n
+( joueur lors du chargement et du restart) N
+({) p n
+() S 8 T (_y = \(MODEL_HEIGHT-_h\)/2;) N
+() S 8 T (_x =1000*temps/duree-950;) N
+(}) N
+(//=========================================) c n
+(void) k
+( Joueur::arriverIntro\() p
+(int) k
+( duree,) p
+(float) k
+( temps\)) p 56 T () S
+(//deplacement du joueur ) c n
+(lors de l'intro) N
+({) p n
+() S 8 T (_x =2000*temps/duree-500;) N
+(}) N
+(Joueur.cc) (Page 2/3) (juin 01, 13 17:50) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(Joueur.cc) (17/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (3) 18
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p n
+(//==========================================) c n
+(void) k
+( Joueur::etreTouche\() p
+(int) k
+( puissance\)) p n
+({) N
+() S 8 T (_vie -= puissance;) N
+() S 8 T () N
+() S 8 T () S
+(if) K
+(\(_vie <= 0\)) p n
+() S 8 T () S 16 T (perdreVie\(\);) N
+(}) N
+(//=========================================) c n
+(void) k
+( Joueur::perdreVie\(\)) p n
+({) N
+() S 8 T () S
+(if) K
+( \(_nb_vies >1\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T (_nb_vies--;) N
+() S 8 T () S 16 T (_vie =JOUEUR_VIE;) N
+() S 8 T (}) N
+() S 8 T () S
+(else) K n
+() p 8 T () S 16 T (_vivant = ) S
+(false) k
+(;) p n
+(}) N
+(//=========================================) c n
+(void) k
+( Joueur::augmenterPuissance\(\)) p n
+({) N
+() S 8 T () S
+(if) K
+(\(_puissance < 5\)) p 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S 80 T () S
+() c n
+(//5 est la puissance max du joueur) N
+() p 8 T () S 16 T (_puissance+=1;) N
+(}) N
+(//=========================================) c n
+(void) k
+( Joueur::initialiser\(\)) p 32 T () S 40 T () S 48 T () S 56 T () S 64 T () S 72 T () S
+(//recent) c n
+(re le joueur et remplit sa vie pour les nouveaux niveaux) N
+({) p n
+() S 8 T (_vie = JOUEUR_VIE;) N
+() S 8 T (_y = \(MODEL_HEIGHT-_h\)/2;) N
+(}) N
+(//========================================) c n
+(Joueur.cc) (Page 3/3) (juin 01, 13 17:50) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(Joueur.cc) (18/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1-2) 19
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(#include) K
+( ") p
+(JoueurSprite.h) str
+(") p n
+(using) K
+( ) p
+(namespace) K
+( sf;) p n
+(//==============================) c n
+(//constructeurs) N
+(//===============================) N
+(JoueurSprite::JoueurSprite\(\) : AnimeGraphicElement\(\)) p n
+({}) N
+(//==============================) c n
+(JoueurSprite::JoueurSprite\(Image *image, ) p
+(int) k
+( x, ) p
+(int) k
+( y, ) p
+(int) k
+( w, ) p
+(int) k
+( h,) p
+(bool) k
+( haut,) p
+(bo) k n
+(ol) S
+( bas,) p
+(bool) k
+( explose,) p
+(bool) k
+( recule\):AnimeGraphicElement\(image,x,y,w,h\)) p n
+({) N
+() S 8 T (_haut = haut;) N
+() S 8 T (_bas = bas;) N
+() S 8 T (_explose = explose;) N
+() S 8 T (_recule = recule;) N
+() N
+(}) N
+() N
+(//==============================) c n
+(//destructeur) N
+(//==============================) N
+(JoueurSprite::~JoueurSprite\(\)) p n
+({}) N
+() N
+(//==============================) c n
+(//accesseurs) S 16 T () N
+(//==============================) N
+() p n
+(void) k
+( JoueurSprite::setHaut\() p
+(bool) k
+( haut\)) p n
+({) N
+() S 8 T (_haut = haut;) N
+(}) N
+(//==============================) c n
+(void) k
+( JoueurSprite::setBas\() p
+(bool) k
+( bas\)) p n
+({ ) N
+() S 8 T (_bas =bas;) N
+(}) N
+(//==============================) c n
+(void) k
+( JoueurSprite::setExplose\() p
+(bool) k
+( explose\)) p n
+({) N
+() S 8 T (_explose = explose;) N
+(}) N
+(//===========================) c n
+(void) k
+( JoueurSprite::setRecule\() p
+(bool) k
+( recule\)) p n
+({) N
+() S 8 T (_recule = recule;) N
+(}) N
+(//==============================) c n
+(//methodes) N
+(//==============================) N
+() p n
+(void) k
+( JoueurSprite::draw\(RenderWindow * _window\)) p n
+({) N
+() S 8 T () S
+(if) K
+(\(_recule\)) p n
+() S 8 T () S 16 T (SetSubRect\(sf::IntRect\(0, 0, 120, 100\)\);) N
+() S 8 T () S 16 T () N
+() S 8 T () S
+(else) K
+( ) p
+(if) K
+( \(_haut\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T () S
+(if) K
+(\(_clock.GetElapsedTime\(\) <=0.2\)) p n
+() S 8 T () S 16 T () S 24 T (SetSubRect\(sf::IntRect\(0, 100, 120, 200\)\);) N
+() S 8 T () S 16 T () S
+(else) K n
+() p 8 T () S 16 T () S 24 T (SetSubRect\(sf::IntRect\(120, 100, 240, 200\)\);) N
+() S 8 T () S 16 T () S 24 T () N
+() S 8 T () S 16 T () S
+(if) K
+(\(_clock.GetElapsedTime\(\)>0.4\)) p n
+() S 8 T () S 16 T () S 24 T (_clock.Reset\(\);) N
+() S 8 T (}) N
+() S 8 T () S
+(else) K
+( ) p
+(if) K
+( \(_bas\)) p n
+(JoueurSprite.cc) (Page 1/2) (mai 31, 13 13:26) title
+border
+/v 1 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p 8 T ({) N
+() S 8 T () S 16 T () S
+(if) K
+(\(_clock.GetElapsedTime\(\) <=0.2\)) p n
+() S 8 T () S 16 T () S 24 T (SetSubRect\(sf::IntRect\(0, 200, 120, 300\)\);) N
+() S 8 T () S 16 T () S
+(else) K n
+() p 8 T () S 16 T () S 24 T (SetSubRect\(sf::IntRect\(120, 200, 240, 300\)\);) N
+() S 8 T () S 16 T () S 24 T () N
+() S 8 T () S 16 T () S
+(if) K
+(\(_clock.GetElapsedTime\(\)>0.4\)) p n
+() S 8 T () S 16 T () S 24 T (_clock.Reset\(\);) N
+() S 8 T (}) N
+() S 8 T () S
+(else) K n
+() p 8 T ({) N
+() S 8 T () S 16 T () S
+(if) K
+(\(_clock.GetElapsedTime\(\) <=1.5\)) p n
+() S 8 T () S 16 T () S 24 T (SetSubRect\(sf::IntRect\(0, 0, 120, 100\)\);) N
+() S 8 T () S 16 T () S
+(else) K
+( ) p
+(if) K
+( \(_clock.GetElapsedTime\(\) <=1.7\)) p n
+() S 8 T () S 16 T () S 24 T (SetSubRect\(sf::IntRect\(120, 0, 240, 100\)\);) N
+() S 8 T () S 16 T () S
+(else) K
+( ) p
+(if) K
+( \(_clock.GetElapsedTime\(\) <=1.9\)) p n
+() S 8 T () S 16 T () S 24 T (SetSubRect\(sf::IntRect\(240, 0, 360, 100\)\);) N
+() S 8 T () S 16 T () S
+(else) K
+( ) p
+(if) K
+( \(_clock.GetElapsedTime\(\) <=2.1\)) p n
+() S 8 T () S 16 T () S 24 T (SetSubRect\(sf::IntRect\(360, 0, 480, 100\)\);) N
+() S 8 T () S 16 T () S
+(else) K
+( ) p
+(if) K
+( \(_clock.GetElapsedTime\(\) <=2.3\)) p n
+() S 8 T () S 16 T () S 24 T (SetSubRect\(sf::IntRect\(480, 0, 600, 100\)\);) N
+() S 8 T () S 16 T () S
+(else) K n
+() p 8 T () S 16 T () S 24 T (SetSubRect\(sf::IntRect\(600, 0, 720, 100\)\);) S 72 T () N
+() S 8 T () S 16 T () S 24 T () N
+() S 8 T () S 16 T () S
+(if) K
+(\(_clock.GetElapsedTime\(\)>2.4\)) p n
+() S 8 T () S 16 T () S 24 T (_clock.Reset\(\);) N
+() S 8 T (}) N
+() S 8 T (Resize\(_w,_h\);) N
+() S 8 T (_window->Draw\(*) S
+(this) K
+(\);) p n
+(}) N
+(JoueurSprite.cc) (Page 2/2) (mai 31, 13 13:26) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(JoueurSprite.cc) (19/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 20
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(#include) K
+( ") p
+(MovableElement.h) str
+(") p n
+(#include) K
+( ") p
+(jeu_const.h) str
+(") p n
+() N
+(//=======================================) c n
+(// Constructeurs) N
+(//=======================================) N
+(MovableElement::MovableElement\(\) ) p n
+() S 8 T (: _x\(0\), _y\(0\), _w\(0\), _h\(0\), _dx\(0\), _dy\(0\)) N
+() S 8 T ({) N
+() S 8 T () S 16 T (_clock.Reset\(\);) N
+() S 8 T (}) N
+(//=======================================) c n
+(MovableElement::MovableElement\() p
+(int) k
+( x, ) p
+(int) k
+( y, ) p
+(int) k
+( w, ) p
+(int) k
+( h, ) p
+(int) k
+( dx, ) p
+(int) k
+( dy,) p
+(bool) k
+( v) p n
+(ivant\)) N
+() S 8 T (:_x\(x\), _y\(y\), _w\(w\), _h\(h\), _dx\(dx\), _dy\(dy\),_vivant\(vivant\)) N
+() S 8 T ({) N
+() S 8 T () S 16 T (_clock.Reset\(\);) N
+() S 8 T (}) N
+() N
+(//=======================================) c n
+(// Destructeur) N
+(//=======================================) N
+(MovableElement::~MovableElement\(\){}) p n
+() N
+(//=======================================) c n
+(// Accesseurs en lecture) N
+(//=======================================) N
+(int) k
+( MovableElement::getX\(\) ) p
+(const) K
+( {) p n
+() S 8 T () S
+(return) K
+( _x;) p n
+(}) N
+(//=======================================) c n
+(int) k
+( MovableElement::getY\(\) ) p
+(const) K
+( {) p n
+() S 8 T () S
+(return) K
+( _y;) p n
+(}) N
+(//=======================================) c n
+(//=======================================) N
+(bool) k
+( MovableElement::getVivant\(\) ) p
+(const) K
+( {) p n
+() S 8 T () S
+(return) K
+( _vivant;) p n
+(}) N
+(//=======================================) c n
+() p n
+() N
+() N
+(MovableElement.cc) (Page 1/1) (mai 30, 13 17:40) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(MovableElement.cc) (20/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 21
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(#include) K
+( ") p
+(Personnage.h) str
+(") p n
+(#include) K
+( ") p
+(jeu_const.h) str
+(") p n
+() N
+(//=======================================) c n
+(// Constructeurs) N
+(//=======================================) N
+(Personnage::Personnage\(\) : MovableElement\(\){}) p n
+(//=======================================) c n
+(Personnage::Personnage\() p
+(int) k
+( x, ) p
+(int) k
+( y, ) p
+(int) k
+( w, ) p
+(int) k
+( h, ) p
+(int) k
+( dx, ) p
+(int) k
+( dy, ) p
+(int) k
+( vie, ) p
+(bool) k
+() p n
+( vivant\) : MovableElement\(x,y,w,h,dx,dy,vivant\){) N
+() S 8 T (_vie=vie;) N
+() S 8 T (_clock.Reset\(\);) N
+(}) N
+() N
+(//=======================================) c n
+(// Destructeur) N
+(//=======================================) N
+(Personnage::~Personnage\(\){}) p n
+() N
+() N
+() N
+(Personnage.cc) (Page 1/1) (juin 01, 13 17:22) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(Personnage.cc) (21/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1-2) 22
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(#include) K
+( ") p
+(Tir.h) str
+(") p n
+(#include) K
+( ") p
+(jeu_const.h) str
+(") p n
+(#include) K
+( <iostream>) p n
+(using) K
+( ) p
+(namespace) K
+( std;) p n
+() N
+(//=======================================) c n
+(// Constructeurs) N
+(//=======================================) N
+(Tir::Tir\(\) : MovableElement\(\){}) p n
+(//=======================================) c n
+(Tir::Tir\() p
+(int) k
+( x, ) p
+(int) k
+( y, ) p
+(int) k
+( w, ) p
+(int) k
+( h, ) p
+(int) k
+( dx, ) p
+(int) k
+( dy, ) p
+(int) k
+( puissance, ) p
+(bool) k
+( vivant,) p n
+( ) S
+(bool) k
+( allie\) : MovableElement\(x,y,w,h,dx,dy,vivant\)) p n
+({) N
+() S 8 T (_w = w;) N
+() S 8 T (_h = h;) N
+() S 8 T () N
+() S 8 T (_puissance = puissance;) N
+() S 8 T (_allie = allie;) N
+(}) N
+() N
+(//=======================================) c n
+(// Destructeur) N
+(//=======================================) N
+(Tir::~Tir\(\){}) p n
+() N
+(//=======================================) c n
+(// Accesseurs en lecture) N
+(//=======================================) N
+(int) k
+( Tir::getPuissance\(\) ) p
+(const) K
+({) p n
+() S 8 T () S
+(return) K
+( _puissance;) p n
+(}) N
+(//=======================================) c n
+(void) k
+( Tir::setVivant\() p
+(bool) k
+( vivant\){) p n
+() S 8 T (_vivant = vivant;) N
+(}) N
+(//======================================) c n
+(bool) k
+( Tir::getAllie\(\)) p
+(const) K n
+({) p n
+() S 8 T () S
+(return) K
+( _allie;) p n
+(}) N
+(//========================================) c n
+(//Methodes) N
+(//=======================================) N
+(void) k
+( Tir::deplacer\(\)) p n
+({) N
+() S 8 T () S
+(if) K
+( \(!_allie\)) p n
+() S 8 T ({) N
+() S 8 T () S 16 T () S
+(if) K
+( \(_clock.GetElapsedTime\(\)> 0.01\)) p n
+() S 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S 24 T (_x-=_dx;) N
+() S 8 T () S 16 T () S 24 T (_clock.Reset\(\);) S 40 T () N
+() S 8 T () S 16 T (}) N
+() S 8 T () S 16 T () N
+() S 8 T () S 16 T () S
+(if) K
+( \(_x<-_w\)) p n
+() S 8 T () S 16 T () S 24 T (_vivant = ) S
+(false) k
+(;) p n
+() S 8 T (}) N
+() S 8 T () S
+(else) K n
+() p 8 T ({) N
+() S 8 T () S 16 T () S
+(if) K
+( \(_clock.GetElapsedTime\(\)> 0.01\)) p n
+() S 8 T () S 16 T ({) N
+() S 8 T () S 16 T () S 24 T (_x+=_dx;) N
+() S 8 T () S 16 T () S 24 T (_clock.Reset\(\);) S 40 T () N
+() S 8 T () S 16 T (}) N
+() S 8 T () S 16 T () N
+() S 8 T () S 16 T () S
+(if) K
+( \(_x>MODEL_WIDTH\)) p n
+() S 8 T () S 16 T () S 24 T (_vivant = ) S
+(false) k
+(;) p n
+() S 8 T (}) N
+(Tir.cc) (Page 1/2) (mai 30, 13 20:53) title
+border
+/v 1 store
+/x0 x v get 3.138821 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(}) p n
+() N
+(Tir.cc) (Page 2/2) (mai 30, 13 20:53) title
+border
+grestore
+(Printed by Beno\303\256t) rhead
+(Tir.cc) (22/22) (dimanche juin 02, 2013) footer
+end % of iso1dict
+pagesave restore
+showpage
+
+%%Trailer
+end
+%%EOF

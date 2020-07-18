@@ -1,0 +1,2 @@
+#!/bin/sh
+java -ea -cp java-cup-11b-runtime.jar:. Main $1

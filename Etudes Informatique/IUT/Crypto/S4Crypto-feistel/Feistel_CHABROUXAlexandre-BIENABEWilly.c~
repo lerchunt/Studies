@@ -1,0 +1,142 @@
+Author : CHABROUX Alexandre & BIENABE Willy 
+
+//Voici la ligne de commande pour compiler le code
+//gcc -std=c99 Feistel_CHABROUXAlexandre-BIENABEWilly.c -o Feisel
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <stdlib.h>
+
+using namespace std;
+
+const int NBR_RONDES = 20;
+
+void encrypte (bool key[], bool msg[], bool * encrypt) {
+
+	// Informations de fonctionnement général
+	int i;
+	
+	// Découpage de msg
+	bool tabL[32];
+	bool tabR[32];
+	for (i=0; i<32; i++) {
+		tabL[i] = msg[i];
+	}
+	for (i=32; i<64; i++) {
+		tabR[i-32] = msg[i];
+	}
+
+	// Boucle des rondes
+	for(int k=0; k<NBR_RONDES; k++) {
+		
+		// Encryptage de left
+		for (i=0; i<32; i++) {
+			tabL[i] = tabL[i]^key[i];
+		}
+		
+		// XOR de left et right
+		bool tabRslt[32];
+		for (i=0; i<32; i++) {
+			tabRslt[i] = tabL[i]^tabR[i];
+		}
+		
+		// Réaffectation gauche droite
+		for (i=0; i<32; i++) {
+			tabL[i] = tabR[i];
+			tabR[i] = tabRslt[i];
+		}
+	}
+	
+	// Msg encrypté
+	cout << "encrypt :" << endl;
+	for (i=0; i<64; i++) {
+		if (i<32)
+			encrypt[i] = tabL[i];
+		else
+			encrypt[i] = tabR[i-32];
+		cout << encrypt[i] << " ";
+	}
+	cout << endl;
+}
+
+void decrypte (bool key[], bool encrypt[], bool * decrypt) {
+
+	// Informations de fonctionnement général
+	int i;
+	
+	// Découpage de msg
+	bool tabL[32];
+	bool tabR[32];
+	for (i=0; i<32; i++) {
+		tabL[i] = encrypt[i];
+	}
+	for (i=32; i<64; i++) {
+		tabR[i-32] = encrypt[i];
+	}
+
+	// Boucle des rondes
+	for(int k=0; k<NBR_RONDES; k++) {
+		
+		// XOR de left et right
+		bool tabRslt[32];
+		for (i=0; i<32; i++) {
+			tabRslt[i] = tabL[i]^tabR[i];
+		}
+		
+		// Decryptage
+		for (i=0; i<32; i++) {
+			tabR[i] = tabRslt[i]^key[i];
+		}
+		
+		// Réaffectation gauche droite
+		bool tmp;
+		for (i=0; i<32; i++) {
+			tmp = tabL[i];
+			tabL[i] = tabR[i];
+			tabR[i] = tmp;
+		}
+	}
+	
+	// Msg décrypté
+	cout << "decrypt :" << endl;
+	for (i=0; i<64; i++) {
+		if (i<32)
+			decrypt[i] = tabL[i];
+		else
+			decrypt[i] = tabR[i-32];
+		cout << decrypt[i] << " ";
+	}
+	cout << endl;
+}
+
+
+int main (int argc, char ** argv) {
+
+	// Informations de fonctionnement général
+	srand(time(NULL));
+	int i;
+	
+	// Définition des tableaux
+	bool msg[64], key[32], encrypt[64], decrypt[64];
+	
+	// Initialisation et affichage du message
+	cout << "Msg : " << endl;
+	for (i=0; i<64; i++) {
+		msg[i] = rand()%2;
+		cout << msg[i] << " " ;
+	}
+	cout << endl;
+	
+	// Initialisation de la clef
+	for (i=0; i<32; i++) {
+		key[i] = rand()%2;
+	}
+	
+	// Encryptage du message
+	encrypte(key, msg, encrypt);
+	
+	// Décryptage du message encrypté
+	decrypte(key, encrypt, decrypt);
+}
+

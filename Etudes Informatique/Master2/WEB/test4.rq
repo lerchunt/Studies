@@ -1,0 +1,12 @@
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?a ?c
+{
+   ?a owl:sameAs ?spouse .
+   SERVICE <http://dbpedia.org/sparql> { 
+     ?spouse dbo:spouse ?b . }
+     ?c owl:sameAs ?b .
+}

@@ -1,0 +1,100 @@
+% rubber: rules ./rules.ini
+\documentclass[11pt]{article}
+\usepackage{a4wide}
+\usepackage{styles/sujet_iut}
+
+\usepackage{multicol}
+\usepackage{moreverb}
+\usepackage{vmargin}
+\usepackage{parskip}
+
+\titreEpreuve{ASR2 Système\\\vspace{0.2cm}
+Contrôle continu}
+\dateEpreuve{9 mai 2011}
+\publicEpreuve{Semestre 2}
+
+\setmarginsrb{2cm}{0.5cm}{3cm}{1cm}{0cm}{1cm}{0cm}{0cm}
+\newcounter{cq}
+\setcounter{cq}{1}
+
+\begin{document}
+\maketitle
+
+\vspace{0.2cm}
+Sans documents, 35 minutes, \textbf{marquez votre nom en haut de la feuille}. 
+
+On considère les 6 processus suivants dans un système non préemptif :
+
+\begin{center}
+\small
+\begin{tabular}{c c c c}
+  Processus  & Instant d'arrivée & Durée & Priorité \\
+  \hline
+  P1 & 0  & 3  & 1 \\
+  P2 & 1  & 24 & 2 \\
+  P3 & 1  & 8  & 3 \\
+  P4 & 8  & 4  & 2 \\
+  P5 & 10 & 2  & 5 \\
+  P6 & 16 & 2  & 3 \\
+\end{tabular}
+\end{center}
+
+%\newpage
+Donnez l'ordre d'exécution des processus et calculez le temps de service moyen pour
+les politiques d'ordonnancement suivantes~:
+\boite{\thecq.\stepcounter{cq}  FIFO~:\\
+\vspace{2.5cm}\\
+\thecq.\stepcounter{cq} Plus Court Temps d'Exécution~: \\
+\vspace{2.5cm}\\
+\thecq.\stepcounter{cq} avec priorité~:\\
+}{2.5}
+
+%% Idem pour la politique d'ordonnancement  
+%% \boite{\thecq.\stepcounter{cq}}{2.5}
+
+%% Idem une politique d'ordonnancement avec priorités.
+%% \boite{\thecq.\stepcounter{cq}}{2.5}
+
+
+Qu'est ce qu'un système d'exploitation?
+Que gère t-il?
+\boite{\thecq.\stepcounter{cq}}{2}
+ 
+Qu'est ce qu'un processus?
+\boite{\thecq.\stepcounter{cq}}{1.5}
+
+Nommez et décrivez les différents états d'un processus.
+\boite{\thecq.\stepcounter{cq}}{4}
+
+Un système multi-tâche peut être préemptif ou non préemptif.\\
+Expliquez le mode de fonctionnement de ces deux types de systèmes. 
+\boite{\thecq.\stepcounter{cq}}{4}
+
+%% Définissez en quelques mots ce qu'est l'ordonnancement. %
+% \boite{\thecq.\stepcounter{cq}}{3}
+
+
+
+
+On considère 3 processus de comportements répétitifs suivants~:
+\begin{itemize}
+\item P1 calcule 10ms puis effectue une opération d'entrée-sortie (E/S) pendant 10ms.  
+\item P2 effectue 5ms de calcul, une E/S de 10ms, 25ms de calcul, une E/S de 10ms 
+\item P3 calcule 30ms puis une E/S de 20ms. 
+\end{itemize}
+Les opérations d'E/S sont effectuées de façon séquentielle.
+Le schéma suivant représente le début de l'ordonnancement des processus P1, P2,
+P3.  
+\begin{figure}[h!]
+  \includegraphics[width=\linewidth]{fig/ordo}
+\end{figure}
+
+Que pouvez vous dire du système et de la politique d'ordonnancement employée.\\
+Justifiez vos réponses
+\boite{\thecq.\stepcounter{cq}}{5}
+
+\end{document}
+
+
+% LocalWords:  rubber rules t-il cq multi-tâche d'Exécution d'entrée-sortie d'E
+% LocalWords:  width

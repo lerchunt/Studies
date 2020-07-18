@@ -1,0 +1,96 @@
+\documentclass[10pt]{article}
+
+\usepackage{a4wide}
+\usepackage[francais]{babel}
+\usepackage[latin9]{inputenc}
+\usepackage{graphicx}
+
+\newcommand{\question}[1]{\vspace{1em}\noindent \textbf{Question #1.}}
+\sloppy
+\date{}
+% \usepackage{multicol}
+
+\begin{document}
+
+\title{Disques, fichiers et répertoires}
+\maketitle
+
+\section{I-Nodes}
+On considère un i-node contenant 10 adresses directes de 4 octets
+chacune et une adresse d'un bloc pouvant contenir des adresses disques
+complémentaires. Si tous les blocs sont de 1024 octets, quelle est la
+taille maximale d'un fichier ?
+
+\section{Ordonnancement d'E/S}
+Des requêtes de disque parviennent au pilote de disque pour les
+cylindres 10, 22, 20, 2, 40, 6 et 38, dans cet ordre. Un
+positionnement prend 6 ms par cylindre déplacé. Quel est le temps de
+positionnement nécessaire si l'on suit les méthodes suivantes :
+\begin{enumerate}
+\item Premier arrivé, premier servi
+\item Le cylindre le plus proche ensuite
+\item L'algorithme de l'ascenseur (déplacement vers le haut en
+  premier)
+\end{enumerate}
+Dans tous les cas, le bras se trouve initialement au dessus du
+cylindre 20.
+
+\section{Gestion des blocs libres}
+Le début d'une table de blocs libres juste après le formatage d'une
+partition disque ressemble à 1000 0000 0000 0000 (le premier bloc est
+utilisé par le répertoire racine). Le système recherche toujours les
+blocs libres à partir du bloc qui a le plus petit nombre ; ainsi
+l'écriture du fichier \textit{A}, qui requiert 6 blocs, la table des
+blocs libres est de la forme : 1111 1110 0000 0000. Donnez la table
+après chacune des opérations suivantes :
+\begin{enumerate}
+\item Le fichier B est écrit en utilisant 5 blocs.
+\item Le fichier A est effacé.
+\item Le fichier C est écrit en utilisant 8 blocs.
+\item Le fichier B est effacé.
+\end{enumerate}
+
+\section{I-Nodes}
+Un système de fichiers UNIX a des blocs de 1 ko et des adresses disque
+sur 4 octets. Quelle est la taille maximale d'un fichier si les
+i-nodes contiennent 10 entrées directes et une redirection simple, une
+redirection double et une redirection trible ?
+
+\newpage
+\section{Annales 2009~: Systèmes RAID}
+
+On dispose de trois disques de 500 Go à raccorder à un système multi-tâches.
+
+\question{A1} À l'aide d'un schéma, montrez comment sont répartis les
+blocs $0, 1, 2, 3, 4, 5 \ldots$ si on utilise les 3 disques
+\begin{itemize}
+\item en RAID0 (``striping'') à 3 disques
+\item en RAID1 (miroir) à 3 disques
+\end{itemize}
+Indiquez la \emph{capacité} de chaque solution.
+
+\question{A2} Pour comparer la \emph{fiabilité} de ces deux solutions, 
+vous calculerez la \emph{probabilité d'une panne} du 
+ système RAID0, sachant que chaque disque a 1 chance sur 10 de
+tomber en panne dans l'année (ou plutôt 9 chances sur 10 de bien
+fonctionner). 
+
+\question{A3} Même question pour le RAID1 à trois disques.
+
+\question{A4} Supposons que la lecture ou l'écriture d'un bloc sur un
+disque prenne en moyenne 10 ms.  Sur un système RAID0 à 3 disques
+combien pourra-t-on faire, au maximum, de lectures par seconde ?
+D'écritures par seconde ?  Dans chaque cas, montrez par un exemple quelles
+opérations peuvent se faire simultanément.
+
+\question{A5}
+Même question pour un RAID1 à 3 disques.
+
+\question{A6} Montrez comment faire du RAID 0+1 avec 4 disques (RAID1 au dessus de RAID0).
+
+\question{A7} On peut aussi utiliser les 4 disques en RAID 1+0, avec
+des performances semblables.  Comparez la fiabilité des deux solutions
+RAID 0+1 et RAID 1+0. Vous détaillerez le calcul de probabilités de
+panne. Conclusion ?
+
+\end{document}

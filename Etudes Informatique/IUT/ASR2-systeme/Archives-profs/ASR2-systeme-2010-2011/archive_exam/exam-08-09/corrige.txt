@@ -1,0 +1,223 @@
+A - Systemes RAID
+A1: 
+RAID0:
+
+Disque 1     Disque 2     Disque 3
+|  0   |     |   1  |     |   2  |
+|  3   |     |   4  |     |   5  |
+|  6   |     |   7  |     |   8  |
+|  9   |     |  10  |     |  11  |
+...
+Capacite totale: 3*500 = 1.5 To
+
+
+RAID1:
+Disque 1     Disque 2     Disque 3
+|  0   |     |   0  |     |   0  |
+|  1   |     |   1  |     |   1  |
+|  2   |     |   2  |     |   2  |
+|  3   |     |   3  |     |   3  |
+...
+Capacite totale: 500 Go
+
+
+
+p=0.1= proba de panne d'un disque
+1-p = 0.9 = proba ok
+A2:
+RAID 0 fonctionne si les 3 disques fonctionnent
+   donc proba ok =  (1-p)3
+   donc proba panne = 1  -  (1-p)3 = 1-(0.9)^3 = 0.271
+
+Avec n disques =>  1 - (1-p)^n
+
+A3
+RAID 1 en panne si les 3 sont en panne
+   donc proba panne = p3 = 0.1^3 = 0.001
+
+(n disques) =>  p^n 
+
+A4:
+lecture/ecriture en 10 ms
+donc 1/(10*10^-3) = 100 operations par seconde pour un disque
+Comme on a 3 disques en raid0, on peut lire/ecrire 3 blocs a la fois
+=>3*100 = 300 lectures/ecritures de bloc par seconde
+
+A5:
+lecture/ecriture en 10 ms
+donc 1/(10*10^-3) = 100 operations par seconde pour un disque
+On peut lire 3 blocs en parallele donc 3*100=300 lectures de bloc par
+seconde
+En ecriture, on doit ecrire chaque bloc sur les 3 disques, donc les
+ecritures sont sequentielles: 100 ecritures par seconde
+
+A6: RAID 0+1
+
+  Disque virtuel 1  ||   Disque virtuel 2
+Disque 1   Disque 2 ||  Disque 3   Disque 4
+|  0   |   |  1   | ||  |  0   |   |  1   |
+|  2   |   |  3   | ||  |  2   |   |  3   |
+|  4   |   |  5   | ||  |  4   |   |  5   |
+|  6   |   |  7   | ||  |  6   |   |  7   |
+
+A7: RAID 1+0
+
+  Disque virtuel 1  ||   Disque virtuel 2
+Disque 1   Disque 2 ||  Disque 3   Disque 4
+|  0   |   |  0   | ||  |  1   |   |  1   |
+|  2   |   |  2   | ||  |  3   |   |  3   |
+|  4   |   |  4   | ||  |  5   |   |  5   |
+|  6   |   |  6   | ||  |  7   |   |  7   |
+
+
+RAID 0+1 (striping sur miror)
+   proba qu'un miroir soit en panne = p2 = q
+   proba qu'un RAID0 soit en panne
+      = 1 - (1-q)2
+      = 1 - (1 - p2)2
+     = 1 - [ 1 -2p2 +p4]
+     = 2p2 - p4
+
+RAID 1+0 (mirroir sur striping)
+   proba de panne d'un striping soit en panne
+      q = 1 - (1-p)2 = 1 - (1 -2p + p2)  = 2p - p2
+   que les deux le soient
+      q2 = [2p - p2]2
+     = 4p2 - 4p3 + p4
+
+Soit 0,9801 dans un cas,
+et 0,9639 dans l'autre
+
+
+B - Adressage
+B1:
+typo: donnez le format detaille (pas detailleE)
+* Il y a 8 (2^3) segments, donc numero de segment code sur 3 bits
+* Il y a 16 (2^4) pages, donc numero de page code sur 4 bits
+* => deplacement code sur 19-(3+4)=12 bits
+
+B2:
+deplacement code sur 12 bits
+donc taille d'une page: 2^12 octets = 4 ko
+
+B3: le bit P sert a indiquer si la page est en memoire
+
+B4: 
+* 0x1e256 
+  deplacement: 0x256
+  page: 0xe
+  segment: 1
+  probleme: on sort du segment (deplacement de 0xe256 dans un segment
+  de taille 0x1000)
+
+* 0x00345
+  deplacement: 0x345
+  page: 0x0
+  segment: 0x0
+  probleme: page dans le swap. Mais ca ne fait pas planter le
+  programme (le systeme se charge du rappatriement)
+
+* 0x21823
+  deplacement: x823
+  page: 0x1
+  segment: 0x2
+  pas de problème: on accède a la page correctement
+
+* 0x4ee34
+  deplacement: 0xe34
+  page: 0xe
+  segment: 0x4
+  pas de problème: on accède a la page correctement
+
+C - Gestion des entrees sorties
+C1:
+t0: deplacement de 0 a 100 : duree = 5+(100/10)= 15 ms
+t1: deplacement de 100 a 500 : duree = 5+(400/10)= 45 ms
+t2: deplacement de 500 a 300 : duree = 5+(200/10)= 25 ms
+t3: deplacement de 101 a 501 : duree = 5+(400/10)= 45 ms
+t'1: deplacement de 501 a 301 : duree = 5+(200/10)= 25 ms
+
+C2:
+A ajouter: on commence par ordonnancer P1
+
+t=0 : ordonnancement de P1
+
+t=3 : P1 lit le bloc #100. P2 ordonnance
+en attente: [] -- en cours: 100
+t=6 : P2 lit le bloc #500. P3 est ordonnance
+en attente: [500] -- en cours: 100
+
+t=9 : P3 lit le bloc #300.
+en attente: [500, 300] -- en cours: 100
+
+t=18: lecture du bloc #100 terminee. debut du deplacement vers le
+bloc #500. P1 est ordonnance
+en attente: [300] -- en cours: 500
+
+t=21: P1 lit le bloc #101
+en attente: [300, 101] -- en cours: 500
+
+t=63: lecture du bloc #500 terminee. deplacement vers le bloc #300. P2
+est ordonnance
+en attente: [101] -- en cours: 300
+
+t=66: P2 lit le bloc #501.
+en attente: [101, 501] -- en cours: 300
+
+t=88: lecture du bloc #300 terminee. deplacement vers le bloc #101. P3
+est ordonnance
+en attente: [501] -- en cours: 101
+
+t=91: P3 lit le bloc #301
+en attente: [501,301] -- en cours: 101
+
+t=113: lecture du bloc #101 terminee. deplacement vers le bloc
+#501. P1 est ordonnance.
+en attente: [301] -- en cours: 301
+
+C3:
+
+t=0 : ordonnancement de P1
+
+t=3 : P1 lit le bloc #100. P2 est ordonnance
+en attente: [] -- en cours: 100
+
+t=6 : P2 lit le bloc #500. P3 est ordonnance
+en attente: [500] -- en cours: 100
+
+t=9 : P3 lit le bloc #300.
+en attente: [500,300] -- en cours: 100
+
+t=18: lecture du bloc #100 termine. deplacement vers le bloc #300. P1
+est ordonnance. 
+en attente: [500] -- en cours: 300
+
+t=21: P1 lit le bloc #101.
+en attente: [500,101] -- en cours: 300
+
+t=43: lecture du bloc #300 terminee. deplacement vers le bloc #101. P3
+est ordonnance
+en attente: [500] -- en cours: 101
+
+t=46: P3 lit le bloc #301
+en attente: [500, 301] -- en cours: 101
+
+t=68: lecture du bloc #101 terminee. deplacement vers le bloc #301. P1
+est ordonnance.
+en attente: [500] -- en cours: 301
+
+t=71: P1 lit le bloc #102.
+en attente: [500,102] -- en cours: 301
+
+t=93: lecture du bloc #301 terminee. deplacement vers le bloc #102. P3
+esr ordonnance.
+en attente: [500] -- en cours: 102
+
+t=96: P3 lit le bloc #302.
+en attente: [500,302] -- en cours: 102
+
+t=118: lecture du bloc #102 terminee. deplacement vers le bloc
+#302. P1 est ordonnance.
+en attente: [500] -- en cours: 302
+
+=> P2 n'avance jamais !

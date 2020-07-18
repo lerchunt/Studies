@@ -1,0 +1,147 @@
+% rubber: rules ./rules.ini
+\documentclass[11pt]{article}
+\usepackage{a4wide}
+\usepackage{styles/sujet_iut}
+
+\usepackage{multicol}
+\usepackage{moreverb}
+\usepackage{vmargin}
+\usepackage{parskip}
+
+
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pst-plot}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\edef\PstAtCode{\the\catcode`\@}
+\catcode`\@=11\relax
+
+
+\def\psmili{%
+  \begingroup%
+  \psset{linecolor=bistre}%
+  \def\pst@par{}%
+  \begin@SpecialObj%
+    \pssetxlength\pst@dimg{1cm}
+    \pssetylength\pst@dimh{1cm}
+    \addto@pscode{%
+      /x0 \pst@number\pst@dima \pst@number\pst@dimg div round \pst@number\pst@dimg mul def%
+      /y0 \pst@number\pst@dimb \pst@number\pst@dimh div round \pst@number\pst@dimh mul def%
+      /x1 \pst@number\pst@dimc \pst@number\pst@dimg div round \pst@number\pst@dimg mul def%
+      /y1 \pst@number\pst@dimd \pst@number\pst@dimh div round \pst@number\pst@dimh mul def}%
+    \addto@pscode{.75 SLW x0 \pst@number\pst@dimg x1 {dup y0 moveto y1 lineto} for stroke}%
+    \addto@pscode{.75 SLW newpath y0 \pst@number\pst@dimg y1 {dup x0 exch moveto x1 exch lineto} for stroke}%
+    \addto@pscode{.3 SLW newpath x0 \pst@number\pst@dimg 2 div x1 {dup y0 moveto y1 lineto} for stroke}%
+    \addto@pscode{.3 SLW newpath y0 \pst@number\pst@dimh 2 div y1 {dup x0 exch moveto x1 exch lineto} for stroke}%
+    \addto@pscode{.15 SLW newpath x0 \pst@number\pst@dimh 10 div x1 {dup y0 moveto y1 lineto} for stroke}%
+    \addto@pscode{.15 SLW newpath y0 \pst@number\pst@dimh 10 div y1 {dup x0 exch moveto x1 exch lineto} for stroke}%
+  \end@SpecialObj%
+  \endgroup}%
+\newrgbcolor{bistre}{.75 .50 .30}
+
+
+
+\titreEpreuve{ASR2 Système\\\vspace{0.2cm}
+Contrôle continu}
+\dateEpreuve{9 mai 2011}
+\publicEpreuve{Semestre 2}
+
+\setmarginsrb{2cm}{0.5cm}{3cm}{1cm}{0cm}{1cm}{0cm}{0cm}
+\newcounter{cq}
+\setcounter{cq}{1}
+
+\begin{document}
+\maketitle
+
+\vspace{0.2cm}
+Sans documents, 50 minutes, \textbf{marquez votre nom en haut de la feuille}. 
+\vspace{-0.4cm}
+\section*{Cours}
+\vspace{-0.4cm}
+Donnez 3 des intérêts de la virtualisation. Expliquez.
+\boite{\thecq.\stepcounter{cq}}{3}
+
+\vspace{-0.4cm}
+\section*{Gestion des entrées-sorties}
+\vspace{-0.4cm}
+Soient 3 processus P1, P2 et P3 arrivés dans cet ordre à peu
+près au même instant sur un système mutitâche. Ils se comportent tous les
+3 de façon cyclique. P1 fait du calcul pendant un temps t, puis lit le bloc 100, puis
+calcule, lit le bloc 101, calcule, lit le bloc 102, etc.  Il en est de même pour P2
+et P3, qui font leurs lectures à partir des blocs 500 et 300.
+
+Dans tout l'exercice, l'ordonnancement des processus est fait par
+l'algorithme du tourniquet. Le temps de réalisation d'une
+entrée/sortie dépend de la position de l'entrée sortie
+précédente. On prendra la formule
+
+\begin{verbatim}
+            durée = 5 + (depl/10) ms
+\end{verbatim}
+où \texttt{depl} est le déplacement nécessaire, en nombre de blocs. \\Par exemple la
+lecture du bloc 123 après celle du bloc 12, prendra \texttt{5+(123-12)/10 = 16 ms}.
+
+La division est arrondie. Initialement la tête de lecture est en position 0.
+
+Calculez le temps nécessaire pour chacune des transitions
+\begin{verbatim}
+     t0: 0->100
+     t1: 100->500
+     t2: 500->300
+     t3: 101->501
+     t'1; 501->301
+\end{verbatim}
+\boite{\thecq.\stepcounter{cq}}{4}
+
+\newpage
+Étudiez les 100 premières ms du comportement de l'ordonnancement
+"FIFO" pour les E/S sur disque, quand le temps de calcul est de t=3 ms.
+Vous donnerez un graphique à l'échelle 1cm / 10ms, qui présentera clairement les
+états des processus et les requêtes en attente. 
+\boite{\thecq.\stepcounter{cq}}{6}
+
+  
+%% \item Du point de vue des E/S, il n'y a guère de changement si le
+%%   temps de calcul \texttt{t} passe de 3 à 4 ou 5 ms. Il en est autrement si il
+%%   devient très grand.
+%%   Que se passe-t-il aux alentours du seuil
+%%   \texttt{t = (t1+t2+t3) / 3}
+  
+Même question avec l'ordonnancement ``plus court déplacement'' pour les E/S sur
+disque. Que se passe-t-il ensuite ?
+\boite{\thecq.\stepcounter{cq}}{6}
+
+
+\vspace{-0.4cm}
+\subsection*{Gestion de la mémoire}
+\vspace{-0.4cm}
+
+\subsection*{Pagination}
+\vspace{-0.4cm}
+Un programme a besoin de 5 pages virtuelles numérotées de 0 à 4.
+Au cours de son déroulement, il utilise les pages dans l'ordre suivant~:\\
+\texttt{0 1 2 3 0 1 4 0 1 2 3 4}
+
+S'il reste 3 pages libre en mémoire, indiquer la séquence des      
+défauts de page, sachant que l'algorithme de remplacement est FIFO.
+\boite{\thecq.\stepcounter{cq}}{5}
+
+Même question avec 4 pages disponibles en mémoire. Observation ?   
+\boite{\thecq.\stepcounter{cq}}{5}
+
+\vspace{-0.4cm}
+\subsection*{Adressage}
+\vspace{-0.4cm}
+Considérons un espace d'adresses logiques de 8 pages contenant chacune 1024
+octets. Ces adresses sont traduites pour une mémoire vive de 32 cadres de pages. 
+Sur combien de bits se font l'adressage logique et l'adressage physique?  
+\boite{\thecq.\stepcounter{cq}}{2}
+\boite{\thecq.\stepcounter{cq}}{2}
+
+\end{document}
+
+
+% LocalWords:  rubber rules t-il cq multi-tâche d'Exécution d'entrée-sortie d'E
+% LocalWords:  width

@@ -1,0 +1,121 @@
+% rubber: rules ./rules.ini
+\documentclass[11pt]{article} \usepackage{a4wide} \usepackage{styles/sujet_iut}
+
+% Barême : 2+3(transitions)+2+3+3+2+2+3
+
+\usepackage{multicol} \usepackage{moreverb} \usepackage{vmargin} \usepackage{parskip}
+\usepackage{pifont}
+
+\titreEpreuve{ASR2 Système\\\vspace{0.2cm} Devoir Surveillé 1} \dateEpreuve{Samedi 21
+  mai 2011} \publicEpreuve{Semestre 2}
+
+\setmarginsrb{2cm}{0.5cm}{3cm}{1cm}{0cm}{1cm}{0cm}{0cm} \newcounter{cq}
+\setcounter{cq}{1}
+
+\begin{document}
+\maketitle
+
+\vspace{0.2cm} Sans documents, 45 minutes. \textbf{Marquez votre nom en haut de la
+  feuille}. \\\underline{Justifiez vos réponses}.
+
+\section{Gestion des processus} 
+Qu'est ce que l'ordonnancement de processus~? Que se passe t-il à chaque
+ordonnancement? Explicitez votre réponse. 
+ %Détaillez les étapes intervenant lors de celui-ci.
+\boite{\thecq.\stepcounter{cq}}{2}
+
+Soient les trois états d'un processus \textbf{actif, prêt} et \textbf{bloqué}, les
+transitions suivantes sont-elles possibles~? Si oui, donnez un exemple d'évènement
+pouvant déclencher la transition.
+
+\boite{\thecq.\stepcounter{cq} actif \ding{212} prêt\\
+\vspace{1.3cm}\\ \thecq.\stepcounter{cq} prêt \ding{212} bloqué\\
+\vspace{1.3cm}\\ \thecq.\stepcounter{cq} bloqué \ding{212} prêt\\
+\vspace{1.3cm}\\ \thecq.\stepcounter{cq} actif \ding{212} bloqué\\
+\vspace{1.3cm}\\ \thecq.\stepcounter{cq} prêt \ding{212} actif\\
+\vspace{1.3cm}\\ \thecq.\stepcounter{cq} bloqué \ding{212} actif\\ }{1.3}
+
+\paragraph{Ordonnancement}~\\
+On considère 4 processus, A, B, C, D dont l'exécution nécessite~:
+\begin{itemize}
+\item Pour A : 7 unités de temps CPU, puis 3 unités de temps d'E/S et enfin 5 unités
+  de temps CPU.
+\item Pour B : 6 unités de temps CPU, 4 unités de temps d'E/S, 4 unités de temps CPU.
+\item Pour C : 5 unités de temps CPU.
+\item Pour D : 1 unité de temps CPU, 4 unités de temps d'E/S et 2 unités de temps
+  CPU.
+\end{itemize}
+
+On suppose que :
+\begin{itemize}
+\item A se présente en premier, à l'instant 0,
+\item B se présente à l'instant 1,
+\item C se présente à l'instant 9,
+\item D se présente à l'instant 12.
+\end{itemize}
+
+Montrez comment les 4 processus vont utiliser le processeur dans chacun des cas
+suivants~:
+
+a) Chaque processus a son propre périphérique d'E/S et l'ordonnanceur fonctionne en
+mode FIFO (sans préemption).  \boite{\thecq.\stepcounter{cq}}{4}
+
+b) Chaque processus a son propre périphérique d'E/S et l'ordonnanceur utilise
+l'algorithme du tourniquet, avec un quantum de 5. Donnez dans ce cas les temps de
+séjour des processus A, B, C et D.  \boite{\thecq.\stepcounter{cq}}{4.5}
+
+c) Les trois processus utilisent le même périphérique d'E/S (utilisation
+séquentielle, premier arrivée premier servi).  L'ordonnanceur du processeur utilise
+l'algorithme du tourniquet, avec un quantum de 5.  \boite{\thecq.\stepcounter{cq}}{5}
+
+
+\newpage   
+\section{Gestion mémoire} 
+
+Qu'est ce que le \emph{swapping}?  \boite{\thecq.\stepcounter{cq}}{4}
+%% Comment est-il mis en \oe{}uvre sur un système paginé? Quelles étapes interviennent?
+%% \boite{\thecq.\stepcounter{cq}}{2}
+
+%% \paragraph{Mémoire contiguë}~\\
+%% On considère l'état suivant de la mémoire principale à un instant \emph{t}~:
+%% \begin{figure}[h]
+%%   \begin{minipage}[t]{\linewidth}
+%%     \center \includegraphics[width=\textwidth]{fig/mem_cont}
+%%     \end{minipage}
+%% \end{figure}
+
+%% Les processus P1, P2 et P3 de tailles respectives 90ko, 250ko et 250ko arrivent dans
+%% cet ordre sur le système. 
+%% Détaillez les étapes et décrivez l'état de la mémoire obtenu avec les algorithmes~:
+
+%% \boite{\thecq.\stepcounter{cq} \emph{First-fit}\\
+%% \vspace{3cm}\\
+%% \thecq.\stepcounter{cq} \emph{Best-fit}\\
+%% \vspace{3cm}\\
+%% \thecq.\stepcounter{cq} \emph{Worst-fit}\\
+%% }{3}
+
+\paragraph{Mémoire paginée}~\\
+On considère un système à mémoire paginée dans lequel la mémoire principale dispose de
+16 cadres de pages de 2~ko\footnote{2048 octets}. \\
+Un processus de 6 pages est chargé en mémoire comme suit~:
+\begin{figure}[!h]
+  \begin{minipage}[t]{\linewidth}
+    \center
+    \includegraphics[width=\linewidth]{fig/memoire}
+  \end{minipage}
+\end{figure}
+
+Donnez la table des pages de ce processus. 
+\boite{\thecq.\stepcounter{cq}}{5}
+
+Le code binaire du programme détermine qu'une valeur doit être inscrite en mémoire à
+l'adresse 5648\footnote{en base décimale}. A quel endroit précis la mémoire
+principale (physique) sera t-elle
+modifiée~? Détaillez les étapes permettant de trouver cette valeur. 
+\boite{\thecq.\stepcounter{cq}}{6}
+
+\end{document}
+
+% LocalWords:  rubber rules cq t-il d'E swapping uvre width mem cont ko memoire
+% LocalWords:  First-fit best-fit Worst-fit t-elle

@@ -1,0 +1,149 @@
+SERVEUR.C
+
+...
+
+int main(int argc, char * argv[]) 
+{
+  int fdTravail, port;
+
+...
+
+  /* initialisation du service */
+  port=atoi(argv[1]);
+  fd=init_service(port);
+
+  /* gestion des connexions de clients */
+  while(1) {
+    /* acceptation d'une connexion */
+    fdTravail=accept(fd,NULL,NULL);
+    if (fdTravail<=0)
+      FATAL("accept");
+    
+    if (fork()==0) { /* fils : gestion du dialogue avec client */
+      close(fd);
+      travail_fils(fdTravail);
+      close(fdTravail);
+      exit(0);
+    } 
+    else { /* pere : repart a l'ecoute d'une autre connexion */
+      close(fdTravail);
+    }
+  }
+}
+int init_service(int port)
+{
+  int fdPort;
+  struct sockaddr_in addr_serveur;
+  socklen_t lg_addr_serveur = sizeof addr_serveur;
+
+  /* creation de la prise */
+  fdPort=socket(AF_INET,SOCK_STREAM,0);
+  if (fdPort<0)
+    FATAL("socket");
+  
+  /* nommage de la prise */
+  addr_serveur.sin_family      = AF_INET;
+  addr_serveur.sin_addr.s_addr = INADDR_ANY;
+  addr_serveur.sin_port        = htons(port);
+  if (bind(fdPort,(struct sockaddr *)&addr_serveur, lg_addr_serveur) < 0)
+    FATAL("bind");
+
+  /* Recuperation du nom de la prise */
+  if (getsockname(fdPort,(struct sockaddr *)&addr_serveur, &lg_addr_serveur) < 0)
+    FATAL("getsockname");
+
+  /* Le serveur est a l'ecoute */
+  printf("Le serveur ecoute le port %d\n",ntohs(addr_serveur.sin_port));
+
+  /* ouverture du service */
+  listen(fdPort,4);
+
+  return fdPort;
+}
+void travail_fils(int fdTravail)
+{
+  long horloge;
+  struct tm *temps;
+  char tampon[2];
+  int h,m,s;
+
+  /* preparation de la reponse */
+  time(&horloge);
+  temps=localtime(&horloge);
+  h = temps->tm_hour;
+  m = temps->tm_min;
+  s = temps->tm_sec;
+
+  /* envoi de la reponse */
+  sprintf(tampon, "%02d", h);
+  write(fdTravail,tampon,2);
+  sprintf(tampon, "%02d", m);
+  write(fdTravail,tampon,2);
+  sprintf(tampon, "%02d", s);
+  write(fdTravail,tampon,2);
+}
+CLIENT.C
+
+...
+
+int main(int argc, char * argv[]) 
+{
+  int port;
+  char *hostname;
+
+...
+
+  /* ouverture de la connexion */
+  hostname=argv[1];
+  port=atoi(argv[2]);
+  fd=connexion(hostname,port);
+
+  /* travail */
+  travail(fd);
+
+  close(fd);
+  exit(0);
+}
+
+int connexion(char *hostname, int port)
+{
+  int fdPort;
+  struct sockaddr_in addr_serveur;
+  socklen_t lg_addr_serveur = sizeof addr_serveur;
+  struct hostent *serveur;
+
+  /* creation de la prise */
+  fdPort=socket(AF_INET,SOCK_STREAM,0);
+  if (fdPort<0)
+    FATAL("socket");
+  
+  /* recherche de la machine serveur */
+  serveur = gethostbyname(hostname);
+  if (serveur == NULL)
+    FATAL("gethostbyname");
+
+  /* remplissage adresse socket du serveur */
+  addr_serveur.sin_family      = AF_INET;
+  addr_serveur.sin_port        = htons(port);
+  addr_serveur.sin_addr        = *(struct in_addr *) serveur->h_addr;
+
+  /* demande de connexion au serveur */
+  if (connect(fdPort,(struct sockaddr *)&addr_serveur, lg_addr_serveur) < 0)
+    FATAL("connect");
+
+  return fdPort;
+}
+void travail(int fd) 
+{ 
+  char h[3],m[3],s[3];
+
+  /* recuperation reponse du serveur */
+  if (read(fd,h,2) != 2) FATAL("read h");
+  h[2]='\0';
+  if (read(fd,m,2) != 2) FATAL("read m");
+  m[2]='\0';
+  if (read(fd,s,2) != 2) FATAL("read s");
+  s[2]='\0';
+
+  printf("Il est %s:%s:%s sur le serveur\n",h,m,s);
+}

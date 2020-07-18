@@ -1,0 +1,116 @@
+#include "mem.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <assert.h>
+
+#define TAILLE_BUFFER 128
+#define TAILLE_MEMOIRE 4096
+static char memoire[TAILLE_MEMOIRE];
+
+#define MAX_ALLOC 1024
+static int nb_free, nb_busy;
+static void *allocs[MAX_ALLOC];
+static size_t sizes[MAX_ALLOC];
+static size_t free_size[MAX_ALLOC];
+static size_t busy_size[MAX_ALLOC];
+static int position;
+static intptr_t mem_align=0;
+
+void decompte_zone(void *adresse, size_t taille, int free) {
+    if (free)
+        free_size[nb_free++] = taille;
+    else
+        busy_size[nb_busy++] = taille;
+}
+
+void afficher_zone(void *adresse, size_t taille, int free) {
+    decompte_zone(adresse, taille, free);
+    printf("Zone %s, Adresse : %lx, Taille : %lu\n", free?"libre":"occupée",
+           (unsigned long) adresse, (unsigned long) taille);
+}
+
+void my_mem_init(void *mem, size_t s) {
+    position = 0;
+    mem_init(mem, s);
+}
+
+void *my_mem_alloc(size_t s) {
+    void *result = mem_alloc(s);
+    sizes[position] = s;
+    allocs[position++] = result;
+    printf("Allocation de %lu octets en %lx\n", (unsigned long) s,
+           (unsigned long) result);
+    mem_align |= (intptr_t)result;
+    return result;
+}
+
+void my_mem_free(int num) {
+    printf("Liberation de la zone en %lx\n", (unsigned long) allocs[num]);
+    mem_free(allocs[num]);
+}
+
+void my_mem_show(void (*print)(void *, size_t, int free)) {
+    nb_free = 0;
+    nb_busy = 0;
+    mem_show(print);
+}
+
+int main()
+{
+  int i, j, nb_alloc = 0, size;
+  char *result;
+  
+  my_mem_init(memoire, TAILLE_MEMOIRE);
+  printf("Test de l'etat initial de la memoire :\n");
+  my_mem_show(afficher_zone);
+  assert(nb_free == 1);
+  printf("TEST OK\n\n");
+  
+    printf("\n Test final, serie aléatoire d'allocations/libérations aléatoires en utilisant best fit "
+         "avec utilisation de la mémoire :\n \n");
+  my_mem_init(memoire, TAILLE_MEMOIRE);
+  mem_fit(mem_fit_best);
+  for (i=0; i<50; i++) {
+      if (nb_alloc && (rand() & 1)) {
+          for (j=0; !allocs[j]; j++) {
+          }
+          my_mem_free(j);
+          allocs[j] = NULL;
+          nb_alloc--;
+      } else {
+          size = rand() & 511;
+          result = my_mem_alloc(size);
+          if (result) {
+              for (j=0; j<size; j++)
+                  result[j] = (char) rand();
+              nb_alloc++;
+          }
+      }
+  }
+      
+      nb_alloc = 0;
+      printf("\n Test final, serie aléatoire d'allocations/libérations aléatoires en utilisant worst fit "
+         "avec utilisation de la mémoire :\n \n");
+  my_mem_init(memoire, TAILLE_MEMOIRE);
+  mem_fit(mem_fit_worst);
+  for (i=0; i<50; i++) {
+      if (nb_alloc && (rand() & 1)) {
+          for (j=0; !allocs[j]; j++) {
+          }
+          my_mem_free(j);
+          allocs[j] = NULL;
+          nb_alloc--;
+      } else {
+          size = rand() & 511;
+          result = my_mem_alloc(size);
+          if (result) {
+              for (j=0; j<size; j++)
+                  result[j] = (char) rand();
+              nb_alloc++;
+          }
+      }
+  }
+  printf("TEST OK\n\n");
+  return 1;
+}

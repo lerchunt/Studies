@@ -1,0 +1,106 @@
+\documentclass[12pt]{article}
+\usepackage{a4wide}
+\usepackage{sujets}
+
+\usepackage{multicol}
+\usepackage{moreverb}
+
+\quand{Semestre 2, année 2009-2019}
+\siglefeuille{ASR2}
+\siglemat{CC}
+\titrefeuille{ASR2 Système}
+\formation{Département Informatique IUT Bordeaux 1}
+\titre{Contrôle continu}
+
+\newcommand{\boite}[1]
+{
+\noindent
+\fbox{
+  \begin{tabular}{l}
+    #1 \\
+    \hspace{0.95\linewidth}  \\
+  \end{tabular}
+}
+}
+
+
+% \sloppy
+
+\begin{document}
+Sans documents, 35 minutes, \textbf{marquez votre nom en haut de la feuille}.
+
+\section{Processus}
+Le PCB (\emph{Process Control Block}) contient le contexte d'un
+processus. Qu'est ce que le contexte d'un processus?\\
+\boite{1. \vspace{2.5cm}}
+
+\section{Ordonnancement - Système non préemptif}
+
+On considère les huit processus suivants :
+
+\begin{center}
+\begin{tabular}{c c c c}
+Processus  & Instant d'arrivée & Durée & Priorité \\
+\hline
+P1 & 0  & 3  & 1 \\
+P2 & 1  & 24 & 2 \\
+P3 & 1  & 8  & 3 \\
+P4 & 7  & 5  & 3 \\
+P5 & 8  & 4  & 2 \\
+P6 & 10 & 2  & 5 \\
+P7 & 15 & 7  & 5 \\
+P8 & 16 & 2  & 3 \\
+\end{tabular}
+\end{center}
+
+%\newpage
+Donnez l'ordre d'exécution des processus pour la politique
+d'ordonnancement FIFO. Calculez le temps de traitement moyen et le
+temps de traitement maximal.\\ 
+\boite{2.\vspace{2.5cm}}
+
+Idem pour la politique d'ordonnancement FIFO avec priorités (sans
+réquisition). \\
+\boite{3.\vspace{2.5cm}}
+
+Idem pour la politique d'ordonnancement Plus Court Temps
+d'Exécution. \\
+\boite{4. \vspace{2.5cm}}
+ 
+\section{Mémoire}
+
+Décrivez le principe de cohabitation en mémoire contiguë.\\
+Quels problèmes cela pose t-il? \\
+\boite{5.\vspace{2cm}}
+
+
+Expliquez la différence entre adresse logique et adresse physique?\\
+\boite{6.\vspace{3cm}}
+
+Expliquez le principe de mémoire paginée? \\
+\boite{7.  \vspace{2.5cm}}
+
+A quoi sert une table des pages?\\
+\boite{8.  \vspace{2.5cm}}
+
+Qu'est ce que la MMU? Quel est son rôle?\\
+\boite{9.  \vspace{2.5cm}}\\
+
+\newpage
+\noindent \textbf{Remplacement de page}\\ \\
+Soit la liste des pages virtuelles référencées aux instants t = 1, 2,
+..., 10 : \\
+  0 1 7 2 3 2 7 1 0 3 \\
+La mémoire est composée de 4 cases initialement vides.
+Représentez l'évolution de la mémoire au fur et à mesure des accès
+pour chacune des deux politiques de remplacement FIFO et LRU.
+Notez le nombre de défauts de page pour chaque cas.
+
+\boite{10.  \vspace{6cm}}
+\boite{11.  \vspace{6cm}}
+
+
+\end{document}
+
+
+% LocalWords:  Process Control Block préemptif FIFO pensez-vous t-il MMU LRU

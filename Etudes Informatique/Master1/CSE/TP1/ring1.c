@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h> 
+#include <sys/types.h>
+#include <sys/wait.h>
+
+int rang; /* correspond au numero de creation du processus (initialise par creer_processus)*/
+
+/* Le processus principal (rang = 0) cree n-1 processus fils pour un total de n processus */
+void creer_processus(int n){
+	rang = 0;
+	int i;
+	for(i=0;i<n-1;i++)
+	{
+		pid_t pid = fork();
+		switch(pid)
+		{
+			case -1: perror("fork ");
+					exit(-1);
+			case 0: rang = i+1;
+					sleep(1);
+					return; 
+		}
+	 }
+}
+
+
+/* Tire une valeur aleatoire pour chacun des processus et affiche la valeur obtenue */
+void tirage_aleatoire(){
+	srand(getpid());
+	int val = rand();
+	printf("processus pid %d node %d val = %d \n",getpid(),rang,val);
+}
+
+/* Le processus principal (rang = 0) attend la fin d'execution de ses processus fils */
+void attendre_fin_processus(int n){
+	if(rang==0)
+	{
+		int status;
+		int i;
+		for(i=0;i<n-1;i++)
+		{
+			wait(&status);
+		}
+	}
+}
+
+/* Programme principal */
+int main(int argc, char** argv){
+	if(argc!=2){
+		printf("Ajoutez en argument le nombre de processus à creer. \n");
+		exit(0);
+	}
+	int n = atoi(argv[1]);
+	creer_processus(n);
+	tirage_aleatoire();
+	attendre_fin_processus(n);
+
+	return 0;
+}

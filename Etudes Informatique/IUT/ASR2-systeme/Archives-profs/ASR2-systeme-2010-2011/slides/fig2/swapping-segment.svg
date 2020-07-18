@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="22cm"
+   height="15cm"
+   viewBox="59 -42 430 285"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.47 r22583"
+   sodipodi:docname="swapping-segment.dia">
+  <metadata
+     id="metadata108">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs106">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 265.74802 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="779.52759 : 265.74802 : 1"
+       inkscape:persp3d-origin="389.76379 : 177.16534 : 1"
+       id="perspective110" />
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview104"
+     showgrid="false"
+     inkscape:zoom="0.45343706"
+     inkscape:cx="389.76379"
+     inkscape:cy="265.74802"
+     inkscape:window-x="0"
+     inkscape:window-y="24"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <g
+     id="g4">
+    <rect
+       style="fill: #000000"
+       x="60"
+       y="180"
+       width="280"
+       height="40"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect6" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000"
+       x="60"
+       y="180"
+       width="280"
+       height="40"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect8" />
+  </g>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="60"
+     y="240"
+     id="text10">
+    <tspan
+       x="60"
+       y="240"
+       id="tspan12">0</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="320"
+     y="240"
+     id="text14">
+    <tspan
+       x="320"
+       y="240"
+       id="tspan16">64K</tspan>
+  </text>
+  <g
+     id="g18">
+    <rect
+       style="fill: #90ee90"
+       x="60"
+       y="180"
+       width="40"
+       height="40"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect20" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000"
+       x="60"
+       y="180"
+       width="40"
+       height="40"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect22" />
+  </g>
+  <g
+     id="g24">
+    <rect
+       style="fill: #d8e5e5"
+       x="100"
+       y="180"
+       width="100"
+       height="40"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect26" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000"
+       x="100"
+       y="180"
+       width="100"
+       height="40"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect28" />
+  </g>
+  <g
+     id="g30">
+    <rect
+       style="fill: #ffc0cb"
+       x="200"
+       y="180"
+       width="80"
+       height="40"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect32" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000"
+       x="200"
+       y="180"
+       width="80"
+       height="40"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect34" />
+  </g>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="69"
+     y="204"
+     id="text36">
+    <tspan
+       x="69"
+       y="204"
+       id="tspan38">P1</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="150"
+     y="200"
+     id="text40">
+    <tspan
+       x="150"
+       y="200"
+       id="tspan42">P2</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="240"
+     y="200"
+     id="text44">
+    <tspan
+       x="240"
+       y="200"
+       id="tspan46">P3</tspan>
+  </text>
+  <g
+     id="g48">
+    <rect
+       style="fill: #ffffff"
+       x="310"
+       y="15.4559"
+       width="148"
+       height="130.588"
+       id="rect50" />
+    <ellipse
+       style="fill: #ffffff"
+       cx="384"
+       cy="146.044"
+       rx="74"
+       ry="21.7647"
+       id="ellipse52" />
+    <ellipse
+       style="fill: #ffffff"
+       cx="384"
+       cy="15.4559"
+       rx="74"
+       ry="21.7647"
+       id="ellipse54" />
+    <ellipse
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       cx="384"
+       cy="15.4559"
+       rx="74"
+       ry="21.7647"
+       id="ellipse56" />
+    <path
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       d="M 458 15.4559 L 458,146.044 C 458,158.064 424.869,167.809 384,167.809 C 343.131,167.809 310,158.064 310,146.044 L 310,15.4559"
+       id="path58" />
+    <text
+       style="fill: #000000;text-anchor:middle;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+       x="384"
+       y="179.809"
+       id="text60">
+      <tspan
+         x="384"
+         y="179.809"
+         id="tspan62" />
+    </text>
+  </g>
+  <g
+     id="g64">
+    <rect
+       style="fill: #bfbfbf"
+       x="314.2"
+       y="46.7"
+       width="56.8"
+       height="26.3"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect66" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000"
+       x="314.2"
+       y="46.7"
+       width="56.8"
+       height="26.3"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect68" />
+  </g>
+  <g
+     id="g70">
+    <rect
+       style="fill: #ffa500"
+       x="358"
+       y="103.7"
+       width="51"
+       height="22.3"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect72" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000"
+       x="358"
+       y="103.7"
+       width="51"
+       height="22.3"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect74" />
+  </g>
+  <g
+     id="g76">
+    <path
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000"
+       d="M 298.319,59.962 A 210.689,210.689 0 0 0 137,172"
+       id="path78" />
+    <polygon
+       style="fill: #000000"
+       points="305.77,59.1697 296.179,64.9142 298.292,59.7389 295.42,54.943 "
+       id="polygon80" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="305.77,59.1697 296.179,64.9142 298.292,59.7389 295.42,54.943 "
+       id="polygon82" />
+  </g>
+  <g
+     id="g84">
+    <path
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       d="M 357.053,111.428 A 274.065,274.065 0 0 0 165.536,169.343"
+       id="path86" />
+    <polygon
+       style="fill: #000000"
+       points="159.706,174.055 164.104,163.776 165.429,169.207 170.568,171.406 "
+       id="polygon88" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="159.706,174.055 164.104,163.776 165.429,169.207 170.568,171.406 "
+       id="polygon90" />
+  </g>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="322"
+     y="-29.5"
+     id="text92">
+    <tspan
+       x="322"
+       y="-29.5"
+       id="tspan94">SWAP (espace d'échange)</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="179"
+     y="87.5"
+     id="text96">
+    <tspan
+       x="179"
+       y="87.5"
+       id="tspan98">OUT</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="237"
+     y="145.5"
+     id="text100">
+    <tspan
+       x="237"
+       y="145.5"
+       id="tspan102">IN</tspan>
+  </text>
+</svg>

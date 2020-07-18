@@ -1,0 +1,19 @@
+; BIND reverse data file for LOCALDOMAIN
+;
+
+$TTL    86400
+@       IN      SOA     dns1.localdoamain. root.dns1.localdomain. (
+                        3                  ; Serial
+                        604800             ; Refresh
+                        86400              ; Retry
+                        2419200            ; Expire
+                        86400 )            ; Negative Cache TTL
+;
+@       IN      NS      localdomain.
+; Declarations --------
+1       IN     PTR     dns1.localdomain.
+2       IN     PTR     dns2.localdomain.
+100     IN     PTR     poste.localdomain.
+
+
+

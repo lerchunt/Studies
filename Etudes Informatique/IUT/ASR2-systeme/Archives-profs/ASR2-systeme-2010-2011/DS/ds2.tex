@@ -1,0 +1,166 @@
+% rubber: rules ./rules.ini
+\documentclass[11pt]{article}
+\usepackage{a4wide}
+\usepackage{styles/sujet_iut}
+
+\usepackage{multicol}
+\usepackage{moreverb}
+\usepackage{vmargin}
+\usepackage{parskip}
+\usepackage{pifont}
+
+\titreEpreuve{ASR2 Système\\\vspace{0.2cm}
+Devoir Surveillé 2}
+\dateEpreuve{Mercredi 15 juin 2011}
+\publicEpreuve{Semestre 2}
+
+\setmarginsrb{2cm}{0.5cm}{3cm}{1cm}{0cm}{1cm}{0cm}{0cm}
+\newcounter{cq}
+\setcounter{cq}{1}
+
+\begin{document}
+\maketitle
+
+\vspace{0.2cm}
+Sans documents, 45 minutes, \textbf{marquez votre nom en haut de la feuille}. 
+\underline{Justifiez vos réponses}. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{-0.4cm}
+\section{Questions de cours (\emph{2 points})}
+\vspace{-0.4cm}
+Qu'est ce qu'un système d'exploitation~? Listez les principaux mécanismes de gestion
+mis en \oe{}uvre par les systèmes d'exploitation. 
+\boite{\thecq.\stepcounter{cq}}{5.5}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{-0.4cm}
+\section{Pagination à la demande (\emph{7 points})}
+\vspace{-0.4cm}
+On suppose une mémoire paginée avec de 3 cadres de pages. Les pages,
+numérotées 0,1, ... sont appelées selon la séquence : \texttt{0, 1, 2,
+  3, 4, 1, 2, 4, 0, 1}\\
+On étudie l'effet de différents algorithmes de remplacement de page.
+
+\vspace{-0.4cm}
+\subsection{Algorithme FIFO}
+\vspace{-0.4cm}
+Utilisez le tableau suivant pour montrer le déroulement de l'algorithme FIFO.
+
+\begin{center}
+\thecq.\stepcounter{cq} 
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+Page & 0& 1& 2& 3& 4& 1& 2& 4& 0& 1 \\
+
+\hline \hline
+Cadre 1 &&&&&&&&&& \\ \hline
+Cadre 2 &&&&&&&&&& \\ \hline
+Cadre 3 &&&&&&&&&& \\ \hline
+\hline
+Défauts &&&&&&&&&& \\ \hline
+\end{tabular}\\
+Nombre de défauts de page =  
+\end{center}
+
+\vspace{-0.4cm}
+\subsection{Algorithme LRU}
+\vspace{-0.4cm}
+Expliquez rapidement le fonctionnement de l'algorithme LRU
+\boite{\thecq.\stepcounter{cq}}{3.5}
+\newpage
+Montrez le déroulement de cet algorithme sur le tableau suivant.
+\begin{center}
+\thecq.\stepcounter{cq}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+Page & 0& 1& 2& 3& 4& 1& 2& 4& 0& 1 \\
+\hline \hline
+Cadre 1 &&&&&&&&&& \\ \hline
+Cadre 2 &&&&&&&&&& \\ \hline
+Cadre 3 &&&&&&&&&& \\ \hline
+\hline
+Défauts &&&&&&&&&& \\ \hline
+\end{tabular}\\
+Nombre de défauts de page =  
+\end{center}
+
+\vspace{-0.4cm}
+\subsection{Comparaison stratégies LRU et FIFO}
+\vspace{-0.4cm}
+Pourquoi la stratégie LRU est elle \emph{en pratique} meilleure que FIFO ?
+\boite{\thecq.\stepcounter{cq}}{3}
+
+% PRINCIPE DE LOCALITÉ : les pages qui ont été utilisés récemment ont une probabilité
+%    forte d'être réutilisées à court terme, par rapport aux pages "quelconques".
+
+Construisez un scénario pathologique pour lequel LRU fait \textbf{plus de
+défauts de page} que FIFO. Utilisez un contre-exemple simple avec 2 cadres, 3
+pages, et une séquence de 5 références (donnez en la séquence de références de pages
+et montrez le déroulement dans les deux cas).
+\boite{\thecq.\stepcounter{cq}}{5}
+
+%% les deux déroulement 
+%%    reponse: 0,1,0,2,1
+%%    0,1 les deux première étapes remplissent les cadres
+%%    0 fait la différence entre les deux algos
+%%    2 chasse la page 0 ou la page 1, selon l'algo
+%%    1 charge la page qui vient d'être éjectée par lRU,  pour l'embeter
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{-0.4cm}
+\section{Systèmes RAID (\emph{4 points})}\vspace{-0.4cm}
+\vspace{-0.3cm}
+
+On dispose de 3 disques de 1 T octet montés en RAID 5.\\
+Quelle est la capacité du système de disques ainsi constitué~? Comment sont répartis les blocs 0,1,2,3,4... ?
+Faîtes un schéma. 
+\boite{\thecq.\stepcounter{cq}}{6}
+\newpage
+Quelles opérations d'entrées-sorties faut-il faire sur les différents disques pour écrire dans le bloc 1 ? Précisez quelles opérations peuvent être menées
+simultanément.
+\boite{\thecq.\stepcounter{cq}}{4}
+
+\vspace{-0.4cm}
+\section{Accès disque, déplacement de bras (\emph{3 points})}
+\vspace{-0.4cm}
+Donnez les 3 algorithmes de déplacement de bras présentés en cours. 
+Pour chacun, explicitez la stratégie employée et donnez ses avantages et inconvénients.
+\boite{\thecq.\stepcounter{cq} Algorithme~:\vspace{1.2cm}\\
+  \vspace{1.2cm}~~~Avantages~:\\
+  \vspace{1.2cm}~~~Inconvénients~:}{0.7}
+\boite{\thecq.\stepcounter{cq} Algorithme~:\vspace{1.2cm}\\
+  \vspace{1.2cm}~~~Avantages~:\\
+  \vspace{1.2cm}~~~Inconvénients~:}{0.7}
+\boite{\thecq.\stepcounter{cq} Algorithme~:\vspace{1.2cm}\\
+  \vspace{1.2cm}~~~Avantages~:\\
+  \vspace{1.2cm}~~~Inconvénients~:}{0.5}
+  
+\vspace{-0.4cm}
+\section{Adressage (4 points)}
+\vspace{-0.4cm}
+
+Considérons un système de mémoire virtuelle ayant les caractéristiques 
+suivantes :
+\begin{itemize}
+\item taille d'une page et d'un cadre de page (ou bloc ou case) = 1Ko
+\item taille de la mémoire physique (ou vive ou principale) = 32 Mo
+\item taille de la mémoire virtuelle = 512 Mo,
+\item utilisation combinée des techniques de pagination et segmentation~: 
+\begin{itemize}
+\item l'espace d'adressage virtuel d'un processus est composé de segments contigus,
+\item chaque segment peut contenir entre une et 128 pages,
+\item la numérotation des pages d'un segment est relative au segment.\\
+\end{itemize}
+\end{itemize}
+
+Donnez le format d'une adresse virtuelle (nombre de bits des numéros
+de segment, de page, et du déplacement)
+\boite{\thecq.\stepcounter{cq} (Justifiez votre réponse)}{6}
+
+Donnez le format d'une adresse réelle (nombre de bits du numéro de bloc et du déplacement
+\boite{\thecq.\stepcounter{cq} (Justifiez votre réponse)}{6}
+
+\end{document}
+

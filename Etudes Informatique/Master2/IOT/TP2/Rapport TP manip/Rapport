@@ -1,0 +1,103 @@
+Thomas Lerchundi(M2 GI)
+
+
+QUESTION 1 : 
+
+*********************
+Version classique
+
+Dhrystone Benchmark, Version C, Version 2.2
+Program compiled without 'register' attribute
+Using times(), HZ=100
+
+Trying 50000 runs through Dhrystone:
+Measured time too small to obtain meaningful results
+
+Trying 500000 runs through Dhrystone:
+Measured time too small to obtain meaningful results
+
+Trying 5000000 runs through Dhrystone:
+Measured time too small to obtain meaningful results
+
+Trying 50000000 runs through Dhrystone:
+Microseconds for one run through Dhrystone:        0.1 
+Dhrystones per Second:                        15923567 
+
+
+************************
+Version registre
+
+
+Dhrystone Benchmark, Version C, Version 2.2
+Program compiled with 'register' attribute
+Using times(), HZ=100
+
+Trying 50000 runs through Dhrystone:
+Measured time too small to obtain meaningful results
+
+Trying 500000 runs through Dhrystone:
+Measured time too small to obtain meaningful results
+
+Trying 5000000 runs through Dhrystone:
+Measured time too small to obtain meaningful results
+
+Trying 50000000 runs through Dhrystone:
+Microseconds for one run through Dhrystone:        0.1 
+Dhrystones per Second:                        18587360
+
+***********************
+Version optimisée
+
+Dhrystone Benchmark, Version C, Version 2.2
+Program compiled without 'register' attribute
+Using times(), HZ=100
+
+Trying 50000 runs through Dhrystone:
+Measured time too small to obtain meaningful results
+
+Trying 500000 runs through Dhrystone:
+Measured time too small to obtain meaningful results
+
+Trying 5000000 runs through Dhrystone:
+Measured time too small to obtain meaningful results
+
+Trying 50000000 runs through Dhrystone:
+Measured time too small to obtain meaningful results
+
+Trying 500000000 runs through Dhrystone:
+Microseconds for one run through Dhrystone:        0.0 
+Dhrystones per Second:                        34722220
+
+
+
+On observe que le nombre de Dhrystone par secondes est bien meilleur sur la version du programme la plus optimisé. La version qui optimise l’utilisation des registres est également meilleure que la version classique. De plus, seules les execution de 500000000 runs fournissent un échantillon assez représentatif pour comparer les différentes versions d’optimisation.
+
+——————————————————————————————————————————————————————————————
+
+QUESTION 2 :
+
+Les résultats de gprof se trouvent dans gprofdry2.txt, gprofdry2nr.txt et gprofdry2o.txt. correspondante au 3 versions d’optimisation. En comparant ces résultats, on remarque que les résultats entre les deux premières versions sont très proches.
+En règle général, la version gprofdry2.o est toujours meilleure que les 2 autres. Le temps d’exécution (en pourcentage)  est plus faible pour l’ensemble des méthodes, et le nombre d’appels (d’invocations) des méthodes est toujours plus élevé que celui des autres version.
+
+
+
+——————————————————————————————————————————————————————————————
+
+QUESTION 3 :
+
+Les résultats sont obtenus dans les fichiers Resultatgcov1.txt (classique), Resultatgcov2.txt (registre) et Resultatgcov3.txt (optimisée).
+
+Les Deux premiers( classique et registre ) ont une couverture de code identique avec 14 lignes non executées.
+
+La version optimisée comporte quand à elle 18 lignes non couverte. Elles incluent les 14 lignes des deux précédentes versions. Ceci nous indique que la version optimisée exclue certaine ligne du code mieux que les 2 autres versions.
+
+Affichage de la console pour la version optimisée :
+
+Résultat de la version optimisé de gcov :
+
+
+[16:33:34]lerchunt$ gcov dry.c
+File 'dry.c'
+Lines executed:69.57% of 46
+Creating 'dry.c.gcov'
+

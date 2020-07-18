@@ -1,0 +1,86 @@
+\documentclass[10pt]{article}
+\usepackage{a4wide}
+\usepackage{sujets}
+
+\usepackage{multicol}
+\usepackage{moreverb}
+
+\quand{Semestre 2, année 2010-2011}
+\siglefeuille{ASR2}
+\siglemat{CC}
+\titrefeuille{ASR2 Système}
+\formation{Département Informatique IUT Bordeaux 1}
+\titre{Contrôle continu}
+
+\newcommand{\boite}[1]
+{
+\noindent
+\fbox{
+  \begin{tabular}{l}
+    #1 \\
+    \hspace{0.95\linewidth}  \\
+  \end{tabular}
+}
+}
+
+
+% \sloppy
+
+\begin{document}
+Sans documents, 30 minutes, \textbf{marquez votre nom en haut de la feuille}.
+
+\section{Etat des processus}
+
+Définir les états
+
+\boite{1. Actif : \vspace{2cm}}
+
+\boite{2. Prêt : \vspace{2cm}}
+
+\boite{3. Bloqué : \vspace{2cm}}
+
+
+Quand un processus peut-il passer 
+
+\boite{4. de l'état prêt à l'état actif ? \vspace{2cm}}
+
+\boite{5. de l'état actif à l'état prêt ? \vspace{2cm}}
+
+\section{Ordonnancement - Système non préemptif}
+
+On considère les huit processus suivants :
+
+\begin{center}
+\begin{tabular}{c c c c}
+\hline
+Processus  & Instant d'arrivée & Durée & Priorité \\
+\hline
+P1 & 0  & 3  & 1 \\
+P2 & 1  & 24 & 2 \\
+P3 & 1  & 8  & 3 \\
+P4 & 7  & 5  & 3 \\
+P5 & 8  & 4  & 2 \\
+P6 & 10 & 2  & 5 \\
+P7 & 15 & 7  & 5 \\
+P8 & 16 & 2  & 3 \\
+\hline
+\end{tabular}
+\end{center}
+
+%\newpage
+Donnez l'ordre d'exécution des processus pour la politique
+d'ordonnancement FIFO sans priorités. Calculez le temps de traitement moyen et le
+temps de traitement maximal.\\ 
+\boite{6.\vspace{2.5cm}}
+
+Idem pour la politique d'ordonnancement FIFO avec priorités (sans
+réquisition). La priorité 5 est la plus urgente. \\
+\boite{7.\vspace{2.5cm}}
+
+Idem pour la politique d'ordonnancement Plus Court Temps
+d'Exécution. \\
+\boite{8. \vspace{2.5cm}}
+ 
+
+
+\end{document}

@@ -1,0 +1,657 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="26cm"
+   height="18cm"
+   viewBox="-80 -512 511 345"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.47 r22583"
+   sodipodi:docname="pagination.dia">
+  <metadata
+     id="metadata238">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs236">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 318.89764 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="921.25983 : 318.89764 : 1"
+       inkscape:persp3d-origin="460.62991 : 212.59843 : 1"
+       id="perspective240" />
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview234"
+     showgrid="false"
+     inkscape:zoom="0.37786419"
+     inkscape:cx="460.62991"
+     inkscape:cy="318.89764"
+     inkscape:window-x="0"
+     inkscape:window-y="24"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <g
+     id="g4">
+    <rect
+       style="fill: #ffffff"
+       x="4"
+       y="-259"
+       width="133"
+       height="90.25"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect6" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #ff0000"
+       x="4"
+       y="-259"
+       width="133"
+       height="90.25"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect8" />
+  </g>
+  <g
+     id="g10">
+    <rect
+       style="fill: #ffffff"
+       x="20"
+       y="-440"
+       width="40"
+       height="40"
+       id="rect12" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff"
+       x="20"
+       y="-440"
+       width="40"
+       height="40"
+       id="rect14" />
+  </g>
+  <g
+     id="g16">
+    <rect
+       style="fill: #ffffff"
+       x="20"
+       y="-400"
+       width="40"
+       height="40"
+       id="rect18" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff"
+       x="20"
+       y="-400"
+       width="40"
+       height="40"
+       id="rect20" />
+  </g>
+  <g
+     id="g22">
+    <rect
+       style="fill: #ffffff"
+       x="20"
+       y="-360"
+       width="40"
+       height="40"
+       id="rect24" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff"
+       x="20"
+       y="-360"
+       width="40"
+       height="40"
+       id="rect26" />
+  </g>
+  <g
+     id="g28">
+    <rect
+       style="fill: #ffffff"
+       x="20"
+       y="-320"
+       width="40"
+       height="40"
+       id="rect30" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff"
+       x="20"
+       y="-320"
+       width="40"
+       height="40"
+       id="rect32" />
+  </g>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="40"
+     y="-420"
+     id="text34">
+    <tspan
+       x="40"
+       y="-420"
+       id="tspan36">a</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="40"
+     y="-380"
+     id="text38">
+    <tspan
+       x="40"
+       y="-380"
+       id="tspan40">b</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="40"
+     y="-340"
+     id="text42">
+    <tspan
+       x="40"
+       y="-340"
+       id="tspan44">c</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="40"
+     y="-300"
+     id="text46">
+    <tspan
+       x="40"
+       y="-300"
+       id="tspan48">d</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="-20"
+     y="-440"
+     id="text50">
+    <tspan
+       x="-20"
+       y="-440"
+       id="tspan52">0000</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="-20"
+     y="-400"
+     id="text54">
+    <tspan
+       x="-20"
+       y="-400"
+       id="tspan56">1024</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="-20"
+     y="-360"
+     id="text58">
+    <tspan
+       x="-20"
+       y="-360"
+       id="tspan60">2048</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="-20"
+     y="-320"
+     id="text62">
+    <tspan
+       x="-20"
+       y="-320"
+       id="tspan64">3072</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="-45"
+     y="-281"
+     id="text66">
+    <tspan
+       x="-45"
+       y="-281"
+       id="tspan68">adresses</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="-20"
+     y="-260"
+     id="text70">
+    <tspan
+       x="-20"
+       y="-260"
+       id="tspan72" />
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:700"
+     x="-71"
+     y="-495"
+     id="text74">
+    <tspan
+       x="-71"
+       y="-495"
+       id="tspan76">espace logique</tspan>
+  </text>
+  <g
+     id="g78">
+    <rect
+       style="fill: #ffffff"
+       x="248"
+       y="-500"
+       width="40"
+       height="40"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect80" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #0000ff"
+       x="248"
+       y="-500"
+       width="40"
+       height="40"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect82" />
+  </g>
+  <g
+     id="g84">
+    <rect
+       style="fill: #ffffff"
+       x="248"
+       y="-460"
+       width="40"
+       height="40"
+       id="rect86" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff"
+       x="248"
+       y="-460"
+       width="40"
+       height="40"
+       id="rect88" />
+  </g>
+  <g
+     id="g90">
+    <rect
+       style="fill: #ffffff"
+       x="248"
+       y="-420"
+       width="40"
+       height="40"
+       id="rect92" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff"
+       x="248"
+       y="-420"
+       width="40"
+       height="40"
+       id="rect94" />
+  </g>
+  <g
+     id="g96">
+    <rect
+       style="fill: #ffffff"
+       x="248"
+       y="-380"
+       width="40"
+       height="40"
+       id="rect98" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff"
+       x="248"
+       y="-380"
+       width="40"
+       height="40"
+       id="rect100" />
+  </g>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="268"
+     y="-440"
+     id="text102">
+    <tspan
+       x="268"
+       y="-440"
+       id="tspan104">a</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="268"
+     y="-400"
+     id="text106">
+    <tspan
+       x="268"
+       y="-400"
+       id="tspan108" />
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="268"
+     y="-360"
+     id="text110">
+    <tspan
+       x="268"
+       y="-360"
+       id="tspan112">d</tspan>
+  </text>
+  <g
+     id="g114">
+    <rect
+       style="fill: #ffffff"
+       x="248"
+       y="-340"
+       width="40"
+       height="40"
+       id="rect116" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff"
+       x="248"
+       y="-340"
+       width="40"
+       height="40"
+       id="rect118" />
+  </g>
+  <g
+     id="g120">
+    <rect
+       style="fill: #ffffff"
+       x="248"
+       y="-300"
+       width="40"
+       height="40"
+       id="rect122" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff"
+       x="248"
+       y="-300"
+       width="40"
+       height="40"
+       id="rect124" />
+  </g>
+  <g
+     id="g126">
+    <rect
+       style="fill: #ffffff"
+       x="248"
+       y="-260"
+       width="40"
+       height="40"
+       id="rect128" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #0000ff"
+       x="248"
+       y="-260"
+       width="40"
+       height="40"
+       id="rect130" />
+  </g>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="268"
+     y="-320"
+     id="text132">
+    <tspan
+       x="268"
+       y="-320"
+       id="tspan134" />
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="268"
+     y="-240"
+     id="text136">
+    <tspan
+       x="268"
+       y="-240"
+       id="tspan138">b</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="268"
+     y="-320"
+     id="text140">
+    <tspan
+       x="268"
+       y="-320"
+       id="tspan142">c</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="208"
+     y="-500"
+     id="text144">
+    <tspan
+       x="208"
+       y="-500"
+       id="tspan146">0000</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="208"
+     y="-460"
+     id="text148">
+    <tspan
+       x="208"
+       y="-460"
+       id="tspan150">1024</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="208"
+     y="-420"
+     id="text152">
+    <tspan
+       x="208"
+       y="-420"
+       id="tspan154">2048</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="208"
+     y="-380"
+     id="text156">
+    <tspan
+       x="208"
+       y="-380"
+       id="tspan158">3072</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="208"
+     y="-340"
+     id="text160">
+    <tspan
+       x="208"
+       y="-340"
+       id="tspan162">4096</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="208"
+     y="-300"
+     id="text164">
+    <tspan
+       x="208"
+       y="-300"
+       id="tspan166">5120</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="208"
+     y="-260"
+     id="text168">
+    <tspan
+       x="208"
+       y="-260"
+       id="tspan170">6144</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="178"
+     y="-224"
+     id="text172">
+    <tspan
+       x="178"
+       y="-224"
+       id="tspan174">adresses</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="160"
+     y="-255"
+     id="text176">
+    <tspan
+       x="160"
+       y="-255"
+       id="tspan178" />
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:700"
+     x="310"
+     y="-494"
+     id="text180">
+    <tspan
+       x="310"
+       y="-494"
+       id="tspan182">espace physique</tspan>
+  </text>
+  <g
+     id="g184">
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000"
+       x1="60"
+       y1="-420"
+       x2="237.062"
+       y2="-438.836"
+       id="line186" />
+    <polygon
+       style="fill: #ff0000"
+       points="237.591,-433.864 247.006,-439.894 236.533,-443.808 "
+       id="polygon188" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000"
+       points="237.591,-433.864 247.006,-439.894 236.533,-443.808 "
+       id="polygon190" />
+  </g>
+  <g
+     id="g192">
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000"
+       x1="60"
+       y1="-380"
+       x2="239.178"
+       y2="-246.57"
+       id="line194" />
+    <polygon
+       style="fill: #ff0000"
+       points="236.191,-242.56 247.198,-240.597 242.164,-250.58 "
+       id="polygon196" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000"
+       points="236.191,-242.56 247.198,-240.597 242.164,-250.58 "
+       id="polygon198" />
+  </g>
+  <g
+     id="g200">
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000"
+       x1="60"
+       y1="-340"
+       x2="237.062"
+       y2="-321.164"
+       id="line202" />
+    <polygon
+       style="fill: #ff0000"
+       points="236.533,-316.192 247.006,-320.106 237.591,-326.136 "
+       id="polygon204" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000"
+       points="236.533,-316.192 247.006,-320.106 237.591,-326.136 "
+       id="polygon206" />
+  </g>
+  <g
+     id="g208">
+    <line
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000"
+       x1="60"
+       y1="-300"
+       x2="237.521"
+       y2="-356.656"
+       id="line210" />
+    <polygon
+       style="fill: #ff0000"
+       points="239.041,-351.892 247.047,-359.696 236.001,-361.419 "
+       id="polygon212" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #ff0000"
+       points="239.041,-351.892 247.047,-359.696 236.001,-361.419 "
+       id="polygon214" />
+  </g>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="23"
+     y="-206"
+     id="text216">
+    <tspan
+       x="23"
+       y="-206"
+       id="tspan218">page : 0 1 2 3</tspan>
+    <tspan
+       x="23"
+       y="-190"
+       id="tspan220">cadre: 1 6 4 3</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:700"
+     x="-80"
+     y="-360"
+     id="text222">
+    <tspan
+       x="-80"
+       y="-360"
+       id="tspan224">PAGES</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:700"
+     x="308"
+     y="-360"
+     id="text226">
+    <tspan
+       x="308"
+       y="-360"
+       id="tspan228">CADRES</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:700"
+     x="13"
+     y="-242.75"
+     id="text230">
+    <tspan
+       x="13"
+       y="-242.75"
+       id="tspan232">table des pages</tspan>
+  </text>
+</svg>

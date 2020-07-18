@@ -1,0 +1,259 @@
+\def\col{blue}
+\input{header.tex}
+\usepackage{multicol}
+
+%%%%%%%%%%%%%
+\def\enseignement{ASR2 Système}
+\title[]{\enseignement\\
+Notions de virtualisation}
+\author{Stéphanie Moreaud}
+\institute{Département d'informatique\\
+  IUT Bordeaux 1}
+\date{}
+
+%%%%%%%%%%%% 
+   
+\newcommand{\TITRE}[1]{
+  \begin{frame} \begin{center}\huge{#1}\end{center}
+\end{frame}
+}
+\newcommand{\FIGURE}[2]{
+  \begin{frame} \frametitle{\insertsubsection} 
+    \begin{figure} \includegraphics[width=0.8\linewidth]{fichiers-images/#1} 
+    \end{figure} 
+    \begin{center}\large{#2}\end{center}
+\end{frame} }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}<beamer>
+  \frametitle{Plan} 
+      \tableofcontents[sections={1-5},currentsection, hideothersubsections] 
+\end{frame}
+%Annonce de plan a chaque transition.
+\AtBeginSection[]{
+  \begin{frame}<beamer> \frametitle{Plan}
+    \tableofcontents[currentsection, hideothersubsections] 
+  \end{frame}
+}
+
+\begin{frame}
+\frametitle{Bibliographie}
+\bibliographystyle{fr-plain}
+\small
+\nocite{*}    
+\bibliography{bib} 
+\vspace{0.5cm}    
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% Let's go!  %%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Principe}
+\begin{frame}
+\frametitle{\insertsection}
+\alert{Virtualisation}~: faire fonctionner sur un seul ordinateur plusieurs systèmes
+d'exploitation comme s'ils fonctionnaient sur des ordinateurs distincts. \\
+\vspace{0.5cm}
+\pause
+Pourquoi se serait compliqué? \\
+\pause
+\vspace{0.5cm}
+\underline{Rappel}:
+Système d’exploitation en charge de gérer l'ensemble des ressources
+matérielles de l’ordinateur (CPU, mémoire vive, périphériques, etc.)
+\begin{itemize}
+\item[\ding{212}] conçu pour être l'unique administrateur des ressources
+\end{itemize}
+\vspace{0.5cm}
+\end{frame}
+
+\begin{frame}
+\frametitle{Notions}
+Machine Virtuelle
+\begin{itemize}
+\item abstraction de la machine physique simulée par un logiciel de virtualisation et
+  disposant de son propre OS et environnement d'exécution.
+\end{itemize}
+\vspace{0.5cm}
+Système d'exploitation hôte 
+\begin{itemize}
+\item OS principal, installé directement sur le matériel 
+\end{itemize}
+\vspace{0.5cm}
+Systèmes d'exploitations \emph{invités} ou \emph{virtualisés}
+\begin{itemize}
+\item tourne sur la machine virtuelle
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{\insertsection}
+OS hôte installé sur l'ordinateur\\
+\vspace{0.2cm}
+Logiciel de virtualisation, \alert{hyperviseur}
+\begin{itemize}
+\item crée des machines virtuelles
+\item[\ding{212}] environnements clos, isolés, ressources précises
+\end{itemize}
+\vspace{0.2cm}
+OS invités installées sur les machines virtuelles  
+\begin{itemize}
+\item instances totalement isolées du système hôte et des autres systèmes invités
+\end{itemize}
+\vspace{0.5cm}
+
+\alert{Virtualisation}: fonctionnement d'OS invités dans 
+des machines virtuelles au-dessus d'un OS hôte.
+\end{frame}
+
+\section{Intérêts de la virtualisation}
+\begin{frame}
+  \frametitle{\insertsection ~1/2}
+  Regrouper des serveurs sur une même machine
+  \begin{itemize}
+  \item économie de ressources, d'espace, d'énergie, etc. 
+  \item isolation des serveurs
+    \begin{itemize}
+    \item  si l'un d'eux crash, pas d'effet sur les autres
+    \item reboot indépendant 
+    \end{itemize}
+  \end{itemize}
+  \vspace{0.5cm}
+
+  Exécuter plusieurs OS en même temps
+  \begin{itemize}
+  \item faire une présentation PowerPoint sous Windows et coder sous Linux
+  \item vérifier la portabilité d'un logiciel
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{\insertsection ~2/2}
+  Pérennité de vielles applications 
+  \begin{itemize}
+  \item possibilité de faire tourner les applications sur de ``vieux'' OS
+  \end{itemize}
+  \vspace{0.5cm}
+  Facilité de déploiement pour les utilisateurs
+  \begin{itemize}
+  \item utilisation d'images systèmes, migration de machines,
+  \item pas de modification de l'installation   
+  \end{itemize}
+  \vspace{0.5cm}
+  Gestion transparente de périphériques
+  \begin{itemize}
+  \item exportation d'un OS à l'autre
+  \end{itemize}
+\end{frame}
+
+
+\section{Différents types de virtualisation}
+\subsection{Émulation}
+\begin{frame}
+\frametitle{\insertsubsection}
+Environnement expose du matériel virtuel 
+\begin{itemize}
+\item processeur, mémoire, disque, réseau, ...
+\item entièrement simulé  
+\end{itemize}
+
+OS invité communique avec matériel simulé
+\begin{itemize}
+\item au travers de pilotes
+\item instructions transmises à l’hyperviseur
+\item[\ding{212}] hyperviseur fait appel à l'OS pour les exécuter.
+\end{itemize}
+\vspace{0.5cm}
+\ding{212} Fonctionne avec n'importe quel OS invité qui supporte le matériel virtuel\\
+\ding{212} Très lent\\
+\vspace{0.2cm}
+Ex: qemu
+\end{frame}
+
+
+\begin{frame}
+\frametitle{\insertsubsection}
+\vspace{-0.5cm}
+\begin{figure}
+  \includegraphics[width=0.8\linewidth]{fig4/Diagramme_ArchiEmulateur.png}
+\end{figure}
+\vspace{-0.5cm}
+\small{source~: \href{http://fr.wikipedia.org/wiki/Fichier:Diagramme_ArchiEmulateur.png}{\textcolor{blue}{Wikipedia}}}
+\end{frame}
+
+
+\subsection{Virtualisation totale}
+\begin{frame}
+\frametitle{\insertsubsection}
+Émulation plus restrictive 
+\begin{itemize}
+\item processeur de la machine virtuelle du même type que celui de la
+  machine physique
+\end{itemize}
+\vspace{0.5cm}
+Hyperviseur peut être placé au niveau de l'OS
+\begin{itemize}
+\item accès au matériel via les pilotes de l'OS hôte
+\end{itemize}
+\vspace{0.5cm}
+\ding{212} meilleures performances que l'émulation\\
+\vspace{0.2cm}
+Ex: VMWare, VirtualPC
+\end{frame}
+
+\subsection{Paravirtualisation}
+\begin{frame}
+\frametitle{\insertsubsection}
+Hyperviseur = OS très simple
+\begin{itemize}
+\item tourne sur le matériel 
+\item partage le matériel entre plusieurs OS invités
+\item exécute les instructions privilégiées 
+\end{itemize}
+\vspace{0.2cm}
+Un OS maître
+\begin{itemize}
+\item hyperviseur lui confie les périphériques 
+\item les exporte aux autres OS
+\end{itemize}
+\vspace{0.5cm}
+\ding{212} meilleures performances\\
+\ding{212} OS invités modifiés pour parler à l'hyperviseur\\
+\vspace{0.2cm} Ex: Xen
+\end{frame}
+
+\begin{frame}
+\frametitle{\insertsubsection}
+\vspace{-0.5cm}
+\begin{figure}
+  \includegraphics[width=0.9\linewidth]{fig4/Diagramme_ArchiHyperviseur.png}
+\end{figure}
+\vspace{-0.5cm}
+\small{source~: \href{http://fr.wikipedia.org/wiki/Fichier:Diagramme_ArchiHyperviseur.png}{\textcolor{blue}{Wikipedia}}}
+\end{frame}
+
+
+\subsection{Virtualisation matérielle}
+\begin{frame}
+\frametitle{\insertsubsection}
+Instructions ajoutés au processeur pour qu’il serve d’hyperviseur
+\begin{itemize}
+\item OS invités au même niveau que l'OS hôte
+\item pas d'émulation du processeur
+\item pas de modification des OS
+\end{itemize}
+\vspace{0.5cm}
+
+\ding{212} performances optimales \\
+\ding{212} nécessite un processeur spécifique
+\end{frame}
+\end{document}
+
+% LocalWords:  blue ASR width fichiers-images beamer currentsection Let's d'OS
+% LocalWords:  hideothersubsections hyperviseur reboot PowerPoint Windows l'OS
+% LocalWords:  qemu Wikipedia VMWare VirtualPC Paravirtualisation Xen

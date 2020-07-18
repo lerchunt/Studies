@@ -1,0 +1,47 @@
+all :	ring1 ring2 ring3 shm
+
+check:	
+	./ring1 10
+	./ring2 10
+	./ring3 10
+	./shm 10
+
+ring1	:	ring1.o
+	gcc -Wall -o ring1 ring1.o
+
+ring1.o : ring1.c
+	gcc -c ring1.c -o ring1.o
+
+
+
+
+ring2	:	ring2.o
+	gcc -Wall -o ring2 ring2.o
+ring2.o : ring2.c
+	gcc -c ring2.c -o ring2.o
+
+
+
+
+
+ring3	:	ring3.o
+	gcc -Wall -o ring3 ring3.o
+ring3.o : ring3.c
+	gcc -c ring3.c -o ring3.o
+
+
+
+
+shm	:	shm.o
+	gcc -Wall -o shm shm.o
+
+shm.o : shm.c
+	gcc -c shm.c -o shm.o
+
+
+
+clean:
+	rm -rf *.o
+	rm -f ring1 ring2 ring3 shm
+
+.PHONY : all clean check

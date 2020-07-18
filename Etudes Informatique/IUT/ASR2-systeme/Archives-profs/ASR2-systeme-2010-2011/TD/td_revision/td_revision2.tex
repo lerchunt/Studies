@@ -1,0 +1,270 @@
+% rubbe: rules ../rules.ini 
+\documentclass[10pt,twoside]{article}
+
+\usepackage{a4wide}
+\usepackage[T1]{fontenc} 
+\usepackage[latin1]{inputenc}
+\usepackage[french]{babel}
+\usepackage{a4wide}
+\usepackage{mdwlist}
+\usepackage{xcolor} 
+\usepackage{verbatim} 
+\usepackage{xspace} 
+\usepackage{graphicx}
+\usepackage{subfigure} 
+\usepackage{vmargin}
+
+% c pour afficher le corriger, nc sinon \usepackage[nc]{optional}
+
+\definecolor{grey2}{rgb}{0.92,0.92,0.95} \newcommand\corr[1]{% \opt{c}{
+  \fcolorbox{grey2}{grey2}{
+    \begin{minipage}{0.9\textwidth}
+      #1
+  \end{minipage}}
+}
+
+%\setmarginsrb{G}{H}{D}{B}{en-tête}{dist-entête-texte}{pied}{dist_pied-texte}
+  \setmarginsrb{2cm}{2cm}{3cm}{1cm}{1cm}{0cm}{0cm}{1cm}
+  %\addtolength{\textwidth}{0cm}
+
+\sloppy
+\begin{document}
+\date{} \title{Révisions 2} \maketitle
+
+
+
+\section{Gestion de la mémoire \footnote{D'après des sujets d'annales de l'EPITA (années 2006 et 2007)}}
+
+\subsection{Pagination}
+Considérons un espace d'adresses logiques de 8 pages contenant chacune 1024
+octets. Ces adresses sont traduites pour une mémoire vive de 32 cadres de pages. 
+Sur combien de bits se font l'adressage logique et l'adressage physique?
+
+\subsection{Mémoire Virtuelle}
+
+On dispose d'une mémoire paginée à la demande. Il faut compter 8ms pour traiter un
+défaut de page lorsqu'il existe une page vide ou lorsque la page remplacée n'est pas
+modifiée. Le temps nécessaire pour remplacer une page modifiée se monte à 20~ms. Le
+temps d'accès normal à la mémoire est de 100~ns. En supposant que les pages
+remplacées soient modifiées dans 70\% des cas, quel est le taux de défaut de page
+acceptable pour une dégradation des performances de 100\%?
+
+
+\subsection{Système de fichier, gestion des espaces libres}
+
+Dans un système de gestion des disques par allocation contiguë, on veux éviter la
+fragmentation en faisant du compactage à chaque fois qu'un fichier est supprimé.
+Avec la contiguïté, le temps de le temps de lecture (ou d'écriture) d'un fichier
+comprend le temps de positionnement des têtes, le temps de latence, puis un
+transfert à pleine vitesse.
+
+\begin{enumerate}
+\item En supposant un temps de positionnement de 5~ms, un temps de latence de 4~ms,
+  un taux de transfert de 8~Mo/s et une taille moyenne de fichier de 8~Ko, combien de
+  temps prendra le déplacement d'un fichier?
+\item Partant de là, combien de temps prendrait le compactage de la moitié d'un
+  disque de 16~Go?
+\item Pensez vous que le compactage soit une stratégie réaliste?
+\end{enumerate}
+
+\section{Pages mémoire et blocs disque (Annales 2010)}
+
+Rappelons qu'un disque lit ou écrit des données par blocs complets, un à la fois.
+
+On suppose que la mémoire virtuelle (paginée à la demande) d'une machine utilise des
+pages (et des cadres de pages) de 4Ko, avec un disque de \emph{swap} qui a des temps
+d'accès de 10 ms.
+
+Dans le cours, on a supposé que la taille des pages mémoire correspondait à la taille
+des blocs du disque. On remet ici en cause cette hypothèse, et on s'intéresse aux
+conséquences en termes de performances du \emph{swapping}.
+
+\begin{itemize}
+\item Que se passe-t-il si on utilise un disque de swap qui a
+  \begin{enumerate}
+  \item des blocs de 2 Ko (une page mémoire utilisera 2 blocs)
+  \item des blocs 8 Ko (en mettant deux blocs par page)
+  \end{enumerate}
+  % avec des blocs de 2Ko il faut 2 accès idem avec des blocs de 8k : si on met
+  % plusieurs blocs par page (blocs de 8ko), écrire une page nécessite deux accès :
+  % lecture d'un bloc en mémoire, modification partielle en mémoire, et écriture du
+  % bloc. Donc 2 accès.
+\item Dans les deux cas, on peut retrouver des performances ``optimales'' en
+  consentant un léger sacrifice de matériel. Proposez une solution, évaluez le coût
+  financier (on suppose une mémoire virtuelle de 64 Go, 500 Euros pour un disque de
+  1024 Go octet de qualité pro).
+\end{itemize}
+% blocs de 2 ko => utiliser deux disques en parallèle cout = + 1 disque = 500 Euros
+
+% blocs de 8 ko => n'utiliser les blocs du swap qu'à moitié.  cout = 2 fois plus de
+%   blocs, 64 Gigas gaspillés => 31 Euros ?
+
+\section{Système de fichier \footnote{source originale non spécifiée}}
+On considère un système fonctionnant sous Unix disposant d'un système de fichiers
+doté des caractéristiques suivantes~:
+\begin{itemize}
+\item la taille de bloc est de 1Ko,
+\item l'inode contient 10 pointeurs directs vers des blocs de données, et trois
+  pointeurs de blocs d'indirection (un simple, un double et un triple),
+\item chaque adresse est codée sur 4 octets,
+\item le temps d'accès moyen au disque est de 40~ms.
+\end{itemize}
+
+La taille des pages est de 1Ko.\\
+\begin{enumerate}
+\item Un processus lit séquentiellement un fichier de 8~Mo, à raison de 256 octets
+  à la fois (il fait donc 32768 demandes de lecture successives). On suppose qu'il
+  n'y a qu'un seul processus dans le système, et que le système n'utilise pas de
+  tampons de bloc disque, ce qui implique que chaque fois qu'une information située
+  dans un bloc disque est nécessaire, ce bloc doit être lu depuis le disque. L'inode
+  d'un fichier ouvert reste en mémoire centrale.
+  \begin{enumerate} 
+  \item A l'aide d'un schéma, donnez une idée de la façon dont le fichier est stocké
+    sur le disque dur.
+  \item Décrivez ce qui ce passe lors des 41ème, 42ème, 45ème demandes de lecture de
+    256 octets.
+  \item Evaluez le nombre et le temps d'accès disque nécessaire pour lire ce fichier.\\
+  \end{enumerate}
+
+\item On suppose maintenant que le système dispose d'un tableau de 100 tampons en
+  mémoire centrale, dans lesquels il peut conserver 100 blocs de disque. Lorsque le
+  système a besoin d'un bloc disque, pour lui ou pour le compte d'un processus, il
+  recherche dans ces tampons si ce bloc est déjà en mémoire. Si ce n'est pas le cas,
+  si aucun tampon n'est libre, il commence par en libérer un suivant un algorithme de
+  remplacement de pages LRU (le moins récemment utilisé), puis lit le bloc dans un
+  tampon libre et effectue le traitement sur ce bloc.
+
+  \begin{enumerate}
+  \item Décrivez ce qui ce passe lors de la 41ème, 42ème, 45ème demandes de lecture de
+    256 octets.
+  \item Evaluez le nombre et le temps d'accès disque nécessaires pour lire ce fichier.
+  \end{enumerate}
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Allocation mémoire \footnotemark[2]}
+L'allocation de la mémoire principale peut être gérée de la même manière que celle du
+processeur.  Soit une mémoire principale de 100 Ko, et des processus en ordre
+d'arrivée 1, 2,3 et 4. L'allocation du processeur se fait selon la méthode du
+tourniquet, avec un quantum suffisamment faible pour que l'on puisse supposer que les
+processus peuvent tous s'exécuter en même temps (ainsi, à t=0, on supposera que P1 et
+P2 s'exécutent en même temps)
+
+\begin{center}
+  \begin{tabular}{|c|c|c|c|}
+    \hline Processus & Arrivée & Taille & Temps d'exécution \\ \hline 1 & 0 & 10 &
+    1\\ 2 & 0 & 60 & 8\\ 3 & 1 & 20 & 5\\ 4 & 1 & 20 & 2\\ \hline
+  \end{tabular}
+\end{center}
+
+\begin{enumerate}
+\item On considère qu'un processus occupe un ensemble contigu de la mémoire, d'un
+  seul tenant.
+  \begin{enumerate}
+  \item Avec cette méthode, comment calcule t-on l'adresse physique du processus par
+    rapport à son adresse virtuelle ?
+  \item Montrer comment la mémoire est utilisée au cours du temps (en utilisant une
+    représentation de la mémoire en liste chaînée avec une unité de bloc de 1 Ko).
+  \item Calculer le temps moyen d'exécution (moyenne des durées d'exécution des
+    processus) et tracer le taux d'occupation mémoire au cours du temps. En quoi
+    cette méthode d'allocation n'est pas optimale ?
+  \end{enumerate}
+\item Pour éviter le problème précédent, nous allons utiliser la méthode de
+  pagination ou chaque processus sera découpé en blocs (pages) de taille fixe de 1Ko.
+  \begin{enumerate}
+  \item Avec cette méthode, comment calculer l'adresse physique du processus par
+    rapport à son adresse virtuelle ? Quelle table faudra-t-il stocker en mémoire ?
+  \item Illustrer l'évolution de la mémoire avec l'exemple précédent.
+  \item Calculer le temps moyen d'exécution et tracer le taux d'occupation
+    mémoire. Conclusion ?
+  \end{enumerate}
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Ordonnancement de processus, quantum de temps \footnote{D'après les
+    exercices d e I. Demeure, B. Dupouy et L. Pautet
+    (\url{http://www.infres.enst.fr/~domas/BCI/TD/Exercices_BCI.html#RTFToC9})}}
+ 
+On considère un système préemptif dans lequel l'ordonnancement des processus est fait
+par tourniquet.  Indiquez quels sont les effets des choix suivants pour le quantum
+\texttt{q}, sachant que \texttt{s} est le temps de changement de contexte et
+\texttt{t} le temps moyen d'utilisation du processeur entre deux événements bloquants
+($t >> s$ et $[[epsilon]] << s$) :
+\begin{enumerate}
+\item $q = [[infini]]$
+\item $q = [[epsilon]]$
+\item $q = s$
+\item $q = t$
+\item $s < q <t$
+\item $q > t$
+\end{enumerate}
+
+Pour chaque question, étudiez les cas où s est compris dans le quantum ou non.
+
+
+%% ------------------------------------------- Réponses :
+
+%%    1. Le processus garde le processeur tant qu'il en a besoin (comme FCFS, Fist
+%%    Come Fisrt Served ), 2. Le processus ne fait presque rien entre chaque
+%%    changement de contexte, progression très lente. Si s est compté dans q, aucun
+%%    processus n'est exécuté.  3. Si s est compris dans q, il ne se passe rien,
+%%    sinon exécution pendant au plus s, 4. Le quantum a tendance à favoriser les
+%%    processus orientés entrées-sorties, 5. Le quantum est quelconque, 6. Le quantum
+%%    favorise les processus qui ne font que du calcul,
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Pagination~\footnotemark[3]}
+
+\subsection*{Exercice1}
+On considère la table des pages suivante~:
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline Page & Cadre\\ \hline 0 & 4 \\ 1 & 6 \\ 2 & 8 \\ 3 & 9 \\ 4 & 12\\ 5 &
+1\\ \hline
+\end{tabular}
+\end{center}
+Sachant que les pages virtuelles et physiques font 1~Ko, quelle est l'adresse mémoire
+correspondant à chacune des adresses virtuelles suivantes codées en hexadécimal :
+0x142A et Ox0AF1
+
+%% Réponses: 1K = 1024 = 210, le déplacement dans une page est donc codé sur 10 bits.
+%% page virtuelle 5, octet 2A dans cette page -> page mémoire 1, octet 2A dans cette
+%% page page virtuelle 2, octet 2F1 dans cette page ->page mémoire 8, octet 2F1 dans
+%% cette page
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Exercice 2}
+
+Un programme a besoin de 5 pages virtuelles numérotées de 0 à 4.  Au cours de son
+déroulement, il utilise les pages dans l'ordre suivant~:\\ \texttt{0 1 2 3 0 1 4 0 1
+  2 3 4}
+
+\begin{itemize}
+\item S'il reste 3 pages libre en mémoire, indiquez la séquence des défauts de page,
+  sachant que l'algorithme de remplacement est FIFO.
+\item Même question avec 4 pages disponibles en mémoire. Observation ?   
+\end{itemize}
+%% -----------------------------------------------------------
+%% Réponses :
+
+%% * 3 pages libre en mémoire:
+%%   Contenu de page mém. 1 :         0     3    3    3     4     4    4     
+%%   Contenu de page mém. 2 :         1     1    0    0     0     2    2     
+%%   Contenu de page mém. 3 :         2     2    2    1     1     1    3     
+%%   Défaut sur la page virtuelle :         3    0    1     4     2    3     
+%%   -> 9 défauts de page ( 3 pour remplir la mémoire, puis 6).
+
+%% * 4 pages libre en mémoire:
+%%   Contenu de page mém. 1 :         0     4    4    4     4     3    3     
+%%   Contenu de page mém. 2 :         1     1    0    0     0     0    4     
+%%   Contenu de page mém. 3 :         2     2    2    1     1     1    1     
+%%   Contenu de page mém. 4 :         3     3    3    3     2     2    2     
+%%   Défaut sur la page virtuelle :         4    0    1     2     3    4     
+%%   -> 10 défauts de page ( 4 pour remplir la mémoire, puis 6) 
+\end{document}
+
+% LocalWords:  rubber rules entrées-sorties mutitâche depl l'EPITA ns rubbe ko
+% LocalWords:  swapping cout Gigas l'inode

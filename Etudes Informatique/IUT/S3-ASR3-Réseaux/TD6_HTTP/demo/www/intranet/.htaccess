@@ -1,0 +1,9 @@
+AuthName "Acces externe"
+AuthType Basic
+AuthUserFile .htpasswd
+require valid-user
+Satisfy any
+Order Deny,Allow
+Deny from all
+Allow from 10.0.230.11 # trelawney
+Allow from 147.210.9.6 # gollum

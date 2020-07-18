@@ -1,0 +1,144 @@
+\documentclass[11pt]{article}
+
+\usepackage{a4wide}
+\usepackage{sujets}
+\usepackage{verbatim}
+\usepackage{moreverb}
+
+\quand{Semestre 2, année 2008-2009}
+\siglefeuille{DS}
+\siglemat{ASR2}
+\titrefeuille{Contrôle de Connaissances Module ASR2 Système}
+\formation{Département Informatique IUT Bordeaux 1}
+\titre{Systèmes d'exploitation}
+
+\sloppy
+\begin{document}
+
+Sans documents -- Durée 1h30
+
+Justifiez les réponses
+
+\section{Questions de cours}
+
+\begin{enumerate}
+\item Expliquez ce qu'est un "défaut de page".
+\item Lorsqu'il se produit un remplacement de page, on peut parfois se
+  dispenser de copier la page "victime" vers la mémoire secondaire
+  (l'espace d'échange).
+  \begin{itemize}
+  \item Expliquez sous quelles conditions.
+  \item En quoi est-ce avantageux ?
+  \end{itemize}
+\item Les systèmes de fichiers les plus courants sont conçus de façon
+  à limiter la dispersion des données (les blocs de données d'un même
+  fichier portent des numéros voisins). Expliquez pourquoi. 
+
+\end{enumerate}
+
+
+\section{PROCESSUS + GESTION E/S}
+
+ Soient 3 processus P1, P2 et P3 sur un système mutitâche. Ils se
+    comportent tous les 3 de façon cyclique. P1 fait du calcul pendant
+    un temps t, puis lit le bloc 100, puis calcule, lit le bloc 101,
+    calcule, lit le bloc 102, etc.  Il en est de même pour P2 et P3,
+    qui font leurs lectures à partir des blocs 500 et 300.
+
+    Dans tout l'exercice, l'ordonnancement des processus est fait par
+    l'algorithme du tourniquet.  Le temps de réalisation d'une
+    entree/sortie dépend de la position de l'entrée sortie
+    précédente. On prendra la formule
+
+\begin{verbatim}
+            durée = 5 + (depl/10) ms
+\end{verbatim}
+    où \texttt{depl} est le déplacement nécessaire, en nombre de blocs. Par exemple
+    la lecture du  bloc 123 après celle du bloc 12, prendra \texttt{5+(123-12)/10 = 16 ms}.
+    La division est arrondie.
+    Initialement la tête de lecture est en position 0.
+
+\begin{enumerate}
+\item Calculez le temps nécessaire pour chacune des transitions
+\begin{verbatim}
+     t0: 0->100
+     t1: 100->500
+     t2: 500->300
+     t3: 101->501
+     t'1; 501->301
+\end{verbatim}
+
+\item Etudiez les 100 premières ms du comportement de l'ordonnancement
+  "FIFO"pour les E/S sur disque, quand le temps de calcul est de t=3 ms.
+
+\item Du point de vue des E/S, il n'y a guère de changement si le
+  temps de calcul \texttt{t} passe de 3 à 4 ou 5 ms. Il en est autrement si il
+  devient très grand.
+  Que se passe-t-il aux alentours du seuil
+  \texttt{t = (t1+t2+t3) / 3}
+
+\item Etudiez les 100 premières ms du comportement de l'ordonnancement
+  "plus court déplacement "pour les E/S sur disque, quand le temps
+  de calcul est de t=3 ms. Que se passe-t'il ensuite ?
+\item Ce comportement "anormal" change quand \texttt{t} dépasse un certain seuil.
+  Lequel, pourquoi ?
+\end{enumerate}
+
+\section{Ordonnancement d'E/S}
+
+Des requêtes de disque parviennent au pilote de disque pour les
+cylindres 10, 22, 20, 2, 40, 6 et 38 dans cet ordre. Le temps de
+positionnement est de 6 ms par cylindre de déplacement (pour passer du
+cylindre 3 au cylindre 8, il faut donc (8-3)*6=30 ms).
+
+ Quel est le temps de positionnement total nécessaire si l'on suit les
+ méthodes suivantes :
+\begin{enumerate}
+\item premier arrivé, premier servi
+\item le cylindre le plus proche ensuite
+\item l'algorithme de l'ascenceur (déplacement vers le haut en
+  premier)
+\end{enumerate}
+Dans tous les cas, le bras se trouve au dessus du cylindre 20."
+
+
+
+\section{RAID}
+
+On dispose de trois disques de 500 Go à raccorder à un système multi-tâches.
+
+\begin{enumerate}
+\item A l'aide d'un schéma, montrez comment sont répartis les blocs 0,1,2,3,4,5 .. si on utilise les 3 disques
+  \begin{enumerate}
+  \item en RAID0 ("striping") à 3 disques
+  \item en RAID1 (miroir) à 3 disques
+  \end{enumerate}
+
+\item Comparez les solutions en terme de
+  \begin{itemize}
+  \item capacité
+  \item fiabilité
+  \end{itemize}
+  Vous calculerez la probabilité d'une panne des systemes RAID0 et 1,
+  sachant que  chaque disque a 1 chance sur 10 de tomber en panne dans
+  l'année, (ou plutot 9 chances sur 10 de bien fonctionner).
+
+\item Supposons que la lecture ou l'écriture d'un bloc sur un disque
+  prenne en moyenne 10 ms.
+  Sur un système RAID0 à 3 disques combien pourra-t-on faire,
+  théoriquement, de lectures par seconde ? D'écritures par seconde ?
+\item Même question pour un RAID1 3 disques
+
+\item Montrez comment utiliser 4 disques pour faire du RAID~0+1 (RAID1
+  au dessus de RAID0)
+\item Comparez RAID~0+1 et RAID~1+0 en termes de 
+  \begin{itemize}
+  \item fiabilité
+  \item performances
+  \end{itemize}
+
+\end{enumerate}
+
+
+\section{Mémoire}
+\end{document}

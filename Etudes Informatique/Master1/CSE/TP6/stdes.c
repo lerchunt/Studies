@@ -1,0 +1,98 @@
+#define TAILLE_BUFFER 1000
+#define LIMITE_FICHIER 15
+
+FICHIER* fichiers_ouverts[LIMITE_FICHIER];
+int nb_fichiers_ouverts;
+
+struct _ES_FICHIER{
+	char buffer[TAILLE_BUFFER];
+	char mode;
+	int nb_octets;
+	int fd;
+};
+
+FICHIER *ouvrir(char *nom, char mode){
+	if(mode != 'L' && mode != 'E'){
+		perror("Mode incorrect : 'L' pour lecture et 'E' pour ecriture");
+		exit(-1);
+	}
+	nb_fichiers_ouverts++;
+	if(nb_fichiers_ouverts == LIMITE_FICHIER)
+	{
+		perror("Trop de fichiers ouverts");
+		exit(-1);
+	}
+	
+	FICHIER* f = malloc(sizeof(struct _ES_FICHIER));
+	f->mode = mode;
+	if(mode == 'L')
+	{
+		f->fd = open(nom,O_RDONLY);
+	}
+	else
+	{
+		f->fd = open(nom,O_WRONLY);
+	}
+	
+	f->nb_octets = 0;
+	return f;
+}
+
+int fermer(FICHIER*f){
+	close(f->fd);
+	free(f);
+	// mettre a jour tableau fichiers_ouverts
+	// regarder le buffer
+}
+
+int lire(void *p, unsigned int taille, unsigned int nbelem, FICHIER *f){
+	int taille_totale= taille*nbelem;
+	int nb_octets_lus;
+	int deplacement = 0;
+	p = malloc(taille_totale);
+	
+
+	nb_octets_lus = read(f->fd,f->buffer+f->nb_octets,TAILLE_BUFFER-f->nb_octets);
+
+	if(f->nb_octets != 0){
+		if(taille_totale < f->nb_octets)
+		{
+		memcpy(p,f->buffer,f->nb_octets);
+			}
+	}
+	
+	if(taille_totale < TAILLE_BUFFER)
+	{
+		f->nb_octets = read(f->fd,f->buffer,taille_totale);
+		memcpy(p,f->buffer,f->nb_octets);
+	}
+	else
+	{
+		
+		memcpy(p,f->buffer,f->nb_octets);
+		deplacement++;
+		while(taille_totale - nb_octets_lus > TAILLE_BUFFER)
+		{
+			nb_octets_lus += read(f->fd,f->buffer,TAILLE_BUFFER);
+			memcpy(p+deplacement*TAILLE_BUFFER,f->buffer,TAILLE_BUFFER);
+			deplacement++;
+		}
+		read(f->fd,f->buffer,taille_totale - nb_octets_lus);
+	}
+}
+
+int ecrire(const void *p, unsigned int taille, unsigned int nbelem, FICHIER *f){
+	int taille_totale= taille*nbelem;
+	int nb_octets_ecrits;
+	p = malloc(taille_totale);
+	while(nb_octets_ecrit<nb_element){
+		memcpy(f->buffer
+	}
+	nb_octets_ecrits = write(f->fd,f->buffer,TAILLE_BUFFER);
+}
+
+
+
+
+
+

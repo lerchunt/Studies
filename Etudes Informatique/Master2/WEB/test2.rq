@@ -1,0 +1,13 @@
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX foaf:   <http://xmlns.com/foaf/0.1/>
+PREFIX author: <https://toto.com/author/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+SELECT ?birthPlace
+WHERE
+{
+  ?a foaf:familyName "Auster";
+  owl:sameAs ?person .
+   SERVICE <http://dbpedia.org/sparql> { 
+     ?person dbo:birthPlace ?birthPlace . }
+}
+

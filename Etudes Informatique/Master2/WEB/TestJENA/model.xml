@@ -1,0 +1,18 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://mondomaine.org/test#">
+  <rdf:Description rdf:ID="r1">
+    <p2>
+      <rdf:Description rdf:ID="r2">
+        <p3>r1</p3>
+        <p2>
+          <rdf:Description rdf:ID="r3">
+            <p2>literal1</p2>
+          </rdf:Description>
+        </p2>
+        <p3>http://mondomaine.org/test#r3</p3>
+      </rdf:Description>
+    </p2>
+    <p1>literal1</p1>
+  </rdf:Description>
+</rdf:RDF>

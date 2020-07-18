@@ -1,0 +1,207 @@
+\documentclass[12pt,oneside]{article}
+
+\usepackage{a4wide}
+\usepackage{sujets}
+\usepackage{verbatim}
+\usepackage{moreverb}
+\usepackage{parskip}
+\usepackage{vmargin}
+
+\quand{Semestre 2, année 2010-2011}
+\siglefeuille{TP}
+\siglemat{ASR2-S}
+\titrefeuille{Module  ASR2 Système}
+\formation{Département Informatique IUT Bordeaux 1}
+\titre{\vspace{-2cm}~\\Installation système Unix}
+
+\setmarginsrb{2.5cm}{2cm}{3cm}{1cm}{1cm}{1cm}{0cm}{1cm}
+
+\sloppy
+\begin{document}
+
+\vspace{-0.2cm}
+\section*{Contenu du TP}
+Durant cette séance, vous installerez un système d'exploitation
+sur un ordinateur émulé :
+\begin{itemize}
+\item émulateur matériel \texttt{qemu},
+\item distribution Linux \emph{Slackware 8.1}.
+\end{itemize}
+
+
+\section{L'émulateur QEMU}
+
+Le programme \texttt{qemu} émule le fonctionnement d'un PC complet,
+avec ses périphériques. On peut donc l'utiliser pour faire tourner
+n'importe quel système d'exploitation pour PC\footnote{et même
+d'autres matériels, puisque \texttt{qemu} émule des processeurs
+alpha, arm, 68K, mips, powerpc, sparc etc, en 32 et 64 bits.}.
+
+Les périphériques (disque, cdrom, disquette etc.) du PC sont simulés
+par des fichiers Unix contenant l'image (ISO) d'un CD/DVD, d'un
+disque, etc.
+
+\paragraph*{Exemple~:}  La commande
+\begin{center}
+  \verb+qemu -cdrom /net/Bibliotheque/ASR2-systeme/CDROMS/dsl-4.4.10.iso+ 
+\end{center}
+démarre le  ``CDROM live'' DSL\footnote{\emph{Demi-Size Linux}, (anciennement \emph{damn small linux}), voir \texttt{www.dslos.com}} dont
+l'image est dans le fichier \texttt{dsl-2.4.iso}.\\
+DSL démarre par défaut avec la disposition de clavier QWERTY, sinon précisez l'option
+au boot~: \texttt{dsl lang=fr}
+
+Constatez que la machine virtuelle a accès au réseau
+(\texttt{firefox}, \texttt{ssh}, etc.). Matériellement elle possède
+donc une carte réseau, et les paramètres réseau (adresse IP,
+DNS ...) ont été configurés automatiquement (par DHCP).
+
+\textbf{NB~:} \texttt{qemu-launcher} est une interface graphique pour le lancement de \texttt{qemu}.
+
+\section{La distribution Slackware}
+
+La distribution \textbf{Slackware 8.1} de Linux a été choisie pour ce TD parce que :
+\begin{itemize}
+\item une installation minimale tient aisément sur 100 Mo, et
+  rondement menée prend seulement une dizaine de minutes (on peut
+  donc la reprendre depuis le début en cas de panique);
+\item les étapes de l'installation se détachent clairement, ce qui
+permet d'en comprendre la logique ; 
+\item elle suffit largement pour nos besoins pédagogiques\footnote{Elle marche 
+aussi bien qu'au jour de sa sortie 
+(juin 2002). Voir \texttt{www.slackware.com} pour une version plus récente} ;
+\end{itemize}
+
+Nous utiliserons le CDROM 
+\begin{center}
+\verb+/net/Bibliotheque/ASR2-systeme/CDROMS/slackware-8.1-install.iso+ 
+\end{center}
+pour installer Linux 
+sur un disque virtuel de 100 Mo.
+
+\section{Création du disque}
+
+\paragraph*{Le disque de 100 Mo} peut être créé (après vous être placé dans \texttt{/tmp})
+% ou \verb+/net/spare1/etd1/votrenom+) 
+par la commande
+\begin{center}
+\verb+dd if=/dev/zero of=disque.img bs=1M count=100+
+\end{center}
+qui copie 100 blocs de 1Mo provenant du pseudo-fichier \verb+/dev/zero+ (un flot
+infini de zéros) vers le fichier \texttt{disque.img}\footnote{ En fait il est plus
+  astucieux de faire \texttt{dd if=/dev/zero of=disque.img bs=1M seek=99 count=1} qui
+  tire profit de la représentation des ``fichiers creux'' sous Linux : un seul bloc
+  est alloué après un ``trou'' de 99 Mo.  Les blocs non alloués sont considérés par
+  le système comme contenant uniquement des zéros. Commande \texttt{ls -lsh} pour
+  voir la taille \emph{réellement} occupée par les fichiers, au lieu de leur taille
+  apparente.}.
+
+\section{L'installation}
+
+\subsection{Boot sur CDROM}
+
+La commande
+\begin{center}
+\begin{verbatim}
+qemu -cdrom  /net/Bibliotheque/ASR2-systeme/CDROMS/slackware-8.1-install.iso \
+     -hda disque.img \
+     -boot d
+\end{verbatim}
+\end{center}
+
+démarre la machine virtuelle. Avant de la lancer, analysez les paramètres.
+
+\subsection{Lancement du système installateur}
+
+Lancez le \emph{système par défaut} du cdrom (retour-chariot) et connectez-vous
+sous \texttt{root} en choisissant la bonne disposition du clavier
+(\texttt{fr-latin1}).
+
+\subsection{Partitionner le disque}
+Avec la commande \texttt{cfdisk},  créez sur le disque \verb+/dev/hda+
+deux partitions primaires : \begin{itemize}
+\item une partition linux bootable de 80 Megas ,
+\item et une partition de 20 Megas de type \emph{swap}.
+\end{itemize}
+Ces partitions
+s'appelleront respectivement \texttt{hda1} et \texttt{hda2}
+
+\subsection{Le programme d'installation}
+
+Le script d'installation \texttt{setup} propose les étapes suivantes :
+\begin{itemize}
+\item choisir le type de clavier pour le système que l'on va
+installer,
+\item lui ajouter un espace d'échange pour la mémoire virtuelle (\emph{swap}),
+\item indiquer la partition-cible sur laquelle on va installer le système,
+\item choisir la source de données (ici cdrom),
+\item choisir les catégories de logiciels à installer ;
+\item lancer l'installation et la configuration.
+\end{itemize}
+
+~\\
+\begin{enumerate}
+\item Commencez par \verb+keymap+, choisir \fbox{fr-latin1}. 
+\item Installez le swap sur \verb+hda2+.
+\item Choisissez \verb+hda1+ comme \emph{target partition} (options par
+défaut, un formatage rapide suffira).
+\item Source d'installation : depuis un cdrom Slackware, installation normale
+\item Sélection des logiciels : pour un système minimal, se limiter à 
+la \fbox{série A}. 
+
+L'installation en mode ``newbie'' permet de choisir les packages 
+en connaissance de cause (leur description est affichée), mais choisissez plutôt
+\fbox{menu} pour gagner du temps. \textbf{Désélectionnez tout sauf les packages \texttt{kernel-ide} et \texttt{kbd}.}
+\item pour la configuration : choisissez \fbox{skip} pour les menus
+``install linux kernel'' et ``make bootdisk''. 
+Installation de l'amorce (LILO) en mode simple sur le 
+``Master Boot Record'' du disque (choisir \fbox{démarrage en mode texte}).
+\end{enumerate}
+Enfin, sortez de \verb+setup+, arrêtez le système par \verb+halt+, et
+ interrompez l'émulateur \verb+qemu+.
+
+
+\section{Premier démarrage du système installé}
+Démarrez le système que vous venez d'installer (\texttt{qemu} sans
+l'option \texttt{boot})~:
+\begin{center}
+\begin{verbatim}
+qemu -cdrom  /net/Bibliotheque/ASR2-systeme/CDROMS/slackware-8.1-install.iso \
+     -hda disque.img
+\end{verbatim}
+\end{center}
+
+
+\section{Ajouter des utilisateurs}
+
+La commande interactive \texttt{useradd} vous permet d'enregistrer de
+nouveaux utilisateurs.
+\begin{enumerate}
+\item Créez un compte (commande \texttt{useradd})
+pour vous et votre binôme. 
+\item Définissez des mots de passe
+\item Vérifiez que vous pouvez vous connecter avec ces comptes.
+\item Créez aussi quelques comptes avec \texttt{useradd -m nom-compte}
+\item Pour supprimer un compte :  \texttt{userdel -r nom-compte}
+\item Voir aussi \texttt{usermod}. Comment bloquer un compte ? Le débloquer ?
+\end{enumerate}
+
+\section{Ajouter des logiciels}
+
+Vous pouvez \emph{monter} le cdrom, qui est toujours ``attaché''
+(\verb+mount /mnt/cdrom+) et depuis lequel vous pourrez installer
+\texttt{jed} (série AP) et quelques packages réseau \texttt{tcpip},
+\texttt{dhcpcd}, \texttt{lynx} (série N).
+
+La commande \texttt{netconfig} vous permettra de configurer la carte réseau
+(choisir une configuration automatique par DHCP\footnote{Dynamic Host Configuration Protocol}).
+
+Ne vous reste plus qu'à faire \texttt{reboot} pour vérifier que la machine redémarre correctement,  et essayer la commande 
+\begin{center}
+\verb+lynx http://web2.iut.u-bordeaux1.fr+
+\end{center}
+
+\end{document}
+
+
+
+

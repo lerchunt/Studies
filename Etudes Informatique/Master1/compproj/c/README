@@ -1,0 +1,12 @@
+usage:
+1) make
+2) ./min-ml program.ml, where program.ml is a min-ml program
+
+Needed for compiling:
+bison version >= 2.3
+flex verison >= 2.5.35
+
+NOTES:
+ - module list defines a very basic immutable lists data structure. In particular, there's no function
+   for memory deallocation, and append is in O(n)
+

@@ -1,0 +1,167 @@
+\documentclass[14pt, \col, hyperref={pdfpagelabels=false}]{beamer}
+\usepackage[frenchb]{babel} % langue francaise
+\usepackage[utf8]{inputenc} % encodage UTF-8
+\usepackage[T1]{fontenc} % encodage de la police de caracteres
+\usepackage{lmodern}
+\usepackage{listings}
+\usepackage{multicol}
+\usepackage{pifont} %\ding{number}, 
+\usepackage{subfigure}
+\usepackage{graphicx}
+\usepackage{listings}
+
+\usetheme{Warsaw}
+\usepackage[\col]{optional} %red blue green
+%% THÈMES couleur
+%% \usecolortheme{dolphin}
+%% \usecolortheme{seahorse}
+%% * thèmes globaux : beetle, crane, fly, seagull.
+%% * thèmes internes : lily (enlève surtout des couleurs), orchid, rose.
+%% * thèmes externes : whale, seahorse, dolphin
+
+% rubber: rules ./rules.ini
+
+ 
+\mode<presentation>
+{
+  %%%% Couleurs
+  \definecolor{red2}{rgb}{0.8,0.15,0.15}
+  \definecolor{bx}{rgb}{0.45,0.05,0.05}  
+  \definecolor{ivoire}{rgb}{1, 0.97, 0.9}
+ 
+  \definecolor{bleu2}{rgb}{0.9, 0.90, 1}
+  \definecolor{bleu3}{rgb}{0.15,0.15,0.7}
+  \definecolor{myblue}{rgb}{0.50,0.55, 0.8}  
+  \definecolor{myblue2}{rgb}{0.25,0.3, 0.65}  
+  
+ \definecolor{mygreen2}{rgb}{0.15,0.60,0.15}
+ \definecolor{green2}{rgb}{0.15,0.40,0.15}
+  \definecolor{mygreen}{rgb}{0.40,0.7, 0.4}  
+%  \definecolor{lightgreen}{rgb}{0.5,0.8, 0.5}  
+  \definecolor{lightgreen}{rgb}{0.95, 1, 98}
+  
+  \definecolor{medium-grey}{gray}{0.45}
+  \definecolor{light-grey}{gray}{0.85}
+  
+  % Couleur des structures et fond dégradé
+  % defaut: green
+  \setbeamercolor{normal text}{fg=black,bg=lightgreen}
+  \setbeamercolor{structure}{fg=green2, bg=light-grey} 
+  \setbeamercolor{alerted text}{fg=green2}
+  \setbeamertemplate{background canvas}[vertical
+    shading][top=lightgreen!100,bottom=lightgreen!30]
+  
+  \opt{blue}{
+    \setbeamercolor{normal text}{fg=black,bg=bleu2}
+    \setbeamercolor{structure}{fg=myblue, bg=light-grey} 
+    \setbeamercolor{alerted text}{fg=myblue2}
+    \setbeamertemplate{background canvas}[vertical
+      shading][top=bleu2!100,bottom=bleu2!30]
+  }
+  \opt{red}{
+    \setbeamercolor{normal text}{fg=black,bg=ivoire}
+    \setbeamercolor{structure}{fg=bx, bg=light-grey} 
+    \setbeamercolor{alerted text}{fg=red2}
+    \setbeamertemplate{background canvas}[vertical
+      shading][top=ivoire!40,bottom=ivoire!100]
+  }
+  \opt{green}{
+    \definecolor{green2}{rgb}{0.1,0.60,0.1}
+    \usecolortheme{dolphin}
+  }   
+  
+  
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamerfont{title in head/foot}{size=\scriptsize}
+  \setbeamerfont{date in head/foot}{size=\scriptsize} 
+  
+  % Pied de page
+  \setbeamertemplate{footline}{
+    \hbox{%
+      \begin{beamercolorbox}[wd=.4\paperwidth,ht=3ex,dp=1ex,center]{title in head/foot}
+        \usebeamerfont{title in head/foot}\enseignement\hspace{1cm} %\shorttitle
+      \end{beamercolorbox}%
+      \begin{beamercolorbox}[wd=.5\paperwidth,ht=3ex,dp=1ex,left]{date in head/foot}%
+        \usebeamerfont{title in head/foot} 
+        \hspace*{1ex} 
+        \insertshorttitle
+      \end{beamercolorbox}% 
+      \begin{beamercolorbox}[wd=.1\paperwidth,ht=3ex,dp=1ex,left]{date in head/foot}%
+        \usebeamerfont{date in head/foot} 
+        \insertframenumber{} / \inserttotalframenumber%\hspace*{2ex} 
+    \end{beamercolorbox}}%
+    \vskip0pt%
+  }
+
+    % Haut de page
+  \setbeamertemplate{headline}{%
+    \leavevmode
+    \begin{beamercolorbox}[wd=.5\paperwidth,ht=3ex,dp=1.125ex,leftskip=.3cm
+        plus1fill,rightskip=.3cm]{section in head/foot}%
+      \scriptsize{\insertsection}
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.5\paperwidth,ht=3ex,dp=1.125ex,leftskip=.3cm,rightskip=.3cm
+        plus1fil]{subsection in head/foot}%
+      \scriptsize{\insertsubsection}
+    \end{beamercolorbox}%
+  }
+  \addtobeamertemplate{headline}{}{%
+    \vskip-0.1pt
+    \pgfuseshading{beamer@topshade}
+    \vskip-2pt}
+   %% \let\Tiny=\tiny
+  %% \let\TINY=\tiny
+}
+
+%% Annonce de plan a chaque transition.
+%% \AtBeginSection[]{
+%%   \begin{frame}<beamer>
+%%     \frametitle{Plan}
+%%     \tableofcontents[currentsection,currentsubsection]
+%%   \end{frame}
+%% }
+
+
+
+\newcommand{\bashlisting}[0]{\scriptsize\lstset{language=bash,numbers=left,numberstyle=\tiny,
+    xrightmargin=1mm, xleftmargin=1mm, keywordstyle=\color{green2}, %
+    keywordstyle[1]=\color{blue}, %
+    keywordstyle[2]=\color{yellow}, %
+    keywordstyle[3]=\color{red2}}}
+
+\newcommand{\filelisting}[0]{\small\lstset{language=,numbers=left,numberstyle=\tiny,
+    xrightmargin=4mm, xleftmargin=6mm, frame=single}}
+
+\definecolor{orange}{rgb}{0.9,0.6,0.4}
+
+\newcommand{\clisting}[0]{\scriptsize
+  \lstset{language=c, 
+    inputencoding=utf8,
+    %identifierstyle=\color{blue},%
+    keywordstyle=\color{green2}, %
+    keywordstyle[1]=\color{blue}, %
+    keywordstyle[2]=\color{yellow}, %
+    keywordstyle[3]=\color{red2}, %
+    stringstyle=\color{orange}, %
+    commentstyle=\color{red2}, %
+    numbers=left,
+    numberstyle=\tiny,
+    xleftmargin=1mm,
+    breaklines=true,
+}}
+
+
+
+\newcommand{\cmd}[1]{\texttt{\footnotesize\textcolor{medium-grey}{#1}}}
+
+\newcommand{\cmdlist}[1]{
+  \begin{semiverbatim}\begin{minipage}{\linewidth}  
+      \footnotesize\textcolor{medium-grey}{#1}\end{minipage}
+\end{semiverbatim}}
+
+
+\newcommand{\coeur}{c\oe ur\xspace}
+\newcommand{\oeuvre}{\oe uvre\xspace}
+\newcommand{\coeurs}{c\oe urs\xspace}
+\newcommand{\mc}{multic\oe ur\xspace}
+\newcommand{\mcs}{multic\oe urs\xspace}

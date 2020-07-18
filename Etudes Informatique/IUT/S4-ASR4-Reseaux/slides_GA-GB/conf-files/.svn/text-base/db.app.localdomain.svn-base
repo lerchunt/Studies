@@ -1,0 +1,15 @@
+$TTL    86400
+@       IN      SOA     dns2.app.localdomain.   root.app.localdomain. (
+                       8         ; Serial
+                       604800     ; Refresh
+                       86400      ; Retry
+                       2419200    ; Expire
+                       86400 )    ; Negative Cache TTL
+;
+@       IN      NS       dns2.app.localdomain.
+
+; Declarations --------
+dns2   IN      A      10.1.5.2
+mag    IN      A      10.1.5.12
+box    IN      A      10.1.5.14
+tv     IN      A      10.1.5.13

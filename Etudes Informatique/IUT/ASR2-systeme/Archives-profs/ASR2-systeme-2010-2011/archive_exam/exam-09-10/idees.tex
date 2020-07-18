@@ -1,0 +1,274 @@
+\documentclass[12pt]{article}
+
+\usepackage{a4wide}
+\usepackage{sujets}
+\usepackage{epsfig}
+
+\usepackage{multicol}
+
+% \newcommand\reponse[1]{\\\fbox{\begin{minipage}{\linewidth}\hfill\vspace{#1}\end{minipage}}\\}
+
+\quand{Semestre 2, année 2009-2010}
+\siglefeuille{DS}
+\siglemat{ASR2-S}
+\titrefeuille{Systèmes d'Exploitation}
+\formation{Département Informatique IUT Bordeaux 1}
+
+
+%\titre{ ...}
+\begin{document}
+\vspace{-2cm}
+
+\newcounter{numeroquestion}
+\setcounter{numeroquestion}{0}
+\newcommand{\question}[0]{\addtocounter{numeroquestion}{1}\fbox{\arabic{numeroquestion}}}
+
+\noindent\texttt{Aucun document autorisé \hfill Durée : 90 minutes}\\
+
+
+\newcommand\reponse[2]{ \fbox{\begin{minipage}{\linewidth}\question #2\hfill\vspace{#1}\end{minipage}}}
+
+
+
+\section{Pages mémoire et blocs disque}
+
+Rappelons qu'un disque lit ou écrit des données
+par blocs complets, un à la fois.
+
+On suppose que la mémoire virtuelle (paginée à la demande) d'une
+machine utilise des pages (et des cadres de pages) de 4Ko, avec un
+disque de \emph{swap} qui a des temps d'accès de 10 ms.
+
+Dans le cours, on a supposé que la taille des pages mémoire
+correspondait à la taille des blocs du disque. On remet ici en cause
+cette hypothèse, et on s'intéresse aux conséquences en termes de
+performances du \emph{swapping}.
+
+
+\begin{itemize}
+\item
+Que se passe-t-il si on utilise un disque de swap qui a   
+
+\reponse{3cm}{des blocs de 2 Ko (une page mémoire utilisera 2 blocs)}
+
+\reponse{3cm}{des blocs 8 Ko (en mettant deux blocs par page)}
+
+% avec des blocs de 2Ko il faut 2 accès 
+
+% idem avec des blocs de 8k : si
+% on met plusieurs blocs par page (blocs de 8ko), écrire une page
+% nécessite deux accès : lecture d'un bloc en mémoire, modification partielle 
+% en mémoire, et écriture du bloc. Donc 2 accès.
+
+\item Dans les deux cas, on peut retrouver des performances
+  ``optimales'' en consentant un léger sacrifice de matériel. Proposez
+  une solution, évaluez le coût financier (on suppose une mémoire
+  virtuelle de 64 Go, 500 Euros pour un disque de 1024 Go octet de
+  qualité pro).
+
+\reponse{3cm}{}
+
+% blocs de 2 ko => utiliser deux disques en parallèle
+%   cout = + 1 disque = 500 Euros
+
+% blocs de 8 ko => n'utiliser les blocs du swap qu'à moitié.
+%   cout = 2 fois plus de blocs, 64 Gigas gaspillés  => 31 Euros ?
+
+\end{itemize}
+
+\newpage
+\section{Systèmes RAID}
+
+On dispose de 3 disques de 1 T octet montés en RAID 5.
+
+Quelle est la capacité du système de disques ainsi constitué ? comment sont répartis les blocs 0,1,2,3,4... ?
+
+\reponse{6cm}{(Faire un schéma)}
+
+Quelles opérations d'entrées-sorties faut-il faire sur les différents disques pour écrire dans le bloc 1 ? Précisez quelles opérations peuvent être menées
+simultanément.
+
+\reponse{6cm}{}
+
+\newpage
+\section{Pagination à la demande}
+
+On suppose une mémoire paginée avec de 3 cadres de pages. Les pages,
+numérotées 0,1, ... sont appelées selon la séquence : \texttt{0, 1, 2,
+  3, 4, 1, 2, 4, 0, 1}
+
+
+On étudie l'effet de différents algorithmes de remplacement de page.
+
+
+\subsection{Algorithme FIFO}
+
+\question Utilisez le tableau suivant pour montrer le déroulement de cet algorithme 
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+Page & 0& 1& 2& 3& 4& 1& 2& 4& 0& 1 \\
+
+\hline \hline
+Cadre 1 &&&&&&&&&& \\ \hline
+Cadre 2 &&&&&&&&&& \\ \hline
+Cadre 3 &&&&&&&&&& \\ \hline
+\hline
+Défauts &&&&&&&&&& \\ \hline
+\end{tabular}
+
+Nombre de défauts de page =  
+\end{center}
+
+
+\subsection{Algorithme LRU}
+
+\reponse{2cm}{Détaillez le sigle ``LRU''}
+
+\reponse{3cm}{Expliquez son fonctionnement en une phrase}
+
+\question Montrez le déroulement sur le tableau
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+Page & 0& 1& 2& 3& 4& 1& 2& 4& 0& 1 \\
+\hline \hline
+Cadre 1 &&&&&&&&&& \\ \hline
+Cadre 2 &&&&&&&&&& \\ \hline
+Cadre 3 &&&&&&&&&& \\ \hline
+\hline
+Défauts &&&&&&&&&& \\ \hline
+\end{tabular}
+\end{center}
+
+\subsection{Comparaison stratégies LRU et FIFO}
+
+Pourquoi la stratégie LRU est elle \emph{en pratique} meilleure que FIFO ?
+
+\reponse{4cm}{}
+
+% PRINCIPE DE LOCALITÉ : les pages qui ont été utilisés récemment ont une probabilité
+%    forte d'être réutilisées à court terme, par rapport aux pages "quelconques".
+
+\subsection{Un scénario pathologique}
+
+Construire un scénario pathologique pour lequel LRU fait \textbf{plus de
+défauts de page} que FIFO (on trouve un contre-exemple simple avec 2 cadres, 3
+pages, et une séquence de 5 références)
+
+\reponse{6cm}{Donnez la séquence de références de pages, montrez le
+  déroulement dans les deux cas, et concluez}
+
+%% les deux déroulement 
+%%    reponse: 0,1,0,2,1
+%%    0,1 les deux première étapes remplissent les cadres
+%%    0 fait la différence entre les deux algos
+%%    2 chasse la page 0 ou la page 1, selon l'algo
+%%    1 charge la page qui vient d'être éjectée par lRU,  pour l'embeter
+
+\newpage
+\section{Ordonnancement des processus}
+
+Les baladeurs/téléphones audio-video récents sont de véritables
+ordinateurs qui font tourner de multiples applications simultanément
+avec un système multi-tâche préemptif avec priorités.  Certaines tâches 
+ont des contraintes "temps-réel" sans être très prioritaires. Voici le
+pseudo-code d'une application qui joue un morceau de musique.
+
+\begin{verbatim}
+tantque le fichier mp3 n'est pas fini
+    lire quelques secondes d'enregistrement
+    décoder dans un tampon
+    tant que le circuit son n'est pas prêt
+       { attendre 10 ms }
+    transmettre le tampon au circuit son
+    attendre 1s
+fin tant que
+\end{verbatim}
+
+Dans les systèmes classiques, il y a une fonction
+\texttt{sleep(durée)} qui met le processus à l'état bloqué, le ramène
+à l'état prêt au bout du délai demandé, ce qui ne garantit pas qu'il
+redevienne actif de suite. Le risque
+  dans cette application serait que la durée d'attente effective (retour à l'état prêt) soit
+  trop longue, et que le circuit son ne soit pas suffisamment alimenté en données, d'où un son haché.
+
+L'idéal serait d'indiquer une fourchette ``\texttt{attendre de 10 à 15 ms''}.
+
+\reponse{5cm}{Quel serait l'effet de cette instruction, au niveau de l'ordonnancement ?}
+
+
+\newpage
+
+
+
+\section{Mémoire partitionnée}
+
+% Sur 4 points : 1 point par question
+
+Soient des partitions ``libres'' de mémoire de tailles 100K, 500K, 200K et 600K
+ (dans cet ordre).
+
+Des processus arrivent, avec des tailles 212K, 417K, 112K et 426K (dans cet 
+ordre d'arrivée). Comment sont ils placés
+
+
+\reponse{4cm}{Avec la stratégie First-fit (première zone libre) ?}
+
+\reponse{4cm}{Avec Best-fit ?}
+
+\reponse{4cm}{Avec Worst-fit ?}
+
+\reponse{2cm}{Quel algorithme fournit ici le meilleur usage de la mémoire ?}
+
+
+\section{Gestion du bras du disque}
+
+On considère un disque dur présentant des pistes numérotées de 0 à 127.
+
+Initialement, la tête de lecture/écriture est à la
+verticale de la piste 15. Des requêtes arrivent pour des
+accès aux pistes
+suivantes : 100, 30, 27, 55, 16, 122, 44, 63, 56 (dans cet ordre).
+
+Quel serait le déplacement total de la tête de lecture/écriture (en
+nombre de pistes) après que toutes les demandes aient été satisfaites,
+
+
+\reponse{3cm}{avec l'algorithme ``premier arrivé premier servi'' (détaillez votre réponse)}
+
+\reponse{3cm}{avec ``le plus petit déplacement d'abord ?''}
+
+\newpage
+\section{Adressage}
+
+Considérons un système de mémoire virtuelle ayant les caractéristiques 
+suivantes :
+\begin{itemize}
+\item taille d'une page et d'un cadre de page (ou bloc ou case) = 1Ko (un 
+kilo-octet),
+\item taille de la mémoire physique (ou vive ou principale) = 32 Mo (32 
+méga-octets),
+\item
+taille de la mémoire virtuelle = 512 Mo,
+\item 
+utilisation combinée des techniques de pagination et segmentation : 
+l'espace d'adressage virtuel d'un processus est composé de segments contigus.
+Chaque segment peut contenir entre une et 128 pages. La numérotation des pages d'un segment est relative au segment.
+\end{itemize}
+
+
+Donnez le format d'une adresse virtuelle (nombre de bits des numéros
+de segment, de page, et du déplacement)
+
+\reponse{4cm}{en justifiant votre réponse}
+
+Donnez le format d'une adresse réelle (nombre de bits du numéro de bloc et du déplacement
+
+\reponse{4cm}{en justifiant votre réponse}
+
+
+
+\end{document}

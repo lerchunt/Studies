@@ -1,0 +1,9 @@
+10 cm de diamètre pour un disque.
+15 000 tour/min:
+
+2PI*0.1
+-------
+2*0,6*15000
+
+=> 4.5km/min => 250 km/h
+

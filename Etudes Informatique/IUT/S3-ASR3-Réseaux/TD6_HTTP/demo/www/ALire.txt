@@ -1,0 +1,17 @@
+**** V4****
+
+* date: 23 novembre 2006
+* des pages pointees par les hyperliens sont manquantes
+
+Nouveaux fichiers:
+* novembre.xhtml : formulaire
+* traiterFormulaire.php : script php recuperant les valeurs saisies dans le formulaire
+
+Anciens fichiers:
+* config.php: page donnant des informations sur le client, à l'aide de quelques scripts php 
+* index.xhtml: page d'accueil
+* style.css: feuille de style
+* fond.png: image de fond
+* intranet/index.xhtml
+* intranet/.htaccess : liste des adresses IP des machines autorisees a se connecter (sans saisir identifiant / mot de passe)
+* intranet/.htpasswd : un utilisateur authorise (identifiant: tetouilloi, mot de passe: pasNain)

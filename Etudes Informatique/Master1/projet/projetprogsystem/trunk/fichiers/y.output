@@ -1,0 +1,485 @@
+State 23 conflicts: 5 shift/reduce
+State 24 conflicts: 5 shift/reduce
+State 25 conflicts: 5 shift/reduce
+State 26 conflicts: 5 shift/reduce
+
+
+Grammar
+
+    0 $accept: lignecommande $end
+
+    1 lignecommande: expression '\n'
+    2              | error '\n'
+
+    3 expression: /* empty */
+    4           | commande
+    5           | expression ';' expression
+    6           | expression ET expression
+    7           | expression OU expression
+    8           | expression '|' expression
+    9           | expression IN fichier
+   10           | expression OUT fichier
+   11           | expression ERR fichier
+   12           | expression ERR_OUT fichier
+   13           | expression OUT_APPEND fichier
+   14           | expression '&'
+   15           | '(' expression ')'
+
+   16 fichier: IDENTIFICATEUR
+
+   17 commande: IDENTIFICATEUR
+   18         | commande IDENTIFICATEUR
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'\n' (10) 1 2
+'&' (38) 14
+'(' (40) 15
+')' (41) 15
+';' (59) 5
+'|' (124) 8
+error (256) 2
+IDENTIFICATEUR (258) 16 17 18
+OU (259) 7
+ET (260) 6
+IN (261) 9
+OUT (262) 10
+OUT_APPEND (263) 13
+ERR (264) 11
+ERR_OUT (265) 12
+
+
+Nonterminals, with rules where they appear
+
+$accept (17)
+    on left: 0
+lignecommande (18)
+    on left: 1 2, on right: 0
+expression (19)
+    on left: 3 4 5 6 7 8 9 10 11 12 13 14 15, on right: 1 5 6 7 8 9
+    10 11 12 13 14 15
+fichier (20)
+    on left: 16, on right: 9 10 11 12 13
+commande (21)
+    on left: 17 18, on right: 4 18
+
+
+state 0
+
+    0 $accept: . lignecommande $end
+
+    error           shift, and go to state 1
+    IDENTIFICATEUR  shift, and go to state 2
+    '('             shift, and go to state 3
+
+    '&'         reduce using rule 3 (expression)
+    ';'         reduce using rule 3 (expression)
+    OU          reduce using rule 3 (expression)
+    ET          reduce using rule 3 (expression)
+    '|'         reduce using rule 3 (expression)
+    IN          reduce using rule 3 (expression)
+    OUT         reduce using rule 3 (expression)
+    OUT_APPEND  reduce using rule 3 (expression)
+    ERR         reduce using rule 3 (expression)
+    ERR_OUT     reduce using rule 3 (expression)
+    '\n'        reduce using rule 3 (expression)
+
+    lignecommande  go to state 4
+    expression     go to state 5
+    commande       go to state 6
+
+
+state 1
+
+    2 lignecommande: error . '\n'
+
+    '\n'  shift, and go to state 7
+
+
+state 2
+
+   17 commande: IDENTIFICATEUR .
+
+    $default  reduce using rule 17 (commande)
+
+
+state 3
+
+   15 expression: '(' . expression ')'
+
+    IDENTIFICATEUR  shift, and go to state 2
+    '('             shift, and go to state 3
+
+    $default  reduce using rule 3 (expression)
+
+    expression  go to state 8
+    commande    go to state 6
+
+
+state 4
+
+    0 $accept: lignecommande . $end
+
+    $end  shift, and go to state 9
+
+
+state 5
+
+    1 lignecommande: expression . '\n'
+    5 expression: expression . ';' expression
+    6           | expression . ET expression
+    7           | expression . OU expression
+    8           | expression . '|' expression
+    9           | expression . IN fichier
+   10           | expression . OUT fichier
+   11           | expression . ERR fichier
+   12           | expression . ERR_OUT fichier
+   13           | expression . OUT_APPEND fichier
+   14           | expression . '&'
+
+    '&'         shift, and go to state 10
+    ';'         shift, and go to state 11
+    OU          shift, and go to state 12
+    ET          shift, and go to state 13
+    '|'         shift, and go to state 14
+    IN          shift, and go to state 15
+    OUT         shift, and go to state 16
+    OUT_APPEND  shift, and go to state 17
+    ERR         shift, and go to state 18
+    ERR_OUT     shift, and go to state 19
+    '\n'        shift, and go to state 20
+
+
+state 6
+
+    4 expression: commande .
+   18 commande: commande . IDENTIFICATEUR
+
+    IDENTIFICATEUR  shift, and go to state 21
+
+    $default  reduce using rule 4 (expression)
+
+
+state 7
+
+    2 lignecommande: error '\n' .
+
+    $default  reduce using rule 2 (lignecommande)
+
+
+state 8
+
+    5 expression: expression . ';' expression
+    6           | expression . ET expression
+    7           | expression . OU expression
+    8           | expression . '|' expression
+    9           | expression . IN fichier
+   10           | expression . OUT fichier
+   11           | expression . ERR fichier
+   12           | expression . ERR_OUT fichier
+   13           | expression . OUT_APPEND fichier
+   14           | expression . '&'
+   15           | '(' expression . ')'
+
+    '&'         shift, and go to state 10
+    ';'         shift, and go to state 11
+    OU          shift, and go to state 12
+    ET          shift, and go to state 13
+    '|'         shift, and go to state 14
+    IN          shift, and go to state 15
+    OUT         shift, and go to state 16
+    OUT_APPEND  shift, and go to state 17
+    ERR         shift, and go to state 18
+    ERR_OUT     shift, and go to state 19
+    ')'         shift, and go to state 22
+
+
+state 9
+
+    0 $accept: lignecommande $end .
+
+    $default  accept
+
+
+state 10
+
+   14 expression: expression '&' .
+
+    $default  reduce using rule 14 (expression)
+
+
+state 11
+
+    5 expression: expression ';' . expression
+
+    IDENTIFICATEUR  shift, and go to state 2
+    '('             shift, and go to state 3
+
+    $default  reduce using rule 3 (expression)
+
+    expression  go to state 23
+    commande    go to state 6
+
+
+state 12
+
+    7 expression: expression OU . expression
+
+    IDENTIFICATEUR  shift, and go to state 2
+    '('             shift, and go to state 3
+
+    $default  reduce using rule 3 (expression)
+
+    expression  go to state 24
+    commande    go to state 6
+
+
+state 13
+
+    6 expression: expression ET . expression
+
+    IDENTIFICATEUR  shift, and go to state 2
+    '('             shift, and go to state 3
+
+    $default  reduce using rule 3 (expression)
+
+    expression  go to state 25
+    commande    go to state 6
+
+
+state 14
+
+    8 expression: expression '|' . expression
+
+    IDENTIFICATEUR  shift, and go to state 2
+    '('             shift, and go to state 3
+
+    $default  reduce using rule 3 (expression)
+
+    expression  go to state 26
+    commande    go to state 6
+
+
+state 15
+
+    9 expression: expression IN . fichier
+
+    IDENTIFICATEUR  shift, and go to state 27
+
+    fichier  go to state 28
+
+
+state 16
+
+   10 expression: expression OUT . fichier
+
+    IDENTIFICATEUR  shift, and go to state 27
+
+    fichier  go to state 29
+
+
+state 17
+
+   13 expression: expression OUT_APPEND . fichier
+
+    IDENTIFICATEUR  shift, and go to state 27
+
+    fichier  go to state 30
+
+
+state 18
+
+   11 expression: expression ERR . fichier
+
+    IDENTIFICATEUR  shift, and go to state 27
+
+    fichier  go to state 31
+
+
+state 19
+
+   12 expression: expression ERR_OUT . fichier
+
+    IDENTIFICATEUR  shift, and go to state 27
+
+    fichier  go to state 32
+
+
+state 20
+
+    1 lignecommande: expression '\n' .
+
+    $default  reduce using rule 1 (lignecommande)
+
+
+state 21
+
+   18 commande: commande IDENTIFICATEUR .
+
+    $default  reduce using rule 18 (commande)
+
+
+state 22
+
+   15 expression: '(' expression ')' .
+
+    $default  reduce using rule 15 (expression)
+
+
+state 23
+
+    5 expression: expression . ';' expression
+    5           | expression ';' expression .
+    6           | expression . ET expression
+    7           | expression . OU expression
+    8           | expression . '|' expression
+    9           | expression . IN fichier
+   10           | expression . OUT fichier
+   11           | expression . ERR fichier
+   12           | expression . ERR_OUT fichier
+   13           | expression . OUT_APPEND fichier
+   14           | expression . '&'
+
+    '|'         shift, and go to state 14
+    IN          shift, and go to state 15
+    OUT         shift, and go to state 16
+    OUT_APPEND  shift, and go to state 17
+    ERR         shift, and go to state 18
+    ERR_OUT     shift, and go to state 19
+
+    IN          [reduce using rule 5 (expression)]
+    OUT         [reduce using rule 5 (expression)]
+    OUT_APPEND  [reduce using rule 5 (expression)]
+    ERR         [reduce using rule 5 (expression)]
+    ERR_OUT     [reduce using rule 5 (expression)]
+    $default    reduce using rule 5 (expression)
+
+
+state 24
+
+    5 expression: expression . ';' expression
+    6           | expression . ET expression
+    7           | expression . OU expression
+    7           | expression OU expression .
+    8           | expression . '|' expression
+    9           | expression . IN fichier
+   10           | expression . OUT fichier
+   11           | expression . ERR fichier
+   12           | expression . ERR_OUT fichier
+   13           | expression . OUT_APPEND fichier
+   14           | expression . '&'
+
+    '|'         shift, and go to state 14
+    IN          shift, and go to state 15
+    OUT         shift, and go to state 16
+    OUT_APPEND  shift, and go to state 17
+    ERR         shift, and go to state 18
+    ERR_OUT     shift, and go to state 19
+
+    IN          [reduce using rule 7 (expression)]
+    OUT         [reduce using rule 7 (expression)]
+    OUT_APPEND  [reduce using rule 7 (expression)]
+    ERR         [reduce using rule 7 (expression)]
+    ERR_OUT     [reduce using rule 7 (expression)]
+    $default    reduce using rule 7 (expression)
+
+
+state 25
+
+    5 expression: expression . ';' expression
+    6           | expression . ET expression
+    6           | expression ET expression .
+    7           | expression . OU expression
+    8           | expression . '|' expression
+    9           | expression . IN fichier
+   10           | expression . OUT fichier
+   11           | expression . ERR fichier
+   12           | expression . ERR_OUT fichier
+   13           | expression . OUT_APPEND fichier
+   14           | expression . '&'
+
+    '|'         shift, and go to state 14
+    IN          shift, and go to state 15
+    OUT         shift, and go to state 16
+    OUT_APPEND  shift, and go to state 17
+    ERR         shift, and go to state 18
+    ERR_OUT     shift, and go to state 19
+
+    IN          [reduce using rule 6 (expression)]
+    OUT         [reduce using rule 6 (expression)]
+    OUT_APPEND  [reduce using rule 6 (expression)]
+    ERR         [reduce using rule 6 (expression)]
+    ERR_OUT     [reduce using rule 6 (expression)]
+    $default    reduce using rule 6 (expression)
+
+
+state 26
+
+    5 expression: expression . ';' expression
+    6           | expression . ET expression
+    7           | expression . OU expression
+    8           | expression . '|' expression
+    8           | expression '|' expression .
+    9           | expression . IN fichier
+   10           | expression . OUT fichier
+   11           | expression . ERR fichier
+   12           | expression . ERR_OUT fichier
+   13           | expression . OUT_APPEND fichier
+   14           | expression . '&'
+
+    IN          shift, and go to state 15
+    OUT         shift, and go to state 16
+    OUT_APPEND  shift, and go to state 17
+    ERR         shift, and go to state 18
+    ERR_OUT     shift, and go to state 19
+
+    IN          [reduce using rule 8 (expression)]
+    OUT         [reduce using rule 8 (expression)]
+    OUT_APPEND  [reduce using rule 8 (expression)]
+    ERR         [reduce using rule 8 (expression)]
+    ERR_OUT     [reduce using rule 8 (expression)]
+    $default    reduce using rule 8 (expression)
+
+
+state 27
+
+   16 fichier: IDENTIFICATEUR .
+
+    $default  reduce using rule 16 (fichier)
+
+
+state 28
+
+    9 expression: expression IN fichier .
+
+    $default  reduce using rule 9 (expression)
+
+
+state 29
+
+   10 expression: expression OUT fichier .
+
+    $default  reduce using rule 10 (expression)
+
+
+state 30
+
+   13 expression: expression OUT_APPEND fichier .
+
+    $default  reduce using rule 13 (expression)
+
+
+state 31
+
+   11 expression: expression ERR fichier .
+
+    $default  reduce using rule 11 (expression)
+
+
+state 32
+
+   12 expression: expression ERR_OUT fichier .
+
+    $default  reduce using rule 12 (expression)

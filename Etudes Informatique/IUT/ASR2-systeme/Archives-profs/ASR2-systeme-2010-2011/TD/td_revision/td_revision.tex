@@ -1,0 +1,108 @@
+% rubber: rules ../rules.ini
+\documentclass[10pt,twoside]{article}
+
+\usepackage{a4wide}
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage[french]{babel}
+\usepackage{a4wide}
+\usepackage{mdwlist}
+\usepackage{xcolor}
+\usepackage{verbatim}
+\usepackage{xspace}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{vmargin}
+
+% c pour afficher le corriger, nc sinon
+\usepackage[nc]{optional}
+
+\definecolor{grey2}{rgb}{0.92,0.92,0.95}
+\newcommand\corr[1]{%
+  \opt{c}{
+    \fcolorbox{grey2}{grey2}{
+      \begin{minipage}{0.9\textwidth}
+        #1
+    \end{minipage}}
+  }
+}
+
+%\setmarginsrb{G}{H}{D}{B}{en-tête}{dist-entête-texte}{pied}{dist_pied-texte}
+\setmarginsrb{2cm}{2cm}{3cm}{1cm}{1cm}{0cm}{0cm}{1cm}
+%\addtolength{\textwidth}{0cm} 
+
+\sloppy
+\begin{document}
+\date{}
+\title{Révisions 1}
+\maketitle
+
+
+\section*{Exercice 1}
+
+Un système de fichier utilise des blocs disque de 2~Ko. La taille médiale d'un
+fichier est de 1~Ko. Si tous les fichiers sont exactement de 1~Ko quel sera le
+pourcentage de l'espace disque qui sera gaspillé? Pour un système de fichiers réel
+pensez vous  que le pourcentage de gaspillage sera supérieur ou inférieur à cette
+valeur? Expliquez
+
+\section*{Annales 2009~: Gestion des entrées-sorties}
+
+Soient 3 processus P1, P2 et P3 arrivés dans cet ordre à peu
+près au même instant sur un système mutitâche. Ils se comportent tous les
+3 de façon cyclique. P1 fait du calcul pendant un temps t, puis lit le bloc 100, puis
+calcule, lit le bloc 101, calcule, lit le bloc 102, etc.  Il en est de même pour P2
+et P3, qui font leurs lectures à partir des blocs 500 et 300.
+
+Dans tout l'exercice, l'ordonnancement des processus est fait par
+l'algorithme du tourniquet.  Le temps de réalisation d'une
+    entrée/sortie dépend de la position de l'entrée sortie
+    précédente. On prendra la formule
+
+\begin{verbatim}
+            durée = 5 + (depl/10) ms
+\end{verbatim}
+où \texttt{depl} est le déplacement nécessaire, en nombre de blocs. Par exemple la
+lecture du bloc 123 après celle du bloc 12, prendra \texttt{5+(123-12)/10 = 16 ms}.
+La division est arrondie.
+Initialement la tête de lecture est en position 0.
+
+\begin{enumerate}
+\item Calculez le temps nécessaire pour chacune des transitions
+\begin{verbatim}
+     t0: 0->100
+     t1: 100->500
+     t2: 500->300
+     t3: 101->501
+     t'1; 501->301
+\end{verbatim}
+
+\item Étudiez les 100 premières ms du comportement de l'ordonnancement
+  "FIFO"pour les E/S sur disque, quand le temps de calcul est de t=3 ms.
+  
+%% \item Du point de vue des E/S, il n'y a guère de changement si le
+%%   temps de calcul \texttt{t} passe de 3 à 4 ou 5 ms. Il en est autrement si il
+%%   devient très grand.
+%%   Que se passe-t-il aux alentours du seuil
+%%   \texttt{t = (t1+t2+t3) / 3}
+  
+\item Étudiez les 100 premières ms du comportement de l'ordonnancement
+  "plus court déplacement "pour les E/S sur disque, quand le temps
+  de calcul est de t=3 ms. Que se passe-t-il ensuite ?
+\item Ce comportement "anormal" change quand \texttt{t} dépasse un certain seuil.
+  Lequel, pourquoi ?
+\end{enumerate}
+
+
+
+
+\end{document}
+
+
+
+
+
+
+
+
+% LocalWords:  rubber rules entrées-sorties mutitâche depl

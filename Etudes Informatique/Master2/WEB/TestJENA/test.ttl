@@ -1,0 +1,9 @@
+@prefix :      <http://mondomaine.org/test#> .
+
+:r1     :p1     "literal1" ;
+        :p2     :r2 .
+
+:r3     :p2     "literal1" .
+
+:r2     :p2     :r3 ;
+        :p3     "r1" , "http://mondomaine.org/test#r3" .

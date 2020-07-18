@@ -1,0 +1,42 @@
+Isabelle Dutour
+1er décembre 2004
+modif m billaud 22 nov 2013
+
+Machines fournies alpha, beta, gamma
+------------------------------------
+
+#run-slack-net alpha beta gamma
+remplacÃ© par
+uml create slackware alpha beta gamma
+uml run alpha beta gamma
+
+
+Voici les commandes réalisées sur alpha avant sauvegarde.
+(remplacer alpha respectivement par beta et gamma)
+
+# Création d'un compte utilisateur
+#
+useradd -m ualpha
+passwd ualpha
+    => alpha123
+
+# Modification du nom de machine
+#
+jed /etc/HOSTNAME
+    => remplacer darkstar par alpha
+
+# Association nom machine <-> adresse IP
+#
+jed /etc/hosts
+    => remplacer
+       127.0.0.1       darkstar.example.net darkstar
+       par
+       192.168.10.1    alpha.example.net alpha
+       192.168.10.2    beta.example.net beta
+       192.168.10.3    gamma.example.net gamma
+
+# Remarque : c'est le même fichier sur les 3 machines.
+# Editer /etc/hosts uniquement sur alpha, puis :
+# sur alpha         : cp /etc/hosts /mnt/host/tmp
+# sur beta et gamma : cp /mnt/host/tmp/hosts /etc
+ 

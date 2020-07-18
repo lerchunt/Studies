@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="25cm"
+   height="19cm"
+   viewBox="119 99 496 362"
+   id="svg4647"
+   version="1.1"
+   inkscape:version="0.47 r22583"
+   sodipodi:docname="swapping.dia">
+  <metadata
+     id="metadata4773">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs4771">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 336.61417 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="885.82678 : 336.61417 : 1"
+       inkscape:persp3d-origin="442.91339 : 224.40944 : 1"
+       id="perspective4775" />
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview4769"
+     showgrid="false"
+     inkscape:zoom="0.35797662"
+     inkscape:cx="442.91339"
+     inkscape:cy="336.61417"
+     inkscape:window-x="0"
+     inkscape:window-y="24"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg4647" />
+  <g
+     id="g4649">
+    <rect
+       style="fill: #bfbfbf"
+       x="420"
+       y="167.5"
+       width="187"
+       height="165"
+       id="rect4651" />
+    <ellipse
+       style="fill: #bfbfbf"
+       cx="513.5"
+       cy="332.5"
+       rx="93.5"
+       ry="27.5"
+       id="ellipse4653" />
+    <ellipse
+       style="fill: #bfbfbf"
+       cx="513.5"
+       cy="167.5"
+       rx="93.5"
+       ry="27.5"
+       id="ellipse4655" />
+    <ellipse
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       cx="513.5"
+       cy="167.5"
+       rx="93.5"
+       ry="27.5"
+       id="ellipse4657" />
+    <path
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       d="M 607 167.5 L 607,332.5 C 607,347.688 565.139,360 513.5,360 C 461.861,360 420,347.688 420,332.5 L 420,167.5"
+       id="path4659" />
+    <text
+       style="fill: #000000;text-anchor:middle;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+       x="513.5"
+       y="372"
+       id="text4661">
+      <tspan
+         x="513.5"
+         y="372"
+         id="tspan4663" />
+    </text>
+  </g>
+  <g
+     id="g4665"
+     style="fill:#aaccff">
+    <polygon
+       style="fill:#aaccff"
+       points="320,180 356.75,180 369,192.25 369,241.25 320,241.25 "
+       id="polygon4667" />
+    <polygon
+       style="fill:#aaccff;fill-opacity:0;stroke-width:2;stroke:#000000"
+       points="320,180 356.75,180 369,192.25 369,241.25 320,241.25 "
+       id="polygon4669" />
+    <polyline
+       style="fill:#aaccff;fill-opacity:0;stroke-width:2;stroke:#000000"
+       points="356.75,180 356.75,192.25 369,192.25 369,192.25 "
+       id="polyline4671" />
+  </g>
+  <g
+     id="g4673">
+    <rect
+       style="fill: #ffffff"
+       x="120"
+       y="100"
+       width="60"
+       height="60"
+       id="rect4675" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x="120"
+       y="100"
+       width="60"
+       height="60"
+       id="rect4677" />
+  </g>
+  <g
+     id="g4679">
+    <rect
+       style="fill: #ffffff"
+       x="120"
+       y="160"
+       width="60"
+       height="60"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect4681" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000"
+       x="120"
+       y="160"
+       width="60"
+       height="60"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect4683" />
+  </g>
+  <g
+     id="g4685">
+    <rect
+       style="fill: #ffffff"
+       x="120"
+       y="220"
+       width="60"
+       height="60"
+       id="rect4687" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x="120"
+       y="220"
+       width="60"
+       height="60"
+       id="rect4689" />
+  </g>
+  <g
+     id="g4691">
+    <rect
+       style="fill: #ffffff"
+       x="120"
+       y="280"
+       width="60"
+       height="60"
+       id="rect4693" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x="120"
+       y="280"
+       width="60"
+       height="60"
+       id="rect4695" />
+  </g>
+  <g
+     id="g4697">
+    <rect
+       style="fill: #ffffff"
+       x="120"
+       y="340"
+       width="60"
+       height="60"
+       id="rect4699" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x="120"
+       y="340"
+       width="60"
+       height="60"
+       id="rect4701" />
+  </g>
+  <g
+     id="g4703">
+    <rect
+       style="fill:#afe9af"
+       x="120"
+       y="400"
+       width="60"
+       height="60"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect4705" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000"
+       x="120"
+       y="400"
+       width="60"
+       height="60"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect4707" />
+  </g>
+  <g
+     id="g4709">
+    <path
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000"
+       d="M 180,430 A 302.162,302.162 0 0 0 473.893,327.578"
+       id="path4711" />
+    <polygon
+       style="fill: #000000"
+       points="478.625,321.763 476.419,332.724 474.013,327.678 468.533,326.575 "
+       id="polygon4713" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="478.625,321.763 476.419,332.724 474.013,327.678 468.533,326.575 "
+       id="polygon4715" />
+  </g>
+  <g
+     id="g4717"
+     style="fill:#afe9af">
+    <polygon
+       style="fill:#afe9af"
+       points="280,340 316.75,340 329,352.25 329,401.25 280,401.25 "
+       id="polygon4719" />
+    <polygon
+       style="fill:#afe9af;fill-opacity:0;stroke-width:2;stroke:#000000"
+       points="280,340 316.75,340 329,352.25 329,401.25 280,401.25 "
+       id="polygon4721" />
+    <polyline
+       style="fill:#afe9af;fill-opacity:0;stroke-width:2;stroke:#000000"
+       points="316.75,340 316.75,352.25 329,352.25 329,352.25 "
+       id="polyline4723" />
+  </g>
+  <g
+     id="g4725">
+    <path
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       d="M 196.134,213.37 A 649.698,649.698 0 0 0 540,240"
+       id="path4727" />
+    <polygon
+       style="fill: #000000"
+       points="189.092,210.79 200.213,209.643 196.109,213.438 196.682,218.999 "
+       id="polygon4729" />
+    <polygon
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       points="189.092,210.79 200.213,209.643 196.109,213.438 196.682,218.999 "
+       id="polygon4731" />
+  </g>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:700"
+     x="200"
+     y="120"
+     id="text4733">
+    <tspan
+       x="200"
+       y="120"
+       id="tspan4735">Mémoire physique</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="344.5"
+     y="210.624"
+     id="text4737">
+    <tspan
+       x="344.5"
+       y="210.624"
+       id="tspan4739" />
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="340"
+     y="380"
+     id="text4741">
+    <tspan
+       x="340"
+       y="380"
+       id="tspan4743">SWAP OUT</tspan>
+  </text>
+  <g
+     id="g4745">
+    <rect
+       style="fill: #ffffff"
+       x="480"
+       y="260"
+       width="60"
+       height="60"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect4747" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000"
+       x="480"
+       y="260"
+       width="60"
+       height="60"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect4749" />
+  </g>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="260"
+     y="200"
+     id="text4751">
+    <tspan
+       x="260"
+       y="200"
+       id="tspan4753">SWAP IN</tspan>
+  </text>
+  <g
+     id="g4755">
+    <rect
+       style="fill:#aaccff"
+       x="540"
+       y="200"
+       width="60"
+       height="60"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect4757" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke-linejoin: round; stroke: #000000"
+       x="540"
+       y="200"
+       width="60"
+       height="60"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect4759" />
+  </g>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="420"
+     y="120"
+     id="text4761">
+    <tspan
+       x="420"
+       y="120"
+       id="tspan4763" />
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:700"
+     x="420"
+     y="120"
+     id="text4765">
+    <tspan
+       x="420"
+       y="120"
+       id="tspan4767">Espace de swap sur disque</tspan>
+  </text>
+</svg>

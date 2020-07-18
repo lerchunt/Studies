@@ -1,0 +1,20 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbr: <http://dbpedia.org/resource/>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/> 
+
+SELECT DISTINCT ?x ?name ?descr
+WHERE {
+  dbr:Paul_Auster dbo:birthPlace ?bplace.
+  ?bplace rdf:type dbo:City.
+  ?x rdf:type dbo:Writer;
+     rdfs:label ?name;
+     dbo:birthPlace ?bplace.
+  FILTER (?x != dbr:Paul_Auster && LANG(?name) = "en")
+  OPTIONAL {
+    ?x dc:description ?descr.
+    FILTER (LANG(?descr) =  "en")
+  }
+} ORDER by ?x

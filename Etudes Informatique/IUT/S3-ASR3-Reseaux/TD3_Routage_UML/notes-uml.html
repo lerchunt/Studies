@@ -1,0 +1,207 @@
+<html>
+<head>
+<title>
+Notes pour l'utilisation des machines virtuelles SlackWare
+</title>
+</head>
+
+<body>
+<h1>Notes pour l'utilisation des machines virtuelles Slackware</h1>
+
+<p>Auteur : Michel Billaud<br />
+Remise à jour : Isabelle Dutour (4/12/2006), M Billaud (22/11/2013)<br/>
+
+
+<h2>La commande <tt>uml</tt></h2>
+
+Cette commande est un script qui regroupe diverses actions sur les
+machines virtuelle : les créer, les lancer, les arrêter, etc.
+
+<h3>pour créer une ou plusieurs machines virtuelles</h3>
+<pre>
+	uml create slackware <i>nom-de-machine</i>...
+</pre>
+
+
+<h3>
+Scripts de lancement
+</h3>
+<ul>
+<li> pour lancer une machine toute seule
+<pre>
+uml run <i>nom-de-machine</i>
+</pre>
+<li> pour en lancer plusieurs reliées par un commutateur (switch) virtuel
+<pre>
+uml run <i>nom1 nom2 ...</i>
+</pre>
+</ul>
+
+<hr>
+<h2>Administration et configuration des machines Slackware</h2>
+
+Les commandes indiquées ci-dessous sont destinées à être lancées
+<b>dans</b> la machine virtuelle, par l'administrateur <tt>root</tt>
+généralement.
+
+<h3>
+Redémarrage d'une machine virtuelle 
+</h3>
+<p>Commande <tt>reboot</tt> ou <tt>shutdown -r now</tt> (lancée par <i>root</i>).</p>
+
+<h3>
+Arrêt d'une machine virtuelle
+</h3>
+<p>Commande <tt>halt</tt> ou <tt>shutdown -h now</tt> (lancée par <i>root</i>).</p>
+<p>
+Note : après l'arrêt de la machine virtuelle l'état de
+la machine virtuelle est sauvegardé sous forme fortement compressée
+(voir dans <tt>~/.cows</tt>), ce qui prend un temps certain.
+</p>
+
+<h3>
+Éditeurs de textes installés
+</h3>
+<p>	
+<tt>jed</tt> (clone <tt>emacs</tt>), <tt>vi</tt>, <tt>ed</tt>
+</p>
+
+
+<h3>
+Les consoles virtuelles
+</h3>
+<p>Si on en a trop ou pas assez: éditer le fichier <tt>/etc/inittab</tt>, et
+  commenter/décommenter les lignes <tt>c1</tt> à <tt>c6</tt> (garder au moins <tt>c0</tt> ...)
+</p>
+<pre> 
+#c2:1235:respawn:/sbin/agetty 38400 tty2 linux
+</pre>
+
+
+<h3>
+Enregistrement des utilisateurs
+</h3>
+
+<ul>
+<li>La commande interactive <tt>adduser</tt>
+<li>« <tt>useradd -m</tt> <i>username</i> » ajoute un utilisateur,
+avec des paramètres par défaut (que l'on peut expliciter).
+Compléter en utilisant « <tt>passwd</tt> » pour change le mot de passe, ou 
+« <tt>chpasswd</tt> » pour les opérations massives.
+</ul>
+
+
+<h3>
+Modification du nom d'une machine virtuelle
+</h3>
+<p>
+Editer le fichier <tt>/etc/HOSTNAME</tt> qui contient le nom complet de la machine.
+</p>
+
+<h3>
+Configuration des interfaces réseau
+</h3>
+
+<ul>
+<li> Manuellement on peut faire
+<pre>
+/sbin/ifconfig <i>ethi</i> <i>adr_ip</i> netmask <i>mask</i> broadcast <i>adr_brdcst</i> up
+/sbin/route add default gw <i>adr_gateway</i>
+/sbin/route add -net <i>adr_ip_net</i> netmask <i>mask</i> gw <i>adr_gateway</i>
+</pre>
+
+<li> Pour une configuration durable, 
+  éditer le fichier de configuration <tt>/etc/rc.d/rc.inet1.conf</tt> + le
+  script <tt>/etc/rc.d/rc.inet1</tt> si besoin (route vers une passerelle de sous-réseau par exemple)
+  
+<li> Un script interactif est aussi disponible : <tt>/sbin/netconfig</tt>. Il remplit les fichiers
+<ul>
+<li>  <tt>/etc/rc.d/rc.inet1.conf</tt>  (config. interfaces réseau)
+<li>  <tt>/etc/HOSTNAME</tt>  (nom complet de la machine)
+<li>  <tt>/etc/hosts</tt>     (correspondances noms / numéros IP)
+<li>  <tt>/etc/resolv.conf</tt>  (domaines par defaut, serveurs de noms)
+</ul>  
+</ul>
+
+<h3>
+Configurer une passerelle
+</h3>
+<p>Attention, si on a une machine à 2 interfaces, elle ne joue pas
+automatiquement le rôle de passerelle : les paquets qui arrivent d'un
+côté ne sont pas réexpédiés de l'autre.  Il faut le demander gentiment
+à la couche « routage » du noyau, en faisant
+</p>
+<pre>  
+echo 1 > /proc/sys/net/ipv4/ip_forward
+</pre>
+<p>Sur cette version de la distribution <tt>Slackware</tt>, 
+pour cela devienne permanent, il suffit de rendre exécutable un script en faisant
+</p>
+<pre>chmod 755 /etc/rc.d/rc.ip_forward
+</pre>
+<p>Pour plus d'informations, voir les commentaires du script <tt>/etc/rc.d/rc.ip_forward</tt>.
+</p>
+
+
+<h3>
+Accéder aux fichiers de la machine hôte
+</h3>
+
+L'arborescence de la machine hôte (la vraie, sur laquelle on fait
+tourner les machines virtuelles) est montée sur  <tt>/mnt/hosts</tt>
+(voir <tt>/etc/fstab</tt>)
+<p>
+On retrouve donc ses fichiers dans
+   <tt>/mnt/hosts/net/mon-groupe/mon-nom</tt>
+
+
+<h3>
+Installer des packages supplémentaires
+</h3>
+<p>
+Sur la machine hôte, l'image iso du CD ROM d'installation de Linux se trouve dans 
+<tt>/net/spare2/CD/slackware-11.0-install-dvd.iso</tt>.
+Pour accéder à l'arborescence de ce CD depuis les machines virtuelles, il suffit de
+</p>
+<ul>
+<li>exécuter la commande <tt>mount /mnt/dvd</tt> : réalise le montage de cette image (voir <tt>/etc/fstab</tt>),
+</li>
+<li>
+accèder au répertoire <tt>/mnt/dvd/slackware</tt>.
+</li>
+</ul>
+<p>
+Les packages sont répartis dans des répertoires par catégorie. Les
+principales</p>
+<ul>
+<li><tt>a</tt> : système de base (indispensable)
+<li><tt>ap</tt>: applications
+<li><tt>d</tt>: outils de développement
+<li><tt>e</tt>: éditeurs
+<li><tt>n</tt> : networking
+</ul>
+Pour chaque package il y a 3 fichiers
+<ul>
+<li>     <i>package</i><tt>.txt</tt>     : la description
+<li>     <i>package</i><tt>.tgz</tt>     : l'archive
+<li>     <i>package</i><tt>.tgz.asc</tt> : une clé pour authentifier le contenu
+</ul>
+
+Pour chercher quelque chose (par exemple le programme <tt>fortune</tt>), on 
+peut faire (méthode rustique)
+<pre>
+grep fortune /mnt/dvd/slackware/*/*.txt
+</pre>
+On voit alors qu'il s'agit de <tt>bsd-games-2.13-i386-1</tt> dans le
+répertoire <tt>y</tt>, et alors on installe par
+<pre>
+installpkg /mnt/dvd/slackware/y/bsd-games*.tgz
+</pre>
+
+Il est recommandé d'installer la commande <tt>man</tt>, qui requiert
+le package <tt>groff</tt>, ainsi que les pages de manuel.
+
+
+</body>
+</html>
+

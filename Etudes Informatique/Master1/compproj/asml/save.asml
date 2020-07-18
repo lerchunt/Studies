@@ -1,0 +1,7 @@
+let _ =
+    let x = 42 in
+    let y = 0 in
+    let tu = save x y in (* y <- x *)
+    let z = y in
+    call _min_caml_print_int z 
+

@@ -1,0 +1,11 @@
+digraph G{
+	node1 [label = "+ (1/2)"];
+	node1 -> node2;
+	node2 [label = ". (1/2)"];
+	node2 -> node3;
+	node3 [label = "a-1"];
+	node2 -> node5;
+	node5 [label = "b-2"];
+	node1 -> node7;
+	node7 [label = "ε-0"];
+}

@@ -1,0 +1,33 @@
+#
+# exemple de réseau
+#
+
+DISTRIB=slackware
+. /net/opt/UML-TOOLS/conf/net-functions.conf
+
+
+#
+# description d'un réseau 
+#                                                    
+#                                          /----0 am
+#   beta 0---- sw1 ---0 alpha 1-------- sw2 
+#                                          \----0 stram 1---- sw3 ----0 gram
+SWITCH sw1
+SWITCH sw2
+SWITCH sw3
+
+#
+# les connexions
+#
+#      machine  eth0 eth1
+#
+HOST   beta     sw1
+HOST   alpha    sw1 sw2
+HOST   am       sw2
+HOST   stram    sw2 sw3
+HOST   gram     sw3
+
+RUN
+
+exit
+

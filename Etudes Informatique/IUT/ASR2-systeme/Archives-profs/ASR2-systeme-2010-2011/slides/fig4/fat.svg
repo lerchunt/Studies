@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="18cm"
+   height="15cm"
+   viewBox="12 28 344 282"
+   id="svg7042"
+   version="1.1"
+   inkscape:version="0.47 r22583"
+   sodipodi:docname="fat.dia">
+  <metadata
+     id="metadata7088">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs7086">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 265.74802 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="637.79529 : 265.74802 : 1"
+       inkscape:persp3d-origin="318.89764 : 177.16534 : 1"
+       id="perspective7090" />
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="701"
+     inkscape:window-height="480"
+     id="namedview7084"
+     showgrid="false"
+     inkscape:zoom="0.45343706"
+     inkscape:cx="318.89764"
+     inkscape:cy="265.74802"
+     inkscape:window-x="0"
+     inkscape:window-y="24"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg7042" />
+  <g
+     id="g7044">
+    <rect
+       style="fill: #d8e5e5"
+       x="105"
+       y="28"
+       width="251"
+       height="282"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect7046" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke-linejoin: round; stroke: #000000"
+       x="105"
+       y="28"
+       width="251"
+       height="282"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect7048" />
+  </g>
+  <g
+     id="g7050">
+    <rect
+       style="fill: #90ee90"
+       x="112"
+       y="37"
+       width="235"
+       height="41"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect7052" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke-linejoin: round; stroke: #000000"
+       x="112"
+       y="37"
+       width="235"
+       height="41"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect7054" />
+  </g>
+  <text
+     style="fill: #000000;text-anchor:middle;font-size:12.8;font-family:sanserif;font-style:italic;font-weight:normal"
+     x="229.5"
+     y="57.5"
+     id="text7056">
+    <tspan
+       x="229.5"
+       y="57.5"
+       id="tspan7058">catalogue</tspan>
+  </text>
+  <g
+     id="g7060">
+    <rect
+       style="fill: #add8e6"
+       x="113.2"
+       y="82.7"
+       width="235"
+       height="221.3"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect7062" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke-linejoin: round; stroke: #000000"
+       x="113.2"
+       y="82.7"
+       width="235"
+       height="221.3"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect7064" />
+  </g>
+  <text
+     style="fill: #000000;text-anchor:middle;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="41.7"
+     y="210.35"
+     id="text7066">
+    <tspan
+       x="41.7"
+       y="210.35"
+       id="tspan7068">blocs de</tspan>
+    <tspan
+       x="41.7"
+       y="226.35"
+       id="tspan7070"> données</tspan>
+  </text>
+  <g
+     id="g7072">
+    <rect
+       style="fill: #d8e5e5"
+       x="121"
+       y="89"
+       width="221"
+       height="40"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect7074" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 0.02; stroke-linejoin: round; stroke: #000000"
+       x="121"
+       y="89"
+       width="221"
+       height="40"
+       rx="2.35099e-37"
+       ry="2.35099e-37"
+       id="rect7076" />
+  </g>
+  <text
+     style="fill: #000000;text-anchor:middle;font-size:12.8;font-family:sanserif;font-style:italic;font-weight:normal"
+     x="231.5"
+     y="109"
+     id="text7078">
+    <tspan
+       x="231.5"
+       y="109"
+       id="tspan7080">chainages des blocs</tspan>
+  </text>
+  <line
+     style="fill:none;stroke:#000000;stroke-width:1.07871603;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+     x1="84.379379"
+     y1="131"
+     x2="84.379379"
+     y2="299.25"
+     id="line7082" />
+</svg>

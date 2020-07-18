@@ -1,0 +1,73 @@
+\documentclass[11pt]{article}
+
+\usepackage{a4wide}
+\usepackage{sujets}
+\usepackage{verbatim}
+\usepackage{moreverb}
+
+\quand{Semestre 2, année 2008-2009}
+%\siglefeuille{DS}
+\siglemat{ASR2}
+\titrefeuille{Contrôle de Connaissances}
+\formation{Département Informatique IUT Bordeaux 1}
+\titre{Systèmes d'exploitation}
+
+\sloppy
+\begin{document}
+
+\section{Questions de cours}
+\begin{enumerate}
+\item Citez deux contraintes des systèmes embarqués.
+\item Citez les deux branches principales de la famille Unix
+\end{enumerate}
+
+\section{Ordonnancement}
+On considère une machine sur laquelle vont tourner les 5 processus A, B,
+C, D et E dont les durées d'exécution et les dates d'arrivée sont les
+suivantes :
+
+\begin{center}
+\begin{tabular}{|r||cc|}
+\hline
+processus & Date d'arrivée & Durée\\
+\hline
+A&0&10\\
+B&2& 4\\	
+C&1& 7\\	
+D&4&12\\
+E&3& 5\\
+\hline
+\end{tabular}
+\end{center}
+	
+On appelle temps de service (TS) d'un processus le temps écoulé entre
+son arrivée dans le système et sa terminaison.
+
+Représentez le déroulement de l'exécution des processus par un
+diagramme et calculez le temps de service moyen pour les algorithmes
+d'ordonnancement suivant :
+\begin{enumerate}
+\item Ordonnancement FIFO sans quantum de temps
+\item Ordonnancement suivant la règle dite du "Tourniquet" (Round
+ Robin) avec quantum de temps q=2 en tenant compte des dates
+ d'arrivée.
+\end{enumerate}
+
+Remarque : lorsqu'un processus termine son quantum de temps ``t'', il
+est placé dans la file d'attente AVANT un processus qui arrive au même
+temps ``t''
+
+\section{Memoire}
+ Pour chacune des adresses virtuelles suivantes, donnez le numéro de
+ page virtuelle et le déplacement pour des pages de 4~ko et de 8~ko :
+ 0xbf7e72a0, 0x51a5f0c8
+
+
+%% \vspace{2cm}
+%% Version : 
+%% \verb+$Id: ds-asr2-mai2007-v1.tex,v 1.2 2007/05/15 14:48:49 billaud Exp billaud $+
+
+
+
+
+\end{document}

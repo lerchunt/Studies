@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="batailleEspagnole">
+  <ClassDiagramComponents>
+    <Class name="Jeu" package="" visibility="public" xPosition="416.0" yPosition="38.0">
+      <Fields>
+        <Field name="atout" type="Famille" visibility="private"/>
+        <Field name="joueurs" type="ArrayList&lt;Joueur&gt;" visibility="public"/>
+        <Field name="pioche" type="ArrayList&lt;Carte&gt;" visibility="public"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="gagnantMain" returnType="Joueur" visibility="public">
+          <Argument type="ArrayList&lt;Carte&gt;" name="cartesJouees"/>
+        </Method>
+        <Method name="designerAtout" returnType="void" visibility="public"/>
+        <Method name="distribuer" returnType="void" visibility="public"/>
+        <Method name="initJeu" returnType="void" visibility="public"/>
+        <Method name="getAtout" returnType="Famille" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Carte" package="" visibility="public" xPosition="800.0" yPosition="453.0">
+      <Fields>
+        <Field name="type" type="Famille" visibility="private"/>
+        <Field name="nom" type="String" visibility="private"/>
+        <Field name="valeur" type="int" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="getType" returnType="Famille" visibility="public"/>
+        <Method name="getNom" returnType="String" visibility="public"/>
+        <Method name="getValeur" returnType="int" visibility="public"/>
+      </Methods>
+    </Class>
+    <Class name="Partie" package="" visibility="public" xPosition="55.0" yPosition="125.0">
+      <Fields>
+        <Field name="nbJoueur" type="int" visibility="private"/>
+        <Field name="nbJeux" type="int" visibility="private"/>
+        <Field name="pointMax" type="int" visibility="private"/>
+        <Field name="fin" type="Boolean" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="Gagnant" returnType="Joueur" visibility="public"/>
+        <Method name="choisirRegle" returnType="void" visibility="public"/>
+        <Method name="Partie" returnType="void" visibility="public"/>
+        <Method name="creerJeu" returnType="void" visibility="public"/>
+        <Method name="getNbJoueur" returnType="int" visibility="public"/>
+        <Method name="getNbJeux" returnType="int" visibility="public"/>
+        <Method name="getPointMax" returnType="int" visibility="public"/>
+        <Method name="getFin" returnType="Boolean" visibility="public"/>
+      </Methods>
+    </Class>
+    <Enum name="Famille" package="" visibility="public" xPosition="60.0" yPosition="442.0">
+      <Literals>
+        <Literal name="Baton"/>
+        <Literal name="Or"/>
+        <Literal name="Epée"/>
+        <Literal name="Coupe"/>
+      </Literals>
+    </Enum>
+    <Class name="Joueur" package="" visibility="public" xPosition="416.0" yPosition="410.0">
+      <Fields>
+        <Field name="name" type="String" visibility="private"/>
+        <Field name="score" type="int" visibility="private"/>
+        <Field name="main" type="Boolean" visibility="private"/>
+        <Field name="cartes" type="ArrayList&lt;Carte&gt;" visibility="private"/>
+        <Field name="pot" type="ArrayList&lt;Carte&gt;" visibility="private"/>
+      </Fields>
+      <Constructors/>
+      <Methods>
+        <Method name="piocher" returnType="void" visibility="public">
+          <Argument type="ArrayList&lt;Carte&gt;" name="pioche"/>
+        </Method>
+        <Method name="jouerCarte" returnType="void" visibility="public">
+          <Argument type="ArrayList&lt;Carte&gt;" name="carte"/>
+        </Method>
+        <Method name="calculScore" returnType="void" visibility="public">
+          <Argument type="ArrayList&lt;Carte&gt;" name="pot"/>
+        </Method>
+        <Method name="getName" returnType="String" visibility="public"/>
+        <Method name="getScore" returnType="int" visibility="public"/>
+        <Method name="setScore" returnType="void" visibility="public">
+          <Argument type="int" name="i"/>
+        </Method>
+      </Methods>
+    </Class>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations>
+    <HasRelation name="Gagnant" source="Partie" target="Joueur" type="Default" sourceCardinality="0..1" targetCardinality="1..1"/>
+    <HasRelation name="possède" source="Joueur" target="Carte" type="Default" sourceCardinality="0..1" targetCardinality="1..*" collectionType="ArrayList"/>
+    <HasRelation name="participe" source="Joueur" target="Jeu" type="Default" sourceCardinality="0..1" targetCardinality="0..*" collectionType="ArrayList"/>
+    <HasRelation name="Pot" source="Joueur" target="Carte" type="Default" sourceCardinality="0..1" targetCardinality="0..*" collectionType="ArrayList"/>
+    <HasRelation name="contient" source="Partie" target="Jeu" type="Composition" sourceCardinality="0..1" targetCardinality="1..*" collectionType="ArrayList"/>
+    <HasRelation name="pioche" source="Jeu" target="Carte" type="Default" sourceCardinality="0..1" targetCardinality="1..*" collectionType="ArrayList"/>
+  </ClassDiagramRelations>
+</ClassDiagram>

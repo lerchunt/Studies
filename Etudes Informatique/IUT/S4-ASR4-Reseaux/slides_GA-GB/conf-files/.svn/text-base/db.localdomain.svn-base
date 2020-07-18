@@ -1,0 +1,22 @@
+$TTL    86400
+@       IN      SOA     dns1.localdoamain. root.dns1.localdomain. (
+                        5                  ; Serial
+                        604800             ; Refresh
+                        86400              ; Retry
+                        2419200            ; Expire
+                        86400 )            ; Negative Cache TTL
+
+; Declaration des serveurs DNS  ------
+@       IN      NS      dns1.localdomain.
+@       IN      NS      dns2.localdomain.
+
+; Declaration du sous-domaine app de serveur DNS primaire dns2  ---
+app     IN      NS      dns2.localdomain.
+
+; Declarations des adresses --------
+dns1    IN      A      10.1.5.1
+dns2    IN      A      10.1.5.2
+poste   IN      A      10.1.5.100
+
+; Synonyme ------------
+www     IN      CNAME  dns1

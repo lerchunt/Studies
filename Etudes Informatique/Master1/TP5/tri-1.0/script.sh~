@@ -1,0 +1,9 @@
+#!/bin/sh
+for  i in 'seq 1 20'
+do 	
+	./tri_sequentiel --parallelism 0 --time <vecteur1000
+	moyenne=$(cat moyenne.txt)
+	echo "$moyenne"
+	echo "$moyenne"
+	$moyenne += $moyenne
+done

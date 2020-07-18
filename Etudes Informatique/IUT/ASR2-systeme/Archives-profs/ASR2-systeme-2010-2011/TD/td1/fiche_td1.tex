@@ -1,0 +1,254 @@
+% rubber: rules ../rules.ini
+\documentclass[10pt,twoside]{article}
+
+\usepackage{a4wide}
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage[french]{babel}
+\usepackage{a4wide}
+\usepackage{mdwlist}
+\usepackage{xcolor}
+\usepackage{verbatim}
+\usepackage{xspace}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{vmargin}
+
+% c pour afficher le corriger, nc sinon
+\usepackage[nc]{optional}
+
+\definecolor{grey2}{rgb}{0.92,0.92,0.95}
+\newcommand\corr[1]{%
+  \opt{c}{
+    \fcolorbox{grey2}{grey2}{
+      \begin{minipage}{0.9\textwidth}
+        #1
+    \end{minipage}}
+  }
+}
+
+%\setmarginsrb{G}{H}{D}{B}{en-tête}{dist-entête-texte}{pied}{dist_pied-texte}
+\setmarginsrb{2cm}{2cm}{3cm}{1cm}{1cm}{0cm}{0cm}{1cm}
+%\addtolength{\textwidth}{0cm} 
+
+\sloppy
+\begin{document}
+\date{}
+\title{Ordonnancement}
+\maketitle
+
+\section*{Exercice 1}
+Soit  TS le  temps de  service d'un  processus, c'est-à-dire  le temps
+écoulé entre  son arrivée dans le  système et sa fin.  On considère un
+système  de traitement  séquentiel (\textit{batch}  ou  traitement par
+lots) dans lequel quatre processus arrivent dans l'ordre suivant :
+
+\begin{center}
+\begin{tabular}{c c c}
+Numéro du processus & Instant d'arrivée & Durée\\
+\hline
+1 & 0 & 8 \\
+2 & 1 & 4 \\
+3 & 2 & 9 \\
+4 & 4 & 5 \\
+\end{tabular}
+\end{center}
+
+\begin{enumerate}
+\item Donner le TS moyen dans le cas où on adopte la
+politique \textit{FIFO} (Premier arrivé, premier servi).
+
+\corr{TS1=8 \xspace TS2=7+4 \xspace  TS3=6+4+9 \xspace TS4=4+4+9+5 
+$$ TS_{moyen}= \frac{8+11+19+22}{4} = 15 $$
+}
+\item Donner le TS moyen dans le cas où on adopte la
+politique \textit{PCTE} (Plus Court Temps d'Exécution d'abord).
+
+\corr{TS1=8 (seul ordonnançable au temps 0) \xspace TS2=7+4 \xspace
+  TS3=6+4+5+9 \xspace TS4=4+4+5  
+$$ TS_{moyen} = \frac{8+11+24+11}{4} = 13,5 $$
+}
+\end{enumerate}
+
+\section*{Exercice 2}
+Soient trois processus A, B et C, qui ont un comportement répétitif :
+ils font un peu de calcul pour une durée $t$ (respectivement 10ms,
+15ms et 45ms), puis une opération d'entrée-sortie (qui dure 20ms), et
+recommencent.
+Le processeur d'entrées-sorties traite les requêtes séquentiellement, 
+dans l'ordre où il les reçoit.
+
+\begin{enumerate}
+\item En supposant un ordonnancement par tourniquet 
+sans réquisition, évaluez le taux d'occupation du CPU et du processeur 
+d'entrées-sorties. Étudiez l'équité de l'ordonnancement.
+
+\item Même question, avec un ordonnancement préemptif
+avec tourniquet, et un quantum fixé à 20 ms.
+
+\item Même question, avec un ordonnancement préemptif
+avec priorités (dans l'ordre décroissant B, A, C), et un quantum fixé à 20 ms.
+\end{enumerate}
+
+\opt{c}{
+  \newpage
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{fig/exo21}
+    \vspace{1cm}
+
+    \includegraphics[width=\linewidth]{fig/exo22}
+    \vspace{1cm}
+
+    \includegraphics[width=\linewidth]{fig/exo23}
+    \caption{Exo 2}
+  \end{figure}
+}
+
+\section*{Exercice 3}
+Un garage reçoit, dès son ouverture, des clients qui amènent leur
+voiture à réparer. Le garage qui ne possède qu'un pont ne peut
+effectuer qu'une réparation à la fois. Les clients attendent sur place
+à la fin des réparations.
+
+L'objectif du centre est de réduire le temps d'attente moyen des
+clients
+\begin{enumerate}
+\item Soit 4 réparations A, B, C, D de durée
+respective $d_a=30mn$, $d_b=40mn$, $d_c=10mn$, $d_d=20mn$. Quelle est la
+durée totale des réparations ? Si on les exécute dans l'ordre A-B-C-D,
+quel est le temps d'attente moyen ? Et dans l'ordre inverse ?
+
+\corr{TSA=30 \xspace TSB=30+40 \xspace  TSC=30+40+10 \xspace TSD=30+40+10+20 
+$$ TS_{moyen}= \frac{30+70+80+100}{4} = 70 = 1h10 $$\\
+Ordre inverse~: TSA=20+10+40+30 \xspace TSB=20+10+40 \xspace  TSC=20+10 \xspace TSD=20 
+$$ TS_{moyen}= \frac{100+70+30+20}{4} = 55min $$
+}
+\item Montrez qu'on peut faire mieux. Et pire.
+
+\corr{Mieux, PCTE~:   TSA=10+20+30 \xspace TSB=10+20+30+40 \xspace  TSC=10 \xspace TSD=10+20 
+$$ TS_{moyen}= \frac{60+100+10+30}{4} = 50min $$\\
+Pire, PLTE:  TSA=40+30 \xspace TSB=40 \xspace  TSC=40+30+20+10 \xspace TSD=40+30+20 
+$$ TS_{moyen}= \frac{70+40+100+90}{4} = 75min = 1h15 $$
+}
+\item {\`A} votre avis, avec une série de travaux
+de durée $d_1$, $d_2$, ..., $d_n$, quelle est la meilleure façon de procéder
+? Prouvez rigoureusement que c'est la solution optimale.
+\suspend{enumerate} 
+
+\subsection*{Seconde partie}
+
+Le responsable commercial avait imprudemment promis de terminer les
+réparations en moins d'une heure, avec une réduction de 1 euro par
+minute de retard. C'est au responsable d'atelier de choisir l'ordre de
+passage qui mminimisera le manque à gagner.
+
+\resume{enumerate}
+\item Calculez le manque à gagner du garage pour
+  l'ordre ABCD, et l'ordre inverse.
+  
+  \corr{TSA=30 \xspace TSB=30+40 \xspace  TSC=30+40+10 \xspace TSD=30+40+10+20 
+    $$ manque = 0+10+20+40 = 70 $$\\
+    Ordre inverse~: TSA=20+10+40+30 \xspace TSB=20+10+40 \xspace  TSC=20+10 \xspace TSD=20 
+    $$ manque = 40+10+0+0 = 50min $$
+  }
+  \item En général, dans quel ordre doit-il
+procéder ?
+\end{enumerate}
+
+\section*{Exercice 4}
+On considère une machine sur laquelle vont tourner 3 processus A, B et
+C. Ces processus ont un comportement cyclique consistant à faire
+tourner du calcul pendant une certaine durée, puis une opération
+d'entrée-sortie, et recommencer.
+
+La durée de calcul est fixée à 5ms pour A et B, et à 40ms pour C. Les
+entrées-sorties durent 15 ms, et sont traitées de façon séquentielle
+(premier arrivé, premier servi).
+\subsection*{Première partie}
+On étudie le comportement de ces processus dans le cadre d'un système
+\textbf{multi-tâche non préemptif} (sans réquisition), avec priorités.
+\begin{enumerate}
+\item \textbf{Montrer ce qui se passe} pendant les 160 premières
+  millisecondes de fonctionnement du système, en supposant que l'ordre
+  de priorité (et de démarrage) est A, B, C (Faire des graphique à
+  l'échelle 1cm pour 10ms, avec le temps sur l'axe horizontal).
+  
+\item  On observe que le comportement du système est
+  périodique. \textbf{Indiquez} ce que seront le taux d'occupation CPU
+  et le taux d'occupation du périphérique d'E/S après un temps assez
+  long.
+\item \textbf{Calculez} la vitesse d'avancement relative de chacun de
+  ces processus par rapport au cas où il serait seul à s'exécuter sur
+  la machine.
+\item \textbf{Effectuez la même étude} avec l'ordre inverse C, B, A.
+\end{enumerate}
+
+\subsection*{Seconde partie}
+\'Etudiez le cas de l'ordonnancement préemptif (avec réquisition)
+avec un \textbf{quantum de temps} fixé à 10ms.
+
+\begin{enumerate}
+\item Avec l'ordre de priorité A, B, C.
+\item Avec l'ordre inverse.
+\end{enumerate}
+
+Remarque : arrêtez-vous  à 160ms même si vous n'obtenez pas un
+comportement périodique. N'hésitez pas à extrapoler vos observations.
+
+\opt{c}{
+  \begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{fig/exo41}
+    \includegraphics[width=\linewidth]{fig/exo41bis}
+  \end{figure}
+}
+
+
+\section*{Exercice 5}
+
+On considère un système sur lequel s'exécutent 5 processus :
+\begin{itemize}
+\item un processus Emacs qui détecte les frappes au clavier pendant
+  1ms puis rend le processeur
+\item 4 processus de calcul (C1, ... C4) qui monopolisent le processeur
+\end{itemize}
+
+Le quantum de temps alloué à chaque processus est de 10ms. Quel est le
+temps de réaction moyen du processus Emacs si l'on utilise la
+politique d'ordonnancement FIFO ? Même question avec une politique
+d'ordonnancement avec priorité (tous les processus démarrent avec la
+même priorité)
+
+\section*{Exercice 6}
+
+Soient 3 processus A, B et C qui s'exécutent sur une machine. Les
+contextes sauvegardés par le système d'exploitation sont les suivants :\\
+\texttt{Processus A : PC=4000, SP=4500, EAX=0}\\
+\texttt{Processus B : PC=6000, SP=7000, EAX=12}\\
+\texttt{Processus C : PC=1000, SP=1200, EAX=4}
+
+Le processeur exécute le processus C et les registres matériels sont
+les suivants:\\
+\texttt{PC=1010, SP=1350, EAX=21}
+
+L'ordonnanceur choisi d'exécuter les processus A. Lorsque A a épuisé
+son quantum de temps, les registres matériels sont les suivants :\\
+\texttt{PC=4023, SP=4612, EAX=17}\\
+Le processus B est ensuite exécuté.
+
+\begin{enumerate}
+\item Combien y a-t-il de changements de contexte ?
+
+\item Pour chaque changement de contexte, décrivez l'état des registres
+matériels et sauvegardés avant et après le changement de contexte.
+\end{enumerate}
+
+\end{document}
+
+
+
+
+
+
+

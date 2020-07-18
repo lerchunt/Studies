@@ -1,0 +1,25 @@
+TP1 IOT
+Thomas Lerchundi
+
+Exercice 1 : 
+
+Question 1 :
+
+Avec les affichages placés dans le code,
+Je vois que le producer ecrit les caractères dans la fifo, jusqu’à ce que cette dernière soit pleine. 
+
+C’est à ce moment que le consumer commence à lire la fifo. 
+De la même manière, le consumer ne laisse la main au producer qu’une fois que l’ensemble de la Fifo soit vidé (qu’il ait tout lu).
+
+Question 2 :
+
+
+Mesures expérimentales :
+
+Taille de Fifo :                                 |1   |   5 |  10 |  18| 33 |
+Temps de transfère par caractère (ns)            |180 | 147 | 121 | 110| 105| 
+
+-> On voit que pour améliorer de 5 % les performance, quand on a un taux de transfert de 110ns, il faut presque doubler la taille de la Fifo. 
+Cela montre l'importance qu’ont les choix d'architecture, en terme de coût et de performances souhaitées.
+
+___________________________________________

@@ -1,0 +1,143 @@
+Manipulation effectuées sous MAC OS avec GPG 2.1
+
+Génération de clé RSA : 
+
+eduroam-033053:Multimedia Thomas$ gpg2 --gen-key
+gpg (GnuPG/MacGPG2) 2.0.30; Copyright (C) 2015 Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Sélectionnez le type de clef désiré :
+   (1) RSA et RSA (par défaut)
+   (2) DSA et Elgamal
+   (3) DSA (signature seule)
+   (4) RSA (signature seule)
+Quel est votre choix ? 
+les clefs RSA peuvent faire une taille comprise entre 1024 et 4096 bits.
+Quelle taille de clef désirez-vous ? (2048) 4096
+La taille demandée est 4096 bits                  
+Veuillez indiquer le temps pendant lequel cette clef devrait être valable.
+         0 = la clef n'expire pas
+      <n>  = la clef expire dans n jours
+      <n>w = la clef expire dans n semaines
+      <n>m = la clef expire dans n mois
+      <n>y = la clef expire dans n ans
+Pendant combien de temps la clef est-elle valable ? (0) 122
+La clef expire le Sam  8 jul 19:17:23 2017 CEST             
+Est-ce correct ? (o/N) o
+                         
+GnuPG doit construire une identité pour identifier la clef.
+
+Nom réel : Lerchundi Thomas
+Adresse électronique : lerchundi.thomas@gmail.com
+Commentaire :                                      
+Vous avez sélectionné cette identité :
+    « Lerchundi Thomas <lerchundi.thomas@gmail.com> »
+
+Faut-il modifier le (N)om, le (C)ommentaire, l'(A)dresse électronique
+ou (O)ui/(Q)uitter ? 
+Faut-il modifier le (N)om, le (C)ommentaire, l'(A)dresse électronique                        
+ou (O)ui/(Q)uitter ? O
+Une phrase secrète est nécessaire pour protéger votre clef secrète.                           
+
+De nombreux octets aléatoires doivent être générés. Vous devriez faire
+autre chose (taper au clavier, déplacer la souris, utiliser les disques)
+pendant la génération de nombres premiers ; cela donne au générateur de
+nombres aléatoires une meilleure chance d'obtenir suffisamment d'entropie.
+De nombreux octets aléatoires doivent être générés. Vous devriez faire
+autre chose (taper au clavier, déplacer la souris, utiliser les disques)
+pendant la génération de nombres premiers ; cela donne au générateur de
+nombres aléatoires une meilleure chance d'obtenir suffisamment d'entropie.
+gpg: clef CCCFCB7C marquée de confiance ultime.
+les clefs publique et secrète ont été créées et signées.
+
+gpg: vérification de la base de confiance
+gpg: la clef publique de la clef de confiance ultime EDBF9B24 est introuvable
+gpg: la clef publique de la clef de confiance ultime 0D458CA1 est introuvable
+gpg: 3 marginale(s) nécessaire(s), 1 complète(s) nécessaire(s),
+     modèle de confiance PGP
+gpg: profondeur : 0  valables :   3  signées :   0
+     confiance : 0 i., 0 n.d., 0 j., 0 m., 0 t., 3 u.
+gpg: la prochaine vérification de la base de confiance aura lieu le 2017-07-08
+pub   4096R/CCCFCB7C 2017-03-08 [expire : 2017-07-08]
+ Empreinte de la clef = 4156 FE13 8D96 1B4E 77DD  C25B 9727 B170 CCCF CB7C
+uid      [  ultime ] Lerchundi Thomas <lerchundi.thomas@gmail.com>
+sub   4096R/39D9EDEB 2017-03-08 [expire : 2017-07-08]
+
+
+
+
+
+
+
+GENERATION DE CLE RSA : 
+
+gpg2 --armor --export lerchundi.thomas@gmail.com > mykey.asc
+
+Signature : 
+
+
+eduroam-033053:TP2_Securité Thomas$ gpg2 --output bonne_pratique.sig --sign guide_hygiene_informatique_anssi.pdf 
+
+Une phrase secrète est nécessaire pour déverrouiller la clef secrète de
+l'utilisateur : « Lerchundi Thomas <lerchundi.thomas@gmail.com> »
+clef RSA de 4096 bits, identifiant CCCFCB7C, créée le 2017-03-08
+
+Decryptage du fichier gpg : 
+
+gpg -o what_is_it.pdf --decrypt what_is_it.pdf.gpg
+
+
+Le fichier toto.sig pèse 581 octets!
+
+
+Certificat de révocation : 
+
+eduroam-024230:TP2_Securité Thomas$ gpg --gen-revoke lerchundi.thomas@gmail.com >revoque.macle
+
+sec  4096R/CCCFCB7C 2017-03-08 Lerchundi Thomas <lerchundi.thomas@gmail.com>
+
+Faut-il créer un certificat de révocation pour cette clef ? (o/N) o
+choisissez la cause de la révocation :                                
+  0 = Aucune raison indiquée
+  1 = La clef a été compromise
+  2 = La clef a été remplacée
+  3 = La clef n'est plus utilisée
+  Q = Annuler
+(Vous devriez sûrement sélectionner 1 ici)
+Quelle est votre décision ? 3
+Entrez une description facultative, en terminant par une ligne vide :
+> fin du TP
+>          
+Cause de révocation : La clef n'est plus utilisée
+fin du TP
+Est-ce d'accord ? (o/N) 
+choisissez la cause de la révocation :
+  0 = Aucune raison indiquée
+  1 = La clef a été compromise
+  2 = La clef a été remplacée
+  3 = La clef n'est plus utilisée
+  Q = Annuler
+(Vous devriez sûrement sélectionner 1 ici)
+Quelle est votre décision ? o
+Choix incorrect.               
+Quelle est votre décision ? 3
+Entrez une description facultative, en terminant par une ligne vide :
+> 
+Cause de révocation : La clef n'est plus utilisée
+(Aucune description donnée)
+Est-ce d'accord ? (o/N) o
+                          
+Une phrase secrète est nécessaire pour déverrouiller la clef secrète de
+l'utilisateur : « Lerchundi Thomas <lerchundi.thomas@gmail.com> »
+clef RSA de 4096 bits, identifiant CCCFCB7C, créée le 2017-03-08
+
+sortie forcée avec armure ASCII.
+Certificat de révocation créé.
+
+Veuillez le déplacer sur un support que vous pouvez cacher ; toute personne
+accédant à ce certificat peut l'utiliser pour rendre votre clef inutilisable.
+Imprimer ce certificat et le stocker ailleurs est une bonne idée, au cas où le
+support devienne illisible. Attention quand même : le système d'impression
+utilisé pourrait stocker ces données et les rendre accessibles à d'autres.
+

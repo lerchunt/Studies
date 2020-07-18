@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="15cm"
+   height="5cm"
+   viewBox="19 68 282 87"
+   id="svg3046"
+   version="1.1"
+   inkscape:version="0.47 r22583"
+   sodipodi:docname="format-pagination.dia">
+  <metadata
+     id="metadata3090">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs3088">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 88.58268 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="531.49603 : 88.58268 : 1"
+       inkscape:persp3d-origin="265.74802 : 59.05512 : 1"
+       id="perspective3092" />
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1600"
+     inkscape:window-height="1128"
+     id="namedview3086"
+     showgrid="false"
+     inkscape:zoom="1.0555112"
+     inkscape:cx="265.74802"
+     inkscape:cy="126.47901"
+     inkscape:window-x="0"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg3046" />
+  <g
+     id="g3048">
+    <rect
+       style="fill: #ffffff"
+       x="20"
+       y="100"
+       width="280"
+       height="40"
+       id="rect3050" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x="20"
+       y="100"
+       width="280"
+       height="40"
+       id="rect3052" />
+  </g>
+  <line
+     style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+     x1="160"
+     y1="120"
+     x2="160"
+     y2="120"
+     id="line3054" />
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:700"
+     x="20"
+     y="80"
+     id="text3056">
+    <tspan
+       x="20"
+       y="80"
+       id="tspan3058">Bits d'une adresse</tspan>
+  </text>
+  <line
+     style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+     x1="160"
+     y1="120"
+     x2="160"
+     y2="120"
+     id="line3060" />
+  <g
+     id="g3062">
+    <rect
+       style="fill: #ffffff"
+       x="20"
+       y="100"
+       width="104"
+       height="40"
+       id="rect3064" />
+    <rect
+       style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000"
+       x="20"
+       y="100"
+       width="104"
+       height="40"
+       id="rect3066" />
+  </g>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="20"
+     y="120"
+     id="text3068">
+    <tspan
+       x="20"
+       y="120"
+       id="tspan3070" />
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="20"
+     y="120"
+     id="text3072">
+    <tspan
+       x="20"
+       y="120"
+       id="tspan3074"> Numéro </tspan>
+    <tspan
+       x="20"
+       y="136"
+       id="tspan3076">de page</tspan>
+  </text>
+  <text
+     style="fill: #000000;text-anchor:start;font-size:12.8;font-family:sanserif;font-style:normal;font-weight:normal"
+     x="140"
+     y="120"
+     id="text3078">
+    <tspan
+       x="140"
+       y="120"
+       id="tspan3080">Position</tspan>
+    <tspan
+       x="140"
+       y="136"
+       id="tspan3082">dans la page</tspan>
+    <tspan
+       x="140"
+       y="152"
+       id="tspan3084" />
+  </text>
+</svg>

@@ -1,0 +1,15 @@
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+
+ASK {
+   SERVICE <http://dbpedia.org/sparql> { 
+     ?person rdfs:label "Paul Auster"@fr;
+     dbo:spouse ?spouse . }
+     ?a owl:sameAs ?spouse .
+}
+
+
+

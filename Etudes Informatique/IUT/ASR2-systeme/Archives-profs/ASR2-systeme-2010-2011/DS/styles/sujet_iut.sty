@@ -1,0 +1,62 @@
+
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}   
+
+\usepackage{a4wide}
+\usepackage{textcomp}
+
+\usepackage[draft]{hyperref}
+\usepackage{multicol}
+
+\usepackage{graphicx}
+\usepackage{xcolor}
+%\usepackage[answers]{optional}
+%%%   commandes   %%%
+%\boite{taille en cm}
+\newcommand{\boite}[2]{\noindent\\\fbox{
+    \makebox[\textwidth][l]{\begin{tabular}{l}#1\vspace{#2cm}\end{tabular}}}\\}
+
+\newcommand*{\titreEpreuve}[1]{\def\leTitreEpreuve{#1}}
+\newcommand*{\dateEpreuve}[1]{\def\laDateEpreuve{#1}}
+\newcommand*{\publicEpreuve}[1]{\def\lePublicEpreuve{#1}}
+
+\renewcommand{\rmdefault}{phv} % Arial
+\renewcommand{\sfdefault}{phv} % Arial
+
+
+%\renewcommand{\familydefault}{\sfdefault}
+
+\renewcommand{\maketitle}{
+\noindent
+\begin{tabular}{|l|l|l|}
+\hline
+\parbox{.20\linewidth}{
+\vspace{1mm}
+\center
+\includegraphics[width=\linewidth]{./styles/nouveau-logo-iut}
+\vspace{0.5mm}
+}
+&
+\parbox{.55\linewidth}{
+\begin{center}
+\textsf{
+\large
+IUT - Université  Bordeaux 1 \\
+Département Informatique \\ 
+\vspace{1em}
+\Large
+\textbf{\leTitreEpreuve}}
+%\vspace{1mm}
+\end{center}
+}
+&
+\parbox{.25\linewidth}{
+\begin{center}
+Nom, prénom, groupe 
+\vspace{2cm}
+\end{center}
+}
+\\
+\hline 
+\end{tabular}
+}

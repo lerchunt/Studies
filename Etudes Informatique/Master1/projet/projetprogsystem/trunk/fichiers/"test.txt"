@@ -1,0 +1,9 @@
+'yo'
+'yo'
+cat: t.txt: No such file or directory
+Expression syntaxiquement correcte : [lol 2> "test.txt"]
+Expression syntaxiquement correcte : [cat "test.txt"]
+Expression syntaxiquement correcte : [lol]
+Expression syntaxiquement correcte : [cat t.txt 2> "test.txt"]
+Expression syntaxiquement correcte : [cat "test.txt"]
+Expression syntaxiquement correcte : [lol]

@@ -1,0 +1,48 @@
+package chat;
+import java.rmi.*;
+import java.rmi.registry.*;
+import java.util.ArrayList;
+
+public class ChatRoom implements Room {
+
+    private String name;
+    private ArrayList<Person> users;
+    private static ArrayList<Conversation> conversations;
+
+    public ChatRoom(String name) {
+        this.name=name;
+        this.users= new ArrayList<Person>();
+	   this.conversations= new ArrayList<Conversation>();
+        
+    }
+    
+    public void addUser(Person p) throws RemoteException {
+        try{
+            users.add(p);
+            Registry registry = LocateRegistry.getRegistry();
+            Conversation a = (Conversation) registry.lookup(p.getFirstName()+","+p.getLastName());
+            conversations.add(a);
+            System.out.println(p.getFirstName()+" "+p.getLastName()+" join the room "+this.name);
+            //push the join message to the others users
+            for (Conversation conv : conversations ) {
+                conv.addMessage(p.getFirstName()+" "+p.getLastName()+" join the room "+this.name);
+            }
+        } catch(Exception e){
+           e.printStackTrace();
+       }
+    }
+
+    public void delUser(Person p) throws RemoteException {
+        //users.getIndex(p);
+        users.remove(p);
+
+    }
+
+    public void sendMessage(Person p,String message) throws RemoteException {
+        //push the message to the others users
+        for (Conversation conv : conversations ) {
+            conv.addMessage(p.getFirstName()+" : "+message);
+        }
+    }
+
+}

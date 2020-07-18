@@ -1,0 +1,1 @@
+/bin/sh: line 1:  8816 Segmentation fault: 11  /bin/bash -c "$i"

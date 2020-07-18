@@ -1,0 +1,10 @@
+HTTP/1.1 200 OK
+Date: Thu, 10 Jun 2004 12:19:17 GMT
+Server: INF111
+Last-Modified: Tue, 27 Aug 2002 16:21:3 6 GMT
+Accept-Ranges: bytes
+Content-Length: VALEUR
+Keep-Alive: timeout =15, max=100
+Connection: Keep-Alive
+Content-Type: TYPE; charset=UTF-8
+

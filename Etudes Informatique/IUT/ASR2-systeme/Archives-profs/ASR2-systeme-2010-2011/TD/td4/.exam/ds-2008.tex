@@ -1,0 +1,158 @@
+\documentclass[11pt]{article}
+
+\usepackage{a4wide}
+\usepackage{sujets}
+\usepackage{verbatim}
+\usepackage{moreverb}
+
+\quand{Semestre 2, année 2007-2008}
+\siglefeuille{DS}
+\siglemat{ASR2}
+\titrefeuille{Contrôle de Connaissances}
+\formation{Département Informatique IUT Bordeaux 1}
+\titre{Systèmes d'exploitation}
+
+\sloppy
+\begin{document}
+
+Sans documents -- Durée 1h30
+
+Justifiez les réponses
+
+\section{Questions de cours}
+\begin{enumerate}
+\item Décrivez en quelques lignes ce qui se passe lors d'un changement
+de contexte. 
+\item En quoi consiste la virtualisation ? Quel(s) intérêt(s) y
+  voyez-vous ?
+\end{enumerate}
+
+\section{RAID}
+On dispose de 4 disques durs de 500 Go chacun et on souhaite agréger
+ces disques pour faire du RAID. 
+
+1 ) Quelle sera la capacité de stockage si ces disques sont assemblés
+en RAID0, en RAID1, ou en RAID5 ?
+
+2 ) Quels sont les avantages de ses différentes techniques ?
+
+3 ) On supposte qu'un fichier occupe les 100 premiers blocs de l'espace
+disque virtuel. Pour chaque solution, combien faut-il de temps pour
+lire ces 100 blocs sachant que le temps d'accès en lecture (ou en
+écriture) d'un bloc est de 5 ms ? Justifiez pour chacun des cas.
+Même question pour accéder aux blocs en écriture.
+
+
+\section{Ordonnancement}
+On considère une machine sur laquelle vont tourner les 5 processus A, B,
+C, D et E dont les durées d'exécution et les dates d'arrivée sont les
+suivantes :
+
+
+
+\begin{center}
+\begin{tabular}{|r||cc|}
+\hline
+processus & Date d'arrivée & Durée\\
+\hline
+A&0&10\\
+B&2& 4\\	
+C&1& 7\\	
+D&4&12\\
+E&3& 5\\
+\hline
+\end{tabular}
+\end{center}
+	
+On appelle temps de service (TS) d'un processus le temps écoulé entre
+son arrivée dans le système et sa terminaison.
+
+Représentez le déroulement de l'exécution des processus par un
+diagramme et calculez le temps de service moyen pour les algorithmes
+d'ordonnancement suivant :
+\begin{enumerate}
+\item Ordonnancement FIFO sans quantum de temps
+\item Ordonnancement suivant le plus court temps d'exécution (PCTE), en
+ tenant compte des dates d'arrivée
+\item Ordonnancement suivant la règle dite du "Tourniquet" (Round
+ Robin) avec quantum de temps q=2 en tenant compte des dates
+ d'arrivée.
+\end{enumerate}
+
+
+\section{Principe de localité}
+
+Considérons le programme suivant, qui calcule la somme de deux tableaux de 100 éléments :
+\begin{verbatim}
+pour i = 1 jusqu'à 100 faire
+   C[i] = A[i] + B[i];
+fin;
+\end{verbatim}
+
+Supposons que ce programme soit exécuté avec des pages de taille 1000
+mots et que son équivalent en langage machine soit rangé en mémoire
+virtuelle à l'adresse 2000 (R1, R2 et R3 désignent les registres du
+processeur) :
+
+\begin{verbatim}
+2000	  charger 1    dans R1
+2001	  charger 100 dans R2
+2002	  comparer R1 et R2
+2003	  si R1 plus grand sauter en 2009
+2004	  charger A[R1] dans R3
+2005	  ajouter B[R1] à R3
+2006	  ranger (stocker) R3 dans C[R1]
+2007	  incrémenter R1
+2008	  sauter en 2002
+2009	  (suite)
+\end{verbatim}
+
+Supposons que les adresses des variables soient les suivantes :
+\begin{verbatim}
+6000-6099 : tableau A
+7000-7099 : tableau B
+8000-8099 : tableau C
+9000      : constante 1
+9001      : constante 100
+\end{verbatim}
+
+Le programme est situé à l'adresse 2000 et nécessite le chargement en
+mémoire de la page \textbf{2}. L'exécution de la première instruction
+(à l'adresse 2000) nécessite le chargement de la page \textbf{9}
+(constante 1). L'instruction suivante, située sur la page 2 (adresse
+2001) utilise la page 9 (constante 100). etc.
+
+\begin{enumerate}
+\item Compléter la formule des pages référencées produite par
+  l'exécution de ce programme :
+$2, 9, 2, 9, 2, ( 2, 2, 6, 2, 7... )^{100}$
+\item Quelle est la page la plus référencée ? On suppose que la
+  machine est très chargée et a tendance à \emph{``swapper''} ;
+  comment s'y prendre pour accélérer considérablement l'exécution ? 
+\end{enumerate}
+
+\section{Mémoire partitionnée}
+Soient des partitions ``libres'' de mémoire de tailles 100K, 500K, 200K,
+300K et 600K (dans cet ordre). 
+
+Comment placer des processus de tailles 212K, 417K, 112K et 426K (dans
+cet ordre) avec l'algorithme :
+\begin{itemize}
+\item First-fit (première zone libre) ?
+\item Best-fit (gaspillage minimum) ?
+\item Worst-fit (gaspillage maximum) ?
+\end{itemize}
+Quel algorithme fournit ici le meilleur usage de la mémoire ?
+
+
+
+
+
+%% \vspace{2cm}
+%% Version : 
+%% \verb+$Id: ds-asr2-mai2007-v1.tex,v 1.2 2007/05/15 14:48:49 billaud Exp billaud $+
+
+
+
+
+\end{document}

@@ -1,0 +1,178 @@
+/* css Zen Garden default style v1.01 */
+/* css released under Creative Commons License - http://creativecommons.org/licenses/by-nc-sa/1.0/  */
+
+
+/* This file based on 'Tranquille' by Dave Shea */
+/* You may use this file as a foundation for any new work, but you may find it easier to start from scratch. */
+/* Not all elements are defined in this file, so you'll most likely want to refer to the xhtml as well. */
+
+/* Images should be linked as if the CSS file sits in the same folder as the images. ie. no paths. */
+
+
+/* basic elements */
+body { 
+	font: 8pt/16pt georgia; 
+	color: #4000FF; 
+	background: #fff url(fond.png) no-repeat bottom right; 
+	margin: 0px; 
+	}
+p { 
+	font: 8pt/16pt georgia; 
+	margin-top: 0px; 
+	text-align: justify;
+	}
+h1 { 
+	font: italic bold normal 16pt georgia; 
+	letter-spacing: 1px; 
+	margin-bottom: 0px; 
+	color: #FF3030 ;
+	}
+h3 { 
+	font: italic bold normal 12pt georgia; 
+	letter-spacing: 1px; 
+	margin-bottom: 0px; 
+	color: #FF4040 ;
+	}
+a:link { 
+	font-weight: bold; 
+	text-decoration: none; 
+	color: #B7A5DF;
+	}
+a:visited { 
+	font-weight: bold; 
+	text-decoration: none; 
+	color: #D4CDDC;
+	}
+a:hover, a:active { 
+	text-decoration: underline; 
+	color: #9685BA;
+	}
+
+
+/* specific divs */
+#container { 
+	padding: 0px 175px 0px 110px;  
+	margin: 0px; 
+	}
+
+#intro { 
+	min-width: 470px;
+	}	
+#pageHeader { 
+	margin-bottom: 20px;
+	}
+
+#pageHeader h1 span {
+	display:none
+	}
+#pageHeader h2 { 
+	margin-top: 58px; 
+	margin-bottom: 40px; 
+	width: 200px; 
+	height: 18px; 
+	float: right;
+	}
+#pageHeader h2 span {
+	display:none;
+	}
+
+#quickSummary {
+	clear:both; 
+	margin: 20px 20px 20px 10px; 
+	width: 160px; 
+	float: left;
+	}
+#quickSummary p {
+	font: italic bold 10pt/22pt georgia; 
+	text-align:center;
+	}
+
+#preamble {
+	clear: right; 
+	padding: 0px 10px 0px 10px;
+	}
+#supportingText {
+	padding-left: 10px; 
+	margin-bottom: 40px;
+	}
+
+#footer { 
+	text-align: center; 
+	}
+#footer a:link, #footer a:visited { 
+	margin-right: 20px; 
+	}
+
+#linkList {
+	margin-left: 600px; 
+	position: absolute; 
+	top: 0px; 
+	right: 0px;
+	}
+#linkList2 { 
+	font: 10px verdana, sans-serif; 
+	padding: 10px; 
+	margin-top: 150px; 
+	width: 130px; 
+	}
+#linkList h3.select { 
+	margin: 10px 0px 5px 0px; 
+	width: 97px; 
+	height: 16px; 
+	}
+#linkList h3.select span {
+	display:none
+	}
+#linkList h3.favorites { 
+	margin: 25px 0px 5px 0px; 
+	width: 60px; 
+	height: 18px; 
+	}
+#linkList h3.favorites span {
+	display:none
+	}
+#linkList h3.archives { 
+	margin: 25px 0px 5px 0px; 
+	width:57px; 
+	height: 14px; 
+	}
+#linkList h3.archives span {
+	display:none
+	}
+#linkList h3.resources { 
+	margin: 25px 0px 5px 0px; 
+	width:63px; 
+	height: 10px; 
+	}
+#linkList h3.resources span {
+	display:none
+	}
+
+
+#linkList ul {
+	margin: 0px;
+	padding: 0px;
+	}
+#linkList li {
+	line-height: 2.5ex; 
+	list-style-type: none;
+	display: block; 
+	padding-top: 5px; 
+	margin-bottom: 5px;
+	}
+#linkList li a:link { 
+	color: #988F5E;
+	}
+#linkList li a:visited {
+	color: #B3AE94;
+	}
+	
+
+
+#extraDiv1 { 
+	position: absolute; 
+	top: 40px; 
+	right: 0px; 
+	width: 148px; 
+	height: 110px; 
+	}

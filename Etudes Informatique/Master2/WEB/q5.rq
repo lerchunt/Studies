@@ -1,0 +1,28 @@
+PREFIX book: <https://toto.com/book/> 
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX author: <https://toto.com/author/>
+PREFIX tomate: <http://tomate.com/0.1/> 
+PREFIX dbo: <http://dbpedia.org/ontology/>
+
+
+SELECT DISTINCT ?t1 ?t2
+
+WHERE{
+
+	?a1	owl:sameAs ?spouse .
+	SERVICE <http://dbpedia.org/sparql> { 
+     		?spouse dbo:spouse ?a . 
+		FILTER NOT EXISTS { ?spouse dbo:deathYear ?death . } 
+		FILTER NOT EXISTS { ?a dbo:deathYear ?death2 . }
+		}
+     		?a2 owl:sameAs ?a .
+     		
+	?b1 	tomate:auteur ?a1;
+		foaf:title ?t1 .
+	
+	?b2 	tomate:auteur ?a2;
+		foaf:title ?t2 .	
+	
+
+}
